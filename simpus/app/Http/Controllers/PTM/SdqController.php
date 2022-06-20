@@ -70,7 +70,7 @@ class SdqController extends Controller
     private function sum_data($array, $field, $puskesmas, $periode_start, $periode_end)
     {
 
-            $dataquery = collect($array)->where('puskesmas_id', $puskesmas)->where('periode',$periode_start)->map(function ($user) use ($field) {
+            $dataquery = collect($array)->where('puskesmas_id', $puskesmas)->where('periode','>=',$periode_start)->where('periode','<=',$periode_end)->map(function ($user) use ($field) {
                 return collect($user->toArray())->only([$field])->all();
             })->sum($field);
 
