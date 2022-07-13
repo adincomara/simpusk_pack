@@ -119,6 +119,9 @@
                                     </div>
                                     <div class="form-group col-md my-auto pt-2">
                                       <select name="diagnosa1" class="custom-select" id="diagnosa1" style="width: 100%">
+                                        @if(isset($kunjungan->kd_diagnosa1))
+                                        <option value="{{ $kunjungan->kd_diagnosa1 }}">{{ $kunjungan->kd_diagnosa1 }} | {{ $kunjungan->diagnosa1->nama_penyakit }}</option>
+                                        @endif
                                         <option value="">Pilih Diagnosa</option>
                                       </select>
                                     </div>
@@ -138,6 +141,9 @@
                                     </div>
                                     <div class="form-group col-md my-auto pt-2">
                                       <select name="diagnosa2" class="custom-select" id="diagnosa2" style="width: 100%">
+                                        @if(isset($kunjungan->kd_diagnosa2))
+                                        <option value="{{ $kunjungan->kd_diagnosa2 }}">{{ $kunjungan->kd_diagnosa2 }} | {{ $kunjungan->diagnosa2->nama_penyakit }}</option>
+                                        @endif
                                         <option value="">Pilih Diagnosa</option>
                                       </select>
                                     </div>
@@ -157,6 +163,9 @@
                                     </div>
                                     <div class="form-group col-md my-auto pt-2">
                                       <select name="diagnosa3" class="custom-select" id="diagnosa3" style="width: 100%">
+                                        @if(isset($kunjungan->kd_diagnosa3))
+                                        <option value="{{ $kunjungan->kd_diagnosa3 }}">{{ $kunjungan->kd_diagnosa3 }} | {{ $kunjungan->diagnosa3->nama_penyakit }}</option>
+                                        @endif
                                         <option value="">Pilih Diagnosa</option>
                                       </select>
                                     </div>
@@ -166,41 +175,41 @@
                                       <label class="form-label">Kesadaran <span>*</span></label>
                                       <select name="kesadaran" class="custom-select" id="kesadaran">
                                         <option value="">Pilih Kesadaran</option>
-                                        <option value="01">Compos Mentis</option>
-                                        <option value="02">Somolence</option>
-                                        <option value="03">Sopor</option>
-                                        <option value="04">Coma</option>
+                                        <option value="01" {{ (isset($kunjungan) && $kunjungan->code_sadar == '01')? 'selected' : '' }}>Compos Mentis</option>
+                                        <option value="02" {{ (isset($kunjungan) && $kunjungan->code_sadar == '02')? 'selected' : '' }}>Somolence</option>
+                                        <option value="03" {{ (isset($kunjungan) && $kunjungan->code_sadar == '03')? 'selected' : '' }}>Sopor</option>
+                                        <option value="04" {{ (isset($kunjungan) && $kunjungan->code_sadar == '04')? 'selected' : '' }}>Coma</option>
                                       </select>
                                     </div>
                                   </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Sistole <span>*</span></label>
-                                        <input type="text" class="form-control mb-1" name="sistole" id="sistole">
+                                        <input type="text" class="form-control mb-1" name="sistole" id="sistole" value="{{ isset($kunjungan->sistole)? $kunjungan->sistole : '' }}">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Diastole <span>*</span></label>
-                                        <input type="text" class="form-control mb-1" name="diastole" id="diastole">
+                                        <input type="text" class="form-control mb-1" name="diastole" id="diastole" value="{{ isset($kunjungan->diastole)? $kunjungan->diastole : '' }}">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                   <div class="form-group col-md-6">
                                     <label class="form-label">Tingkat Pernapasan <span>*</span></label>
-                                    <input type="text" class="form-control mb-1" name="resp" id="resp">
+                                    <input type="text" class="form-control mb-1" name="resp" id="resp" value="{{ isset($kunjungan->resprate)? $kunjungan->resprate : '' }}">
                                   </div>
                                   <div class="form-group col-md-6">
                                     <label class="form-label">Tekanan Nadi<span>*</span></label>
-                                    <input type="text" class="form-control mb-1" name="heart" id="heart">
+                                    <input type="text" class="form-control mb-1" name="heart" id="heart" value="{{ isset($kunjungan->heart_rate)? $kunjungan->heart_rate : '' }}">
                                   </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                       <label class="form-label">Berat Badan <span>*</span></label>
-                                      <input type="text" class="form-control mb-1" name="berat" id="berat">
+                                      <input type="text" class="form-control mb-1" name="berat" id="berat" value="{{ isset($kunjungan->berat_badan)? $kunjungan->berat_badan : '' }}">
                                     </div>
                                     <div class="form-group col-md-6">
                                       <label class="form-label">Tinggi Badan <span>*</span></label>
-                                      <input type="text" class="form-control mb-1" name="tinggi" id="tinggi">
+                                      <input type="text" class="form-control mb-1" name="tinggi" id="tinggi" value="{{ isset($kunjungan->tinggi_badan)? $kunjungan->tinggi_badan : '' }}">
                                     </div>
                                   </div>
                                 <div class="form-row">
@@ -209,25 +218,25 @@
                                     <select name="status_pulang" class="custom-select" id="status_pulang" onchange="rujukform()">
                                       <option value="">Pilih</option>
                                       {{-- <option value="0">Sembuh</option> --}}
-                                      <option value="1">Meninggal</option>
-                                      <option value="3">Rawat Jalan</option>
-                                      <option value="4">Rujuk</option>
+                                      <option value="1" {{ (isset($kunjungan) && $kunjungan->status_pulang == '1')? 'selected' : '' }}>Meninggal</option>
+                                      <option value="3" {{ (isset($kunjungan) && $kunjungan->status_pulang == '3')? 'selected' : '' }}>Rawat Jalan</option>
+                                      <option value="4" {{ (isset($kunjungan) && $kunjungan->status_pulang == '4')? 'selected' : '' }}>Rujuk</option>
                                     </select>
                                   </div>
                                   <div class="form-group col-md-6">
                                     <label class="form-label">Tanggal Pulang <span>*</span></label>
-                                    <input type="date" class="form-control mb-1" name="tglpulang" id="tglpulang">
+                                    <input type="date" class="form-control mb-1" name="tglpulang" id="tglpulang" value="{{ (isset($kunjungan))? date('Y-m-d', strtotime($kunjungan->tgl_pulang)) : '' }}">
                                   </div>
                                 </div>
 
                                 <div id="form_rujukan">
                                   <div class="form-row">
                                     <div class="form-group col-md-6" id="spesialisshowselect">
-                                      <input type="radio" name="kasus" id="spesialis_select">
+                                      <input type="radio" name="kasus" id="spesialis_select" {{ (isset($kunjungan->rujuk_lanjut->spesialis))? 'checked' : '' }}>
                                       <label for="spesialis">Spesialis <span>*</span></label>
                                     </div>
                                     <div class="form-group col-md-6" id="khususshowselect">
-                                      <input type="radio" name="kasus" id="khusus_select">
+                                      <input type="radio" name="kasus" id="khusus_select" {{ (isset($kunjungan->rujuk_lanjut->kd_khusus))? 'checked' : '' }}>
                                       <label for="khusus">Khusus <span>*</span></label>
                                     </div>
                                   </div>
@@ -275,7 +284,7 @@
                                   <div class="form-row" id="terapishow">
                                     <div class="form-group col-md-12">
                                       <label class="form-label">Terapi <span>*</span></label>
-                                      <input type="text" class="form-control mb-1" name="terapi" id="terapi">
+                                      <input type="text" class="form-control mb-1" name="terapi" id="terapi" value="{{ (isset($kunjungan) && $kunjungan->terapi != null)? $kunjungan->terapi : '' }}">
                                     </div>
                                   </div>
                                 </div>
@@ -292,13 +301,13 @@
                                   <div class="form-row" id="keluhanshow">
                                     <div class="form-group col-md-12">
                                       <label class="form-label">Keluhan <span></span></label>
-                                      <textarea class="form-control mb-1" rows="5" name="keluhan" id="keluhan"></textarea>
+                                      <textarea class="form-control mb-1" rows="5" name="keluhan" id="keluhan">{{ (isset($kunjungan->rujuk_lanjut) && $kunjungan->rujuk_lanjut->catatan != null)? $kunjungan->rujuk_lanjut->catatan : '-' }}</textarea>
                                     </div>
                                   </div>
                                   <div class="form-row" id="tglrujukshow">
                                     <div class="form-group col-md-8">
                                       <label class="form-label">Tanggal Rujuk <span>*</span></label>
-                                      <input type="date" class="form-control mb-1" name="tglrujuk" id="tglrujuk">
+                                      <input type="date" class="form-control mb-1" name="tglrujuk" id="tglrujuk" value="{{ (isset($kunjungan->rujuk_lanjut) && $kunjungan->rujuk_lanjut->tgl_est_rujuk)? date('Y-m-d', strtotime($kunjungan->rujuk_lanjut->tgl_est_rujuk)) : date('Y-m-d') }}">
                                     </div>
                                     <div class="form-group col-md-4 my-auto pt-1">
                                       <a class="btn btn-outline-success" id="searchRujuk">
@@ -329,7 +338,7 @@
                                   </div>
                                   <div class="form-row">
                                     <div class="form-group col-md-6">
-                                      <select name="tacc" class="custom-select" id="taccselect" onchange="taccform()">
+                                      <select name="tacc" class="custom-select" id="taccselect" onchange="taccform()" required>
                                         <option value="">Pilih TACC</option>
                                         <option value="-1">Tanpa TACC</option>
                                         <option value="0">Dengan TACC</option>
@@ -393,16 +402,16 @@
                             <div class="form-row" id="catatanshow">
                                 <div class="form-group col-md-12">
                                   <label class="form-label">Catatan <span></span></label>
-                                  <textarea class="form-control mb-1" rows="5" name="catatan" id="catatan"></textarea>
+                                  <textarea class="form-control mb-1" rows="5" name="catatan" id="catatan">{{ (isset($kunjungan)? $kunjungan->catatan : '') }}</textarea>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                   <label class="form-label">Penunjang <span>*</span></label>
                                   <select id="penunjang" name="penunjang" class="select2 form-control mb-1"
-                                    onchange="pilihPenunjang()">
+                                    onchange="pilihPenunjang()" {{ (isset($PelayananLab))? 'readonly' : '' }}>
                                     <option value="Y">Ya</option>
-                                    <option value="T">Tidak</option>
+                                    <option value="T" {{ (isset($PelayananLab))? 'selected' : '' }}>Tidak</option>
 
                                   </select>
                                 </div>
@@ -456,6 +465,36 @@
                           </div>
 
                         </div> --}}
+                        @if(isset($PelayananLab))
+                        <div class="col-md-12">
+                            <div class="card-header"><center><h3>PEMERIKSAAN LABORATORIUM</h3></center></div>
+                            <div class="card-body">
+                             @foreach($PelayananLab as $lab)
+                             <div class="form-row">
+                               <div class="form-group col-md-4">
+                                 <label class="form-label">Pemeriksaan</label>
+                                 <input type="text" class="form-control mb-1" name="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" id="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" value="{{$lab->pelayananlaboratorium->name}}" readonly="">
+                               </div>
+                               <div class="form-group col-md-2">
+                                 <label class="form-label">Satuan</label>
+                                 <input type="text" class="form-control mb-1" name="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" id="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" value="{{$lab->pelayananlaboratorium->satuan}}" readonly="">
+                               </div>
+                               <div class="form-group col-md-2">
+                                 <label class="form-label">Min</label>
+                                 <input type="text" class="form-control mb-1" name="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" id="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" value="{{$lab->pelayananlaboratorium->min}}" readonly="">
+                               </div>
+                               <div class="form-group col-md-2">
+                                 <label class="form-label">Max</label>
+                                 <input type="text" class="form-control mb-1" name="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" id="nama_pemeriksaan_{{$lab->pelayananlaboratorium->id}}" value="{{$lab->pelayananlaboratorium->max}}" readonly="">
+                               </div>
+                               <div class="form-group col-md-2">
+                                 <label class="form-label">Nilai</label>
+                                 <input type="text" class="form-control mb-1" name="nilai_{{$lab->pelayananlaboratorium->id}}" id="nilai_{{$lab->pelayananlaboratorium->id}}" readonly value="{{ $lab->nilai }}">
+                               </div>
+                             </div>
+                             @endforeach
+                        </div>
+                        @endif
                         <div class="col-md-12" id="tmpResep" style="display:none">
                           <div class="card-header">
                             <center>
@@ -541,6 +580,7 @@
     var tamp_nokunjungan = '0';
       $(document).ready(function(){
 
+
         // getstatuspulang()
         getdokter()
         $('#bpjs_form').show();
@@ -580,6 +620,39 @@
         //   $('#khusushow').hide();
         //   $('#subkhusushow').hide();
         // }
+        console.log('kunjungan');
+        @if(isset($kunjungan))
+            @if($kunjungan['rujuk_lanjut'] != 'null')
+                rujukform();
+                pilihPenunjang();
+                @if($kunjungan['rujuk_lanjut']['spesialis'] != 'null')
+                $.when(spesialis_select()).then(function(){
+                    var subspesialis = "{{ $kunjungan['rujuk_lanjut']['subspesialis'] }}";
+                    // console.log(subspesialis);
+                    if(typeof subspesialis !== 'undefined'){
+                        // console.log('masuk');
+                        $.when(spesialis()).then(function(){
+                            @if(isset($kunjungan->faskes_rujuk->kode_faskes))
+                            var cekrujuk = "{{ $kunjungan->faskes_rujuk->kode_faskes }}"
+                            @endif
+                            if(typeof cekrujuk !== 'undefined'){
+                                searchRujuk();
+                            }else{
+                                return;
+                            }
+                        })
+                    }else{
+                        return;
+                    }
+                });
+
+                @else()
+                    khusus_select();
+                @endif
+
+
+            @endif
+        @endif
       })
 
       // var bpjs = $('#nama_penanggung_jawab').val()
@@ -706,7 +779,6 @@
                     Swal.hideLoading();
                     Swal.close();
                     if(data.print == true){
-
                         if(data.status_pasien == "BPJS"){
                             var link = "{{ route('report.printRujukan',[null]) }}/"+data.nokunjungan;
                         }else{
@@ -1378,7 +1450,8 @@
 
 
       function rujukform(){
-        var statuspulang = $('#status_pulang').val()
+        var statuspulang = $('#status_pulang').val();
+        console.log(statuspulang);
         if(statuspulang == 4){
           $('#form_rujukan').show();
           $('#form_rujukan_detail').show();
@@ -1438,7 +1511,375 @@
           $('#lab_pemeriksaan_'+id).val(0);
         }
     }
+@if(isset($kunjungan))
+function spesialis_select(){
+    $('#khususshow').hide();
+    $('#spesialisshow').show();
+    $('#khusus').val('');
+    $('#subkhusus').val('');
+    @if(isset($kunjungan->rujuk_lanjut->spesialis))
+        var kdspesialis = '{{ $kunjungan->rujuk_lanjut->spesialis }}';
+    @endif;
+    // getdokter()
+    $.ajax({
+    type: 'POST',
+    url: '{{route("pelayanan_poli.spesialisbpjs")}}',
+    headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+    beforeSend: function(){
+        Swal.showLoading();
+    },
+    success: function(response) {
+        // $('.option').remove();
+        var spesialis = response.datas.response.list
+        if(response.datas.metaData.message != "OK"){
+        Swal.fire('Error','Maaf Server Sedang Bermasalah','info');
+        }else{
+        for(var i = 0 ; i < spesialis.length ; i++){
+            if(spesialis[i].kdSpesialis == kdspesialis){
+                $('#spesialis').append('<option value="'+spesialis[i].kdSpesialis+'" selected>' + spesialis[i].nmSpesialis + '</option>');
+            }else{
+                $('#spesialis').append('<option value="'+spesialis[i].kdSpesialis+'">' + spesialis[i].nmSpesialis + '</option>');
+            }
+        }
+        }
+    },
+    complete: function(){
+        Swal.hideLoading();
+        Swal.close();
 
+    },
+    });
+    $.ajax({
+    type: 'POST',
+    url: '{{route("pelayanan_poli.saranabpjs")}}',
+    headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+    beforeSend: function(){
+        Swal.showLoading();
+    },
+    success: function(response) {
+        var sarana = response.datas.response.list
+        var spesialis = response.datas.response.list
+        @if(isset($kunjungan->rujuk_lanjut->kd_sarana))
+        var kd_sarana = '{{ $kunjungan->rujuk_lanjut->kd_sarana }}';
+        @endif
+        if(response.datas.metaData.message != "OK"){
+            Swal.fire('Error','Maaf Server Sedang Bermasalah','info');
+        }else{
+        for(var i = 0 ; i < sarana.length ; i++){
+            if(kd_sarana == sarana[i].kdSarana){
+                $('#sarana').append('<option value="'+sarana[i].kdSarana+'" selected>' + sarana[i].nmSarana + '</option>');
+            }else{
+                $('#sarana').append('<option value="'+sarana[i].kdSarana+'">' + sarana[i].nmSarana + '</option>');
+            }
+        }
+    }
+    },
+    complete: function(){
+
+        Swal.hideLoading();
+        Swal.close();
+
+
+    },
+    });
+}
+function spesialis(){
+    console.log('tes spesial');
+    @if(isset($kunjungan->rujuk_lanjut->subspesialis))
+    var subspesialis = '{{ $kunjungan->rujuk_lanjut->subspesialis }}';
+    @endif
+    // console.log(subspesialis);
+    $('#subspesialis').find('option').remove().end();
+    $('#subspesialis').append('<option value="">Pilih SubSpesialis</option>');
+    var id_spesialis = "{{ $kunjungan['rujuk_lanjut']['spesialis'] }}";
+    console.log(id_spesialis);
+    $.ajax({
+        type: 'POST',
+        url: '{{route("pelayanan_poli.subspesialisbpjs")}}',
+        headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+        data: {
+            'spesialis' : id_spesialis
+        },
+        beforeSend: function(){
+            Swal.showLoading();
+        },
+        success: function(response) {
+            console.log(response);
+            var spesialis = response.datas.response.list
+            if(response.datas.metaData.message != "OK"){
+                Swal.fire('Error','Maaf Server Sedang Bermasalah','info');
+            }else if(spesialis != null){
+            for(var i = 0 ; i < spesialis.length ; i++){
+                if(spesialis[i].kdSubSpesialis == subspesialis){
+                    $('#subspesialis').append('<option value="'+spesialis[i].kdSubSpesialis+'" selected>' + spesialis[i].nmSubSpesialis + '</option>');
+                }else{
+                    $('#subspesialis').append('<option value="'+spesialis[i].kdSubSpesialis+'">' + spesialis[i].nmSubSpesialis + '</option>');
+                }
+            }
+            }else{
+                Swal.fire('Error','Maaf Server Sedang Bermasalah','info');
+            }
+        },
+        complete: function(){
+            Swal.hideLoading();
+            Swal.close();
+
+        },
+    });
+}
+function khusus_select(){
+    $('#khususshow').show();
+    $('#subkhususshow').hide();
+    $('#spesialisshow').hide();
+    @if(isset($kunjungan->rujuk_lanjut->kd_khusus))
+    var kd_khusus = '{{ $kunjungan->rujuk_lanjut->kd_khusus }}'
+    @endif
+    getdokter()
+    $.ajax({
+        type: 'POST',
+        url: '{{route("pelayanan_poli.khususbpjs")}}',
+        headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+        beforeSend: function(){
+            Swal.showLoading();
+        },
+        success: function(response) {
+            // console.log(response.datas.metaData)
+            var khusus = response.datas.response.list
+            for(var i = 0 ; i < khusus.length ; i++){
+                if(khusus[i].kdKhusus == kd_khusus){
+                    $('#khusus').append('<option value="'+khusus[i].kdKhusus+'" selected>' + khusus[i].nmKhusus + '</option>');
+                }else{
+                    $('#khusus').append('<option value="'+khusus[i].kdKhusus+'">' + khusus[i].nmKhusus + '</option>');
+                }
+            }
+            // if(response.datas.metaData.message != "OK"){
+            //   console.log(response.datas.metaData)
+            //   Swal.fire('Error','Maaf Server Sedang Bermasalah','info');
+            // }else if(response.datas.metaData.code == 200){
+
+            // }
+        },
+        complete: function(){
+            Swal.hideLoading();
+            Swal.close();
+            khusus();
+        },
+    });
+}
+function khusus(){
+    var khusus = $('#khusus').val();
+    if(khusus == 'THA' || khusus == 'HEM'){
+        $('#subkhususshow').show();
+    }else{
+        $('#subkhususshow').hide();
+    }
+}
+function searchRujuk(){
+    $('#table1').find('tbody').remove().end();
+    var nokartu = $('#no_bpjs').val();
+    var spesialis = "{{ $kunjungan['rujuk_lanjut']['spesialis'] }}";
+    var kdsubspesialis = "{{ $kunjungan['rujuk_lanjut']['subspesialis'] }}";
+    var kdsarana = $('#sarana').val();
+    var kdkhusus = $('#khusus').val();
+    var kdsubkhusus = $('#subkhusus').val();
+    var date = $('#tglrujuk').val();
+    var tglrujuk = date.split("-").reverse().join("-");
+    @if(isset($kunjungan->faskes_rujuk->kode_faskes))
+    var kdfaskes = '{{ $kunjungan->faskes_rujuk->kode_faskes }}';
+    @endif
+    var index = 0;
+    var sarana = 0
+    // console.log(kdkhusus)
+    if(kdsarana == ""){
+    sarana = 0
+    }else{
+    sarana = kdsarana
+    }
+    if(kdkhusus === ""){
+    $.ajax({
+        type: 'POST',
+        data: {
+            'tglrujuk': tglrujuk,
+            'kdspesialis': spesialis,
+            'kdsubspesialis': kdsubspesialis,
+            'kdsarana': sarana
+        },
+        url: '{{ route("pelayanan_poli.rujukspesialisbpjs") }}',
+        headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+        beforeSend: function(){
+            Swal.showLoading();
+            // console.log('tes');
+        },
+        success: function(response){
+        // Swal.hideLoading();
+        console.log(response);
+        if(response.datas){
+            $('#table1').find('tbody').remove().end();
+            var table = response.datas.response.list
+            var error = response.datas.response
+            if(response.datas.metaData.code == 428){
+                Swal.hideLoading();
+            Swal.fire('UPS',error,'info');
+            }else if(response.datas.metaData.code ==  412){
+            for (let index = 0; index < error.length; index++) {
+                Swal.hideLoading();
+                Swal.fire(error[index].field,error[index].message,'info');
+            }
+            }else if(response.datas.metaData.code == 200){
+                Swal.hideLoading();
+                Swal.close();
+            for(var i=0;i<table.length;i++){
+            if(table[i].kdppk == kdfaskes){
+                selected = 'checked';
+
+            }else{
+                selected = '';
+            }
+            var datatable = '<tbody>' +
+                                '<tr>' +
+                                // '<td>'++'</td>' +
+                                '<td>'+table[i].nmppk +'('+table[i].kdppk+')'+'</td>' +
+                                '<td>'+table[i].kelas+'</td>'+
+                                '<td>'+table[i].nmkc+'</td>'+
+                                '<td>'+table[i].alamatPpk+'</td>'+
+                                '<td>'+table[i].telpPpk+'</td>'+
+                                '<td>'+table[i].distance+'</td>'+
+                                '<td>'+table[i].jmlRujuk+'</td>'+
+                                '<td><input type="radio" name="provider" value="'+table[i].kdppk+'" id="'+table[i].kdppk+'"'+selected+'></td>'+
+                                '</tr>' +
+                            '</tbody>'
+                $('#table1').append(datatable);
+            }
+            }else{
+                Swal.hideLoading();
+                Swal.fire('UPS','Data tidak ditemukan','info');
+            }
+        }else{
+            Swal.hideLoading();
+            Swal.fire('UPS','Data tidak ditemukan','info');
+        }
+
+
+        },
+        complete: function(){
+        Swal.hideLoading();
+        // Swal.close();
+    },
+    });
+    }else if(kdkhusus == "THA" || kdkhusus == "HEM"){
+    $.ajax({
+        type: 'POST',
+        data: {
+            'tglrujuk': tglrujuk,
+            'kdkhusus': kdkhusus,
+            'subkhusus': kdsubkhusus,
+            'nokartu': nokartu
+        },
+        url: '{{ route("pelayanan_poli.rujuksubkhususbpjs") }}',
+        headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+        beforeSend: function(){
+        Swal.showLoading();
+    },
+        success: function(response){
+        $('#table1').find('tbody').remove().end();
+        // console.log(response)
+        var table = response.datas.response.list
+        var error = response.datas.response
+        if(response.datas.metaData.code == 428){
+            Swal.fire('UPS',error,'info');
+        }else if(response.datas.metaData.code ==  412){
+            for (let index = 0; index < error.length; index++) {
+            Swal.fire(error[index].field,error[index].message,'info');
+            }
+        }else if(response.datas.metaData.code == 200){
+            for(var i=0;i<table.length;i++){
+            if(table[i].kdppk == kdfaskes){
+                selected = 'checked';
+
+            }else{
+                selected = '';
+            }
+            var datatable = '<tbody>' +
+                            '<tr>' +
+                                // '<td>'++'</td>' +
+                                '<td>'+table[i].nmppk +'('+table[i].kdppk+')'+'</td>' +
+                                '<td>'+table[i].kelas+'</td>'+
+                                '<td>'+table[i].nmkc+'</td>'+
+                                '<td>'+table[i].alamatPpk+'</td>'+
+                                '<td>'+table[i].telpPpk+'</td>'+
+                                '<td>'+table[i].distance+'</td>'+
+                                '<td>'+table[i].jmlRujuk+'</td>'+
+                                '<td><input type="radio" name="provider" value="'+table[i].kdppk+'" id="'+table[i].kdppk+'" '+selected+'></td>'+
+                            '</tr>' +
+                            '</tbody>'
+            $('#table1').append(datatable);
+            }
+        }
+        },
+        complete: function(){
+        Swal.hideLoading();
+        Swal.close();
+    },
+    });
+    }else{
+    $.ajax({
+        type: 'POST',
+        data: {
+            'kdkhusus': kdkhusus,
+            'nokartu': nokartu,
+            'tglrujuk': tglrujuk,
+        },
+        url: '{{ route("pelayanan_poli.rujukkhususbpjs") }}',
+        headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+        beforeSend: function(){
+        Swal.showLoading();
+    },
+        success: function(response){
+        // console.log(response)
+        $('#table1').find('tbody').remove().end();
+        var table = response.datas.response.list
+        var error = response.datas.response
+
+        var selected = '';
+        if(response.datas.metaData.code == 428){
+            Swal.fire('UPS',error,'info');
+        }else if(response.datas.metaData.code ==  412){
+            for (let index = 0; index < error.length; index++) {
+            Swal.fire(error[index].field,error[index].message,'info');
+            }
+        }else if(response.datas.metaData.code == 200){
+            for(var i=0;i<table.length;i++){
+                if(table[i].kdppk == kdfaskes){
+                    selected = 'checked';
+
+                }else{
+                    selected = '';
+                }
+            var datatable = '<tbody>' +
+                            '<tr>' +
+                                // '<td>'++'</td>' +
+                                '<td>'+table[i].nmppk +'('+table[i].kdppk+')'+'</td>' +
+                                '<td>'+table[i].kelas+'</td>'+
+                                '<td>'+table[i].nmkc+'</td>'+
+                                '<td>'+table[i].alamatPpk+'</td>'+
+                                '<td>'+table[i].telpPpk+'</td>'+
+                                '<td>'+table[i].distance+'</td>'+
+                                '<td>'+table[i].jmlRujuk+'</td>'+
+                                '<td><input type="radio" name="provider" value="'+table[i].kdppk+'" id="'+table[i].kdppk+'" '+selected+'></td>'+
+                            '</tr>' +
+                            '</tbody>'
+            $('#table1').append(datatable);
+            }
+        }
+        },
+        complete: function(){
+        Swal.hideLoading();
+        Swal.close();
+    },
+    });
+    }
+}
+@endif
 </script>
 @endpush
 

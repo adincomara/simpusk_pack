@@ -102,6 +102,7 @@
 
                                </div>
                             </div>
+
                             <div class="col-md-12">
                                <div class="card-header"><center><h3>PEMERIKSAAN LABORATORIUM</h3></center></div>
                                <div class="card-body">
@@ -125,17 +126,24 @@
                                   </div>
                                   <div class="form-group col-md-2">
                                     <label class="form-label">Nilai</label>
-                                    <input type="text" class="form-control mb-1" name="nilai_{{$lab->pelayananlaboratorium->id}}" id="nilai_{{$lab->pelayananlaboratorium->id}}" value="0">
+                                    <input type="text" class="form-control mb-1 nilai" name="nilai_{{$lab->pelayananlaboratorium->id}}" id="nilai_{{$lab->pelayananlaboratorium->id}}" value="0">
                                   </div>
+
                                 </div>
                                 @endforeach
+                                <div class="text-left mb-3">
+                                    <a class="btn btn-success"  href="#" onclick="cetak({{ $poli->pelayanan_poli->id }})"><i class="fa fa-print"></i> cetak</a> <br>
+                                    <small style="color: red">Klik tombol diatas jika ingin mencetak hasil pemeriksaan laboratorium</small>
+                                </div>
                              </div>
                             </div>
 
                             <div class="col-md-12">
                               <div class="card-body">
+
                                   <div class="form-row">
                                   <div class="form-group col-md-12">
+
                                     <div class="text-right mt-3">
                                       <button type="submit" class="btn btn-primary" id="submitData">Simpan</button>&nbsp;
                                       <a href="{{route('pendaftaran.index')}}"  class="btn btn-default">Kembali</a>
@@ -154,7 +162,6 @@
 @endsection
 @push('scripts')
 <script type="text/javascript">
-
     $('#submitData').validate({
       ignore: ":hidden:not(.editor)",
       rules: {
@@ -273,6 +280,21 @@
         }
       }
 
+</script>
+<script>
+    function cetak(id){
+        var nilai = [];
+        $('.nilai').each(function(i, obj) {
+            nilai[i] = obj.value;
+            // alert(i);
+            // alert(obj.value);
+        });
+        // alert(tes);
+            // alert(tes);
+            // var =
+        window.location.href = '{{ route('laboratorium.cetak_lab',[null]) }}/'+'pelayanan_poli_id='+id+'&nilai='+nilai;
+        // {{ route('laboratorium.cetak_lab',$poli->pelayanan_poli->id) }}
+    }
 </script>
 @endpush
 

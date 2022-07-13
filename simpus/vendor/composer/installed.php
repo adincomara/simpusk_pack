@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '0b40dcb994a29193bab2ee7a02dedf360040dfbd',
+        'reference' => '2c10f137126f3d96c14373c4500f5a1e819466ac',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -427,7 +427,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '0b40dcb994a29193bab2ee7a02dedf360040dfbd',
+            'reference' => '2c10f137126f3d96c14373c4500f5a1e819466ac',
             'dev_requirement' => false,
         ),
         'laravel/tinker' => array(
@@ -617,6 +617,15 @@
             'install_path' => __DIR__ . '/../niklasravnsborg/laravel-pdf',
             'aliases' => array(),
             'reference' => '80cce12a3d9048759ec0d2ca87c57a56b4b4950f',
+            'dev_requirement' => false,
+        ),
+        'nullpunkt/lz-string-php' => array(
+            'pretty_version' => '1.3.0',
+            'version' => '1.3.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nullpunkt/lz-string-php',
+            'aliases' => array(),
+            'reference' => 'bf4ae48f8a164bc6e95f5e7a2c6da45907ac3ba9',
             'dev_requirement' => false,
         ),
         'nunomaduro/collision' => array(

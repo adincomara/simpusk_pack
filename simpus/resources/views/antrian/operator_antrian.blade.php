@@ -34,7 +34,7 @@
                         <h2 class="text-white font-weight-bold">
                             <marquee behavior="" direction="">
                                 Syarat pendaftaran Puskesmas KTP Asli - Istirahat Pukul
-                                12.00-1300
+                                12.00-13.00
                             </marquee>
                         </h2>
                     </div>

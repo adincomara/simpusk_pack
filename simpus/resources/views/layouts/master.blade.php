@@ -122,69 +122,73 @@
             </li>
             @can('master.index')
             <li
-                class="{{  request()->routeIs('jabatan.*') || request()->routeIs('bidang.*') || request()->routeIs('pegawai.*') || request()->routeIs('kk.*') || request()->routeIs('pasien.*') || request()->routeIs('poli.*') || request()->routeIs('jenisoperasi.*') || request()->routeIs('penyakit.*') || request()->routeIs('tindakan.*') || request()->routeIs('diagnosa_penyakit.*') ? 'active' : '' }}">
+                class="">
                 <a href="#"><i class="fa fa-database" style="font-size:16px"></i> <span class="nav-label">Master</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     @can('jabatan.index')
-                    <li class="{{  request()->routeIs('jabatan.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('jabatan.index') }}">Data Jabatan</a></li>
                     @endcan
                     @can('bidang.index')
-                    <li class="{{  request()->routeIs('bidang.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('bidang.index') }}">Data Bidang</a></li>
                     @endcan
                     @can('pegawai.index')
-                    <li class="{{  request()->routeIs('pegawai.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('pegawai.index') }}">Data Pegawai</a></li>
                     @endcan
                     @can('kk.index')
-                    <li class="{{  request()->routeIs('kk.*') ? 'active' : '' }}"><a href="{{ route('kk.index') }}">Data
+                    <li class=""><a href="{{ route('kk.index') }}">Data
                             Kartu Keluarga</a></li>
                     @endcan
                     @can('pasien.index')
-                    <li class="{{  request()->routeIs('pasien.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('pasien.index') }}">Data Pasien</a></li>
                     @endcan
                     @can('poli.index')
-                    <li class="{{  request()->routeIs('poli.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('poli.index') }}">Data Poli</a></li>
                     @endcan
                     @can('jenisoperasi.index')
-                    <li class="{{  request()->routeIs('jenisoperasi.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('jenisoperasi.index') }}">Data Jenis Operasi</a></li>
                     @endcan
                     @can('penyakit.index')
-                    <li class="{{  request()->routeIs('penyakit.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('penyakit.index') }}">Data Penyakit</a></li>
                     @endcan
                     @can('tindakan.index')
-                    <li class="{{  request()->routeIs('tindakan.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('tindakan.index') }}">Data Tindakan</a></li>
                     @endcan
                     @can('diagnosa_penyakit.index')
-                    <li class="{{  request()->routeIs('diagnosa_penyakit.*') ? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('diagnosa_penyakit.index') }}">Data Diagnosis Penyakit</a></li>
+                    @endcan
+                    @can('laboratorium.index')
+                    <li class=""><a
+                            href="{{ route('laboratorium.master') }}">Data Pemeriksaan Laboratorium</a></li>
                     @endcan
                 </ul>
             </li>
             @endcan
             @can('pelayanan.index')
             <li
-                class="{{ request()->routeIs('pendaftaran.*') || request()->routeIs('pelayanan_poli.*') || request()->routeIs('laboratorium.*')? 'active' : '' }}">
+                class="">
                 <a href="#"><i class="fa fa-handshake" style="font-size:16px"></i> <span
                         class="nav-label">Pelayanan</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     @can('pendaftaran.index')
-                    <li class="{{ request()->routeIs('pendaftaran.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('pendaftaran.index') }}">Pendaftaran</a></li>
                     @endcan
                     @can('pelayanan_poli.index')
-                    <li class="{{ request()->routeIs('pelayanan_poli.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('pelayanan_poli.index') }}">Poli</a></li>
                     @endcan
                     @can('laboratorium.index')
-                    <li class="{{ request()->routeIs('laboratorium.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('laboratorium.index') }}">Laboratorium</a></li>
                     @endcan
                 </ul>
@@ -192,55 +196,55 @@
             @endcan
             @can('apotik.index')
             <li
-                class="{{ request()->routeIs('supplier.*') || request()->routeIs('obat.*')||request()->routeIs('stok_obat.*')||request()->routeIs('pengadaan_obat.*')||request()->routeIs('pengeluaran_obat.*')? 'active' : '' }}">
+                class="">
                 <a href="#"><i class="fa fa-medkit" style="font-size:16px"></i> <span class="nav-label">Apotik</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     @can('supplier.index')
-                    <li class="{{ request()->routeIs('supplier.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('supplier.index') }}">Data Suplier</a></li>
                     @endcan
                     @can('obat.index')
-                    <li class="{{ request()->routeIs('obat.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('obat.index') }}">Data Obat</a></li>
                     @endcan
                     @can('stok_obat.index')
-                    <li class="{{ request()->routeIs('stok_obat.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('stok_obat.index') }}">Data Stok Obat</a></li>
                     @endcan
                     @can('pengadaan_obat.index')
-                    <li class="{{ request()->routeIs('pengadaan_obat.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('pengadaan_obat.index') }}">Pengadaan Obat</a></li>
                     @endcan
                     @can('pengeluaran_obat.index')
-                    <li class="{{ request()->routeIs('pengeluaran_obat.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('pengeluaran_obat.index') }}">Pengeluaran Obat</a></li>
                     @endcan
                 </ul>
             </li>
             @endcan
             <li
-                class="{{ request()->routeIs('report.*') || request()->routeIs('report.pasienDiagnosa') || request()->routeIs('report.pasienTindakan.*') || request()->routeIs('report.tindakanPasien.*')|| request()->routeIs('pegawai.cetak')||request()->routeIs('pegawai.cetaknakes')||request()->routeIs('pengeluaran_obat.cetakberiobat') || request()->routeIs('tenagakesehatan.*') || request()->routeIs('jabatannakes.*')? 'active' : '' }}">
+                class="">
                 <a href="#"><i class="fa fa-sticky-note" style="font-size:16px"></i> <span
                         class="nav-label">Laporan</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li
-                        class="{{ request()->routeIs('report.pasienDiagnosa') || request()->routeIs('report.detailDiagnosis')? 'active' : '' }}">
+                        class="">
                         <a href="{{route('report.pasienDiagnosa')}}">Laporan Pasien Berdasarkan Diagnosa</a></li>
                     <li
-                        class="{{ request()->routeIs('report.pasienTindakan') || request()->routeIs('report.detailTindakan')? 'active' : '' }}">
+                        class="">
                         <a href="{{route('report.pasienTindakan')}}">Laporan Pasien Berdasarkan Tindakan</a></li>
                     <li
-                        class="{{ request()->routeIs('report.tindakanPasien') ||request()->routeIs('report.tindakanPasien_*')||request()->routeIs('report.tindakanpasien_*')? 'active' : '' }}">
+                        class="">
                         <a href="{{route('report.tindakanpasien_index')}}">Laporan Tindakan Pasien</a></li>
                     <li
-                        class="{{ request()->routeIs('pegawai.cetak') || request()->routeIs('tenagakesehatan.*')? 'active' : '' }}">
+                        class="">
                         <a href="{{route('tenagakesehatan.index')}}">Tenaga Puskesmas</a></li>
-                    <li class="{{ request()->routeIs('jabatannakes.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{route('jabatannakes.index')}}">Jabatan Nakes</a></li>
-                    <li class="{{ request()->routeIs('report.pemberianobat.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{route('report.pemberianobat.index')}}">Pemberian Obat</a></li>
-                    <li class="{{ request()->routeIs('report.kunjunganpasien.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{route('report.kunjunganpasien.index')}}">Kunjungan Pasien (Baru dan Lama)</a></li>
                 </ul>
             </li>
@@ -248,52 +252,57 @@
                 <a href="#"><i class="fa fa-ambulance" style="font-size:16px"></i> <span class="nav-label">Integrasi
                         BPJS</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li class="active"><a href="index.html">Pasien BPJS (PCARE)</a></li>
-                    <li><a href="dashboard_2.html">Rujukan Pasien BPJS (PCARE)</a></li>
+                    <li class=""><a href="{{route('kunjungan.pasienBPJS')}}">Kunjungan Pasien BPJS (PCARE)</a></li>
+                            <li class=""><a href="{{route('report.rujukanBPJS')}}">Rujukan Pasien BPJS (PCARE)</a></li>
                 </ul>
             </li>
             @can('pengguna.index')
-            <li class="{{ request()->routeIs('staff.*')? 'active' : '' }}">
+            <li class="">
                 <a href="#"><i class="fa fa-users" style="font-size:16px"></i> <span class="nav-label">Pengguna</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     @can('staff.index')
-                    <li class="{{ request()->routeIs('staff.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('staff.index') }}">Staff</a></li>
                     @endcan
                 </ul>
             </li>
             @endcan
             @can('company.index')
-            <li class="{{ request()->routeIs('about.*')? 'active' : '' }}">
+            <li class="">
                 <a href="#"><i class="fa fa-cogs" style="font-size:16px"></i> <span class="nav-label">Pengaturan</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     @can('about.index')
-                    <li class="{{ request()->routeIs('about.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('about.index') }}">Tentang</a></li>
                     @endcan
+                    @can('pcare.index')
+                    <li class=""><a
+                            href="{{ route('pcare.index') }}">PCare</a></li>
+                    @endcan
+
                 </ul>
             </li>
             @endcan
             @can('security.index')
-            <li class="{{ request()->routeIs('permission.*')||request()->routeIs('role.*')? 'active' : '' }}">
+            <li class="">
                 <a href="#"><i class="fa fa-lock" style="font-size:16px"></i> <span class="nav-label">Keamanan</span>
                     <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     @can('permission.index')
-                    <li class="{{ request()->routeIs('permission.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('permission.index') }}">Modul</a></li>
                     @endcan
                     @can('role.index')
-                    <li class="{{ request()->routeIs('role.*')? 'active' : '' }}"><a
+                    <li class=""><a
                             href="{{ route('role.index') }}">Akses</a></li>
                     @endcan
                 </ul>
             </li>
             @endcan
             @can('log.index')
-            <li class="{{ request()->routeIs('log.*')?'active' : '' }}">
+            <li class="">
                 <a href="{{ route('log.index') }}"><i class="fa fa-lock" style="font-size:16px"></i> <span
                         class="nav-label">Log Aktivitas</span> <span class="fa arrow"></span></a>
             </li>
@@ -889,6 +898,39 @@
 
 
     @stack('scripts')
+    <script>
+        var CURRENT_URL = window.location.href.split('#')[0].split('?')[0],
+        $SIDEBAR_MENU = $('#side-menu');
+
+        // Sidebar
+        $(document).ready(function() {
+            // TODO: This is some kind of easy fix, maybe we can improve this
+            // check active menu
+            var segments = CURRENT_URL.split( '/' );
+            // console.log(segments[]);
+            var iniurl = window.location.origin;
+            var tamp = ''+iniurl;
+
+            for(var i=0; i<segments.length; i++){
+                if(i>=3){
+                    tamp += '/'+segments[i];
+                }
+
+
+            }
+            // console.log(tamp);
+            // var potongurl= iniurl+'/'+segments[3]+'/'+segments[4]+'/'+segments[5]+'/'+segments[6];
+            var potongurl= tamp;
+            // console.log($SIDEBAR_MENU);
+            $SIDEBAR_MENU.find('ul a[href="' + potongurl + '"]').parents('li').addClass('active');
+            $SIDEBAR_MENU.find('ul a[href="' + potongurl + '"]').parents('ul').addClass('in');
+            // console.log($SIDEBAR_MENU);
+            $SIDEBAR_MENU.find('a').filter(function () {
+                return this.href == potongurl;
+            }).addClass('active').parents('li').slideDown(function() {
+            });
+        });
+    </script>
 </body>
 
 </html>

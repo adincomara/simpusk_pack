@@ -260,7 +260,7 @@ class PoliController extends Controller
                 'message' => 'status poli gagal dirubah',
             ]);
           }
-      }
+    }
     public function simpan(Request $req)
     {
         // return $req->all();

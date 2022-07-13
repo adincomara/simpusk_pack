@@ -12,7 +12,7 @@ class Pendaftaran extends Model
     public $timestamps = false;
 
     public function poli(){
-        return $this->hasOne(Poli::class, 'id', 'id_poli')->withDefault([
+        return $this->hasOne(Poli::class, 'kdpoli', 'id_poli')->withDefault([
             'nama_poli' => null
         ]);
     }

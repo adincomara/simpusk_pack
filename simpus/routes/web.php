@@ -41,6 +41,7 @@ use App\Http\Controllers\Simpusk\PengeluaranObatController;
 use App\Http\Controllers\Simpusk\PelayananpoliController;
 use App\Http\Controllers\Simpusk\LaboratoriumController;
 use App\Http\Controllers\Simpusk\LaporanController;
+use App\Http\Controllers\Simpusk\PcareController;
 use App\Http\Controllers\Simpusk\RujukanController;
 use App\Models\Simpusk\AntrianBPJS;
 use App\Models\Simpusk\StokObat;
@@ -113,6 +114,9 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('tentang/simpaninfo', [AboutController::class, 'simpanInfo'])->name('about.simpaninfo');
         Route::post('tentang/simpanmedia', [AboutController::class, 'simpanMedia'])->name('about.simpanmedia');
 
+        //PCARE
+        Route::get('pcare', [PcareController::class, 'index'])->name('pcare.index');
+
         //PERMISSION
         Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
         Route::get('permission/tambah', [PermissionController::class, 'tambah'])->name('permission.tambah');
@@ -169,6 +173,7 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('pegawai/cetak/{data?}', [PegawaiController::class, 'cetak'])->name('pegawai.cetak');
         Route::get('pegawai/cetak/nakes', [PegawaiController::class, 'cetakNakes'])->name('pegawai.cetaknakes');
         Route::post('pegawai/ubah_status', [PegawaiController::class, 'ubah_status'])->name('pegawai.ubah_status');
+        Route::get('pegawai/search_pegawai', [PegawaiController::class, 'search_pegawai'])->name('pegawai.searchPegawai');
 
         // Diagnosa Penyakit
         Route::get('diagnosa_penyakit', [DiagnosaPenyakitController::class, 'index'])->name('diagnosa_penyakit.index');
@@ -247,7 +252,7 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('pengeluaran_obat', [PengeluaranObatController::class, 'index'])->name('pengeluaran_obat.index');
         Route::post('pengeluaran_obat/getdata', [PengeluaranObatController::class, 'getData'])->name('pengeluaran_obat.getdata');
         Route::post('pengeluaran_obat/getdata_pendaftaran', [PengeluaranObatController::class, 'getDataPendaftaran'])->name('pengeluaran_obat.getdata_pendaftaran');
-        Route::get('pengeluaran_obat/tambah/{id}', [PengeluaranObatController::class, 'tambah'])->name('pengeluaran_obat.tambah');
+        Route::get('pengeluaran_obat/tambah/{id?}', [PengeluaranObatController::class, 'tambah'])->name('pengeluaran_obat.tambah');
         Route::get('pengeluaran_obat/proses_resep', [PengeluaranObatController::class, 'proses_resep'])->name('pengeluaran_obat.proses_resep');
         Route::get('pengeluaran_obat/detail/{id}', [PengeluaranObatController::class, 'detail'])->name('pengeluaran_obat.detail');
         Route::get('pengeluaran_obat/ubah/{id}', [PengeluaranObatController::class, 'ubah'])->name('pengeluaran_obat.ubah');
@@ -414,12 +419,21 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('kunjungan/edit', [IntegrasiBPJSController::class, 'kunjungan_simpan'])->name('kunjungan.simpan');
 
         //LABORATORIUM
+        Route::get('laboratorium/master', [LaboratoriumController::class, 'master'])->name('laboratorium.master');
+        Route::get('laboratorium/master/tambah', [LaboratoriumController::class, 'tambah'])->name('laboratorium.tambah');
+        Route::get('laboratorium/master/ubah/{id?}', [LaboratoriumController::class, 'ubah'])->name('laboratorium.ubah');
+        Route::delete('laboratorium/hapus/{id?}', [LaboratoriumController::class, 'hapus'])->name('laboratorium.hapus');
+        Route::post('laboratorium/status_ubah', [LaboratoriumController::class, 'status_ubah'])->name('laboratorium.status_ubah');
         Route::get('laboratorium', [LaboratoriumController::class, 'index'])->name('laboratorium.index');
         Route::get('laboratorium/periksa_laboratorium/{id}', [LaboratoriumController::class, 'periksa_laboratorium'])->name('laboratorium.periksa');
         Route::get('laboratorium/lihat_periksa_laboratorium/{id}', [LaboratoriumController::class, 'lihat_periksa_laboratorium'])->name('laboratorium.lihatPeriksa');
         Route::post('laboratorium/getdata', [LaboratoriumController::class, 'getData'])->name('laboratorium.getdata');
+        Route::post('laboratorium/getdatamaster', [LaboratoriumController::class, 'getDataMaster'])->name('laboratorium.getdatamaster');
         Route::post('laboratorium/simpan', [LaboratoriumController::class, 'simpan'])->name('laboratorium.simpan');
+        Route::post('laboratorium/simpanmaster', [LaboratoriumController::class, 'simpanMaster'])->name('laboratorium.simpanMaster');
         Route::post('laboratorium/simpanResepLab', [LaboratoriumController::class, 'simpanResepLab'])->name('laboratorium.simpanResepLab');
+        Route::get('laboratorium/cetak/{lab?}', [LaboratoriumController::class, 'cetak_lab'])->name('laboratorium.cetak_lab');
+
 
 
         //REPORT

@@ -455,6 +455,16 @@ class PegawaiController extends Controller
             return response()->json(['status' => "failed", 'message' => 'Gagal menghapus data']);
         }
     }
+    public function search_pegawai(Request $request){
+        $pegawai = Pegawai::where('status', 1);
+        $key = $request->search;
+        $pegawai->where(function($q) use($key){
+            $q->orwhere('nama_pegawai', 'LIKE', "%{$key}%");
+            $q->orwhere('nip', 'LIKE', "%{$key}%");
+        });
+        $pegawai->get();
+        return json_encode($pegawai);
+    }
 
     public function cetak(Request $request)
     {

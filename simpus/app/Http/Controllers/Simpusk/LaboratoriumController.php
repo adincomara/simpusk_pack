@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Simpusk;
 
+use App\Models\Simpusk\Jabatan;
 use App\Models\Simpusk\Kunjungan;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\Pendaftaran;
@@ -44,16 +45,244 @@ class LaboratoriumController extends Controller
   {
     return view('pelayanan/laboratorium');
   }
+  public function master(){
+    return view('master.data_laboratorium');
+  }
+
+  public function ubah($enc_id)
+  {
+
+    // return $enc_id;
+    $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
+
+    if ($dec_id) {
+        $laboratorium  = Pelayananlaboratorium::find($dec_id);
+        return view('master_form/laboratorium_form',compact('enc_id','laboratorium'));
+    } else {
+    return view('errors/noaccess');
+    }
+  }
+
+  public function status_ubah(Request $req){
+    //   return $req->value;
+      $data = Pelayananlaboratorium::find($req->id);
+      if($data->status == 1){
+          $data->status = 0;
+      }else{
+          $data->status = 1;
+      }
+      if($data->save()){
+         // return $data;
+           return response()->json([
+            'success' => true,
+            'code' => 201,
+            'message' => 'status pemeriksaan laboratorium berhasil dirubah',
+        ]);
+      }else{
+         // return $data;
+        return response()->json([
+            'success' => false,
+            'code' => 201,
+            'message' => 'status pemeriksaan laboratorium gagal dirubah',
+        ]);
+      }
+    }
+
+  public function getDataMaster(Request $request)
+    {
+        $limit = $request->length;
+        $start = $request->start;
+        $page  = $start + 1;
+        $search = $request->search['value'];
+
+        $records = Pelayananlaboratorium::select('*');
+        $records->orderBy('status', 'DESC');
+
+        //   if(array_key_exists($request->order[0]['column'], $this->original_column)){
+        //      $records->orderByRaw($this->original_column[$request->order[0]['column']].' '.$request->order[0]['dir']);
+        //   }
+        //   else{
+        //     $records->orderBy('created_at','DESC');
+        //   }
+        if ($search) {
+            $records->where(function ($query) use ($search) {
+                $query->orWhere('name', 'LIKE', "%{$search}%");
+            });
+        }
+        $totalData = $records->get()->count();
+
+        $totalFiltered = $records->get()->count();
+
+        $records->limit($limit);
+        $records->offset($start);
+        $data = $records->get();
+        foreach ($data as $key => $record) {
+            $enc_id = $this->safe_encode(Crypt::encryptString($record->id));
+            $action = "";
+
+            $action .= "";
+
+            if($request->user()->can('laboratorium.ubah')){
+                $action.='<a href="'.route('laboratorium.ubah',$enc_id).'" class="btn btn-warning btn-xs icon-btn md-btn-flat product-tooltip mb-1" style="min-width:60px" title="Edit"><i class="fa fa-pencil"></i> Ubah</a>&nbsp;';
+            }
+            if($request->user()->can('laboratorium.hapus')){
+                $action.='<a href="#" onclick="deleteData(this,\''.$enc_id.'\')" class="btn btn-danger btn-xs icon-btn md-btn-flat product-tooltip" style="min-width:60px" title="Hapus"><i class="fa fa-trash"></i> Hapus</a>&nbsp;';
+            }
+
+            $record->no             = $key + $page;
+            if($record->status == '1'){
+                $record->status = "<label class='switch'>
+                <input type='checkbox' value='".$record->id."' id='data_".$record->id."' checked>
+                <span class='slider round'></span>
+              </label>
+              <script>
+              $('#data_".$record->id."').click(function(){
+                var id = this.value;
+                var cek = $('#data_".$record->id."').prop('checked');
+                console.log(cek);
+                if(cek == true){
+                    var val = 1;
+                }
+                else{
+                    var val = 0;
+                }
+                console.log(val);
+
+                  Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Status pemeriksaan laboratorium akan diubah!',
+
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn-danger',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText:'Batal',
+                    confirmButtonColor: '#ec6c62',
+                    closeOnConfirm: false
+                  }).then(function(result){
+                      if(result.value){
+                        $.ajax({
+                            type: 'POST',
+                            url: '".route('laboratorium.status_ubah')."',
+                            headers: {'X-CSRF-TOKEN': $('[name=\"_token\"]').val()},
+                            data: {id : id, value: cek},
+                            success: function(data){
+                                if(data.success == true){
+                                    Swal.fire('Yes',data.message,'success');
+                                    table.ajax.reload(null, true);
+
+                                }
+                                else{
+                                    Swal.fire('Peringatan',data.message,'info');
+                                }
+                            }
+                        });
+                      }else{
+                        var check = $('#data_".$record->id."');
+                        if(check.prop('checked') == false){
+                            check.prop('checked', true);
+                        }
+                        else{
+                            check.prop('checked', false);
+                        }
+
+                      }
+                  });
+              });
+              </script>";
+            }
+            else{
+                $record->status = "<label class='switch'>
+                <input type='checkbox' value='".$record->id."' id='data_".$record->id."'>
+                <span class='slider round'></span>
+              </label>
+              <script>
+              $('#data_".$record->id."').click(function(){
+                var id = this.value;
+                var cek = $('#data_".$record->id."').prop('checked');
+                console.log(cek);
+                if(cek == true){
+                    var val = 0;
+                }
+                else{
+                    var val = 1;
+                }
+                console.log(val);
+                  Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Status pemeriksaan laboratorium akan diubah!',
+
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn-danger',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText:'Batal',
+                    confirmButtonColor: '#ec6c62',
+                    closeOnConfirm: false
+                  }).then(function(result){
+                      if(result.value){
+                        $.ajax({
+                            type: 'POST',
+                            url: '".route('laboratorium.status_ubah')."',
+                            headers: {'X-CSRF-TOKEN': $('[name=\"_token\"]').val()},
+                            data: {id : id, value: cek},
+                            success: function(data){
+                                if(data.success == true){
+                                    Swal.fire('Yes',data.message,'success');
+                                    table.ajax.reload(null, true);
+
+                                }
+                                else{
+                                    Swal.fire('Peringatan',data.message,'info');
+                                }
+                            }
+                        });
+                      }else{
+                        var check = $('#data_".$record->id."');
+                        if(check.prop('checked') == false){
+                            check.prop('checked', true);
+                        }
+                        else{
+                            check.prop('checked', false);
+                        }
+
+                      }
+                  });
+              });
+              </script>";
+            }
+            // $record->url            = '<a href="'.$this->url_laboratorium().'/'.$record->slug_url.'" target="_blank">'.$this->url_laboratorium().'/'.$record->slug_url.'</a>';
+            $record->action         = $action;
+        }
+        if ($request->user()->can('laboratorium.index')) {
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            );
+        } else {
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => 0,
+                "recordsFiltered" => 0,
+                "data"            => []
+            );
+        }
+        return json_encode($json_data);
+    }
 
   public function getData(Request $request)
   {
+    // return "tes";
       $limit = $request->length;
       $start = $request->start;
       $page  = $start +1;
       $search = $request->search['value'];
+      $search_tgl = $request->search_tgl;
 
-      $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien',
-        'tbl_poli.nama_poli','tbl_pelayanan_poli.id as id_pelayanan_poli','tbl_pelayanan_poli.flag_lab as flag_lab')->join('tbl_pelayanan_poli','tbl_pelayanan_poli.pendaftaran_id','tbl_pendaftaran.id')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli')->where('tbl_pelayanan_poli.penunjang','Y')->where('tbl_pelayanan_poli.flag_lab', '!=', 2);
+      $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.tanggal_daftar',
+        'tbl_poli.nama_poli','tbl_pelayanan_poli.id as id_pelayanan_poli','tbl_pelayanan_poli.flag_lab as flag_lab')->join('tbl_pelayanan_poli','tbl_pelayanan_poli.pendaftaran_id','tbl_pendaftaran.id')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')->where('tbl_pelayanan_poli.penunjang','Y')->whereDate('tbl_pendaftaran.tanggal_daftar', '=', date('Y-m-d', strtotime($search_tgl)));
     // return $records->get();
       if(array_key_exists($request->order[0]['column'], $this->original_column)){
          $records->orderByRaw($this->original_column[$request->order[0]['column']].' '.$request->order[0]['dir']);
@@ -76,12 +305,24 @@ class LaboratoriumController extends Controller
       $records->limit($limit);
       $records->offset($start);
       $data = $records->get();
-      //return $data;
+    //   return $data;
       foreach ($data as $key=> $record)
       {
+        // return $record;
         $enc_id = $this->safe_encode(Crypt::encryptString($record->id));
         $enc_id2 = $this->safe_encode(Crypt::encryptString($record->id_pelayanan_poli));
+        $nilai = Pelayananpolilaboratorium::where('pelayanan_poli_id', $record->id_pelayanan_poli)->pluck('nilai');
+        $nil = '';
+        foreach($nilai as $idx => $n){
+            $nil .= $n.',';
+            if(count($nilai) == ($idx+1)){
+                $nil .= $n;
+            }
+        }
 
+        // $nil = json_encode($nilai, true);
+        $params = 'pelayanan_poli_id='.$record->id_pelayanan_poli.'&nilai='.$nil;
+        // return $params;
         $action = "";
 
         // if($request->user()->can('pelayanan_poli.hapus')){
@@ -89,14 +330,11 @@ class LaboratoriumController extends Controller
         // }
 
         if($request->user()->can('laboratorium.periksa')){
-        if($record->flag_lab != 2){
             if($record->flag_lab == 0){
-              $action.='<a href="'.route('laboratorium.periksa',$enc_id).'"  class="btn btn-success" style="min-width:210px" title="Periksa Laboratorium">Periksa Laboratorium</a>&nbsp;';
+                $action.='<a href="'.route('laboratorium.periksa',$enc_id).'"  class="btn btn-primary" style="min-width:210px" title="Periksa Laboratorium">Periksa Laboratorium</a>&nbsp;';
             }else{
-              $action.='<a href="'.route('laboratorium.lihatPeriksa',$enc_id2).'"  class="btn btn-warning" style="min-width:210px" title="Lihat Hasil Laboratorium">Diagnosis & Pemberian Resep</a>&nbsp;';
+                $action.='<a href="'.route('laboratorium.cetak_lab',$params).'"  class="btn btn-success" style="min-width:210px" title="Lihat Hasil Laboratorium"><i class="fa fa-print"></i> Cetak Hasil Pemeriksaan</a>&nbsp;';
             }
-
-          }
         }
 
         $record->no             = $key+$page;
@@ -196,13 +434,7 @@ class LaboratoriumController extends Controller
    }
   public function tambah()
   {
-      $pjj = $this->pjj();
-      $selectedpjj = '';
-      $status = $this->status_pasien();
-      $selectedstatus = '';
-      $poli = Poli::all();
-      $selectedpoli = "";
-      return view('backend/pendaftaran/form',compact('pjj','selectedpjj','status','selectedstatus','poli','selectedpoli'));
+      return view('master_form/laboratorium_form');
   }
   // ubah : Form ubah data
   public function periksa_laboratorium($enc_id)
@@ -213,6 +445,7 @@ class LaboratoriumController extends Controller
       if ($dec_id) {
         //$poli= Pelayananpoli::find($dec_id);
         $poli = Pendaftaran::where('tbl_pendaftaran.id',$dec_id)->first();
+        // return $poli->poli;
         // return $poli->pasien;
 
         // $poli = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pasien.tanggal_lahir','tbl_pendaftaran.status_pasien','tbl_pegawai.nama_pegawai as nama_dokter','tbl_poli.nama_poli','tbl_pendaftaran.no_bpjs','users.name as nama_user','tbl_pelayanan_poli.penunjang as penunjang','tbl_pelayanan_poli.note as catatan_dokter','tbl_pelayanan_poli.id as id_pelayanan_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_pelayanan_poli','tbl_pelayanan_poli.pendaftaran_id','tbl_pendaftaran.id')->join('tbl_pegawai','tbl_pegawai.id_pegawai','tbl_pelayanan_poli.dokter_id')->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli')->join('users','tbl_pelayanan_poli.dokter_id','users.id')->where('tbl_pendaftaran.id',$dec_id)->first();
@@ -263,8 +496,42 @@ class LaboratoriumController extends Controller
         return view('errors/noaccess');
       }
     }
+    public function simpanMaster(Request $req){
+        $enc_id = $req->enc;
+        if(isset($enc_id)){
+            $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
+            $laboratorium = Pelayananlaboratorium::find($dec_id);
+            $laboratorium->name     = $req->nama_pemeriksaan;
+            $laboratorium->min      = $req->min;
+            $laboratorium->max      = $req->max;
+            $laboratorium->satuan   = $req->satuan;
+            $laboratorium->status   = $req->status;
+        }else{
+            $laboratorium = new Pelayananlaboratorium();
+            $laboratorium->name     = $req->nama_pemeriksaan;
+            $laboratorium->min      = $req->min;
+            $laboratorium->max      = $req->max;
+            $laboratorium->satuan   = $req->satuan;
+            $laboratorium->status   = $req->status;
+        }
+
+        if($laboratorium->save()){
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil disimpan',
+                'code'    => 201,
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Data gagal disimpan',
+                'code'    => 204,
+            ]);
+        }
+    }
     public function simpan(Request $req)
     {
+        // return $req->all();
         $PelayananLab = Pelayananpolilaboratorium::select('tbl_pelayanan_poli_laboratorium.nilai','tbl_pelayanan_poli_laboratorium.id as id_pelayanan_poli_lab','tbl_pelayanan_laboratorium.name as nama_pemeriksaan','tbl_pelayanan_laboratorium.min as min','tbl_pelayanan_laboratorium.max as max','tbl_pelayanan_laboratorium.satuan as satuan','tbl_pelayanan_laboratorium.id as id_poli_lab')->join('tbl_pelayanan_laboratorium','tbl_pelayanan_laboratorium.id','tbl_pelayanan_poli_laboratorium.pelayanan_laboratorium_id')->where('tbl_pelayanan_poli_laboratorium.pelayanan_poli_id',$req->pelayanan_poli_id)->get();
         $pelayanan_poli_id = $req->pelayanan_poli_id;
 
@@ -278,7 +545,10 @@ class LaboratoriumController extends Controller
 
         if(!empty($Pelayananpolilaboratorium)) {
           $pelayananpoli = Pelayananpoli::find($req->pelayanan_poli_id);
-          $pelayananpoli->flag_lab                      = 1;
+          $pelayananpoli->flag_lab                      = 2;
+          $pendaftaran = Pendaftaran::where('id', $pelayananpoli->pendaftaran_id)->first();
+          $pendaftaran->flag_periksa = 3;
+          $pendaftaran->save();
           $pelayananpoli->save();
           if($pelayananpoli){
           $json_data = array(
@@ -298,10 +568,10 @@ class LaboratoriumController extends Controller
     public function hapus(Request $req,$enc_id)
     {
       $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
-      $pendaftaran = Pendaftaran::find($dec_id);
+      $laboratorium = Pelayananlaboratorium::find($dec_id);
 
-      if ($pendaftaran) {
-          $pendaftaran->delete();
+      if ($laboratorium) {
+          $laboratorium->delete();
           return response()->json(['status'=>"success",'message'=>'Data berhasil dihapus.']);
       }else{
            return response()->json(['status'=>"failed",'message'=>'Gagal menghapus data']);
@@ -570,5 +840,22 @@ class LaboratoriumController extends Controller
 
 
 
+  }
+  public function cetak_lab($req){
+    // return $req;
+    parse_str($req, $array);
+    $nilai = explode(',', $array['nilai']);
+    // return $nilai[0];
+      $record = Pelayananpoli::where('id', $array['pelayanan_poli_id'])->with('pendaftaran', 'pendaftaran.pasien')->first();
+      $data['pelayanan_poli'] = $record;
+      $data['pendaftaran'] = $record->pendaftaran;
+      $data['pasien'] = $record->pendaftaran->pasien;
+      $data['pelayanan_poli_lab'] = Pelayananpolilaboratorium::where('pelayanan_poli_id', $record->id)->with('pelayananlaboratorium')->get();
+      foreach($data['pelayanan_poli_lab'] as $key => $lab){
+        if($lab['pelayananlaboratorium']['min'] > $nilai[$key] || $lab['pelayananlaboratorium']['max'] < $nilai[$key]){
+            $nilai[$key] = '<p style="color:red"> '.$nilai[$key].' </p>';
+        }
+      }
+    return view('pelayanan/cetak_laboratorium', ['data' => $data, 'nilai' => $nilai]);
   }
 }

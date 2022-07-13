@@ -1,6 +1,6 @@
 @extends('layouts.table')
 @section('title', 'Form Pengeluaran Obat')
-@section('menu1', 'Master')
+@section('menu1', 'Pengeluaran Obat')
 @section('menu2', 'Data Pengeluaran Obat')
 @section('table')
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -29,24 +29,25 @@
                 </div>
                 <div class="ibox-content">
                     <form class="form-horizontal" id="submitData">
+                    @if(isset($pendaftaran))
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label class="form-label">No Rawat</label>
-                                <input type="text" class="form-control mb-1" value="{{ $pendaftaran->no_rawat }}" readonly>
+                                <input type="text" class="form-control mb-1" value="{{ (isset($pendaftaran))? $pendaftaran->no_rawat : '' }}" {{ (isset($pendaftaran))? 'readonly' : '' }}>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">No Rekam Medis</label>
-                                <input type="text" class="form-control mb-1" value="{{ $pendaftaran->pasien->no_rekamedis }}" readonly>
+                                <input type="text" class="form-control mb-1" value="{{ (isset($pendaftaran))? $pendaftaran->pasien->no_rekamedis : '' }}" {{ (isset($pendaftaran))? 'readonly' : '' }}>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Tanggal Pendaftaran</label>
-                                <input type="text" class="form-control mb-1" value="{{ $pendaftaran->tanggal_daftar }}" readonly>
+                                <input type="text" class="form-control mb-1" value="{{ (isset($pendaftaran))? $pendaftaran->tanggal_daftar : '' }}" {{ (isset($pendaftaran))? 'readonly' : '' }}>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label class="form-label">Nama Pasien</label>
-                                <input type="text" class="form-control mb-1" value="{{ $pendaftaran->pasien->nama_pasien }}" readonly>
+                                <input type="text" class="form-control mb-1" value="{{ (isset($pendaftaran))? $pendaftaran->pasien->nama_pasien : '' }}" {{ (isset($pendaftaran))? 'readonly' : '' }}>
                             </div>
                             {{-- <div class="form-group col-md-6">
                                 <label class="form-label">Nama Penanggung Jawab</label>
@@ -54,20 +55,59 @@
                             </div> --}}
                             <div class="form-group col-md-2">
                                 <label class="form-label">Status Pasien</label>
-                                <input type="text" class="form-control mb-1" value="{{ $pendaftaran->pasien->status_pasien }}" readonly>
+                                <input type="text" class="form-control mb-1" value="{{ (isset($pendaftaran))? $pendaftaran->pasien->status_pasien : '' }}" {{ (isset($pendaftaran))? 'readonly' : '' }}>
                             </div>
                             <div class="form-group col-md-2">
                                 <label class="form-label">Poli</label>
-                                <input type="text" class="form-control mb-1" value="{{ $pendaftaran->poli->nama_poli }}" readonly>
+                                <input type="text" class="form-control mb-1" value="{{ (isset($pendaftaran))? $pendaftaran->poli->nama_poli : '' }}" {{ (isset($pendaftaran))? 'readonly' : '' }}>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Dokter</label>
-                                <input type="text" class="form-control mb-1" value="{{ isset($pendaftaran->nama_penanggung_jawab)? $pendaftaran->nama_penanggung_jawab : ''}}" readonly>
+                                <select name="dokter" id="dokter" class="form-control mb-1" disabled>
+                                    @foreach($dokterbpjs as $key => $dokter)
+                                        <option value="{{ $dokter->kdDokter }}"
+                                        @if(isset($pendaftaran->nama_penanggung_jawab))
+                                            @if($dokter->nmDokter == $pendaftaran->nama_penanggung_jawab)
+                                                selected readonly
+                                            @endif
+                                        @endif
+
+                                        > {{ $dokter->kdDokter }} | {{ $dokter->nmDokter }}</option>
+                                    @endforeach
+                                </select>
+                                {{-- <input type="text" class="form-control mb-1" value="{{ isset($pendaftaran->nama_penanggung_jawab)? $pendaftaran->nama_penanggung_jawab : ''}}" readonly> --}}
                             </div>
                         </div>
                         {{-- <div class="form-row">
 
                         </div> --}}
+                    @else
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Nama</label>
+                                <input type="text" name="nama" class="form-control mb-1" id="nama" value="">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Dokter</label>
+                                <select name="dokter" id="dokter" class="form-control mb-1">
+                                    @foreach($dokterbpjs as $key => $dokter)
+                                        <option value="{{ $dokter->kdDokter }}"
+                                        @if(isset($pendaftaran->nama_penanggung_jawab))
+                                            @if($dokter->nmDokter == $pendaftaran->nama_penanggung_jawab)
+                                                selected
+                                            @endif
+                                        @endif
+
+                                        > {{ $dokter->kdDokter }} | {{ $dokter->nmDokter }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Petugas / Admin</label>
+                                <input type="text" name="admin" class="form-control mb-1" id="admin" value="{{ Auth::user()->name }}">
+                            </div>
+                        </div>
+                    @endif
                         <div class="form-row">
                             <div class="form-group col-md-12">
                             @if(isset($pendaftaran->pelayanan_poli->poli_diagnosa))
@@ -97,7 +137,7 @@
                                     <tr>
                                         {{-- <th>Kode Obat</th> --}}
                                         <th>Nama Obat</th>
-                                        {{-- <th>Stok</th> --}}
+                                        {{-- <th>Stok</th>--}}
                                         {{-- <th>Jenis Obat</th>
                                         <th>Satuan</th> --}}
                                         <th>Jumlah</th>
@@ -195,10 +235,10 @@
                           <div class="form-group col-md-12">
                             <div class="text-right mt-3">
                                 <input type="hidden" name="id_pengeluaran" id="id_pengeluaran" value="{{isset($pengeluaran_obat)? $pengeluaran_obat->id_pengeluaran : $noPengeluaran}}"/>
-                                <input type="hidden" name="id_pendaftaran" id="id_pendaftaran" value="{{ $pendaftaran->id }}">
-                                <input type="hidden" name="no_rawat" value="{{ $pendaftaran->no_rawat }}">
-                              <button type="submit" class="btn btn-primary" id="submitData">Simpan</button>&nbsp;
-                              <a href="{{route('pengeluaran_obat.index')}}"  class="btn btn-default">Kembali</a>
+                                <input type="hidden" name="id_pendaftaran" id="id_pendaftaran" value="{{ isset($pendaftaran)? $pendaftaran->id : '' }}">
+                                <input type="hidden" name="no_rawat" value="{{ isset($pendaftaran)? $pendaftaran->no_rawat : '' }}">
+                              <button type="submit" class="btn btn-primary" id="simpan">Simpan</button>&nbsp;
+                              <a href="{{ route('pengeluaran_obat.proses_resep')}}"  class="btn btn-default">Kembali</a>
                             </div>
                           </div>
                         </div>
@@ -213,11 +253,12 @@
 @push('scripts')
 
 <script type="text/javascript">
-
+var input_disabled;
 $(document).ready(function(){
     $('.select2').select2({
             placeholder: "Pilih obat"
     });
+    $('#dokter').select2();
 
 });
 $(document).on('click', '#tambah_obat', function(){
@@ -274,7 +315,8 @@ $(document).on('click', '#tambah_obat', function(){
         $(element).removeClass('is-invalid');
       },
       submitHandler: function(form) {
-        $(document).find(':input').prop('disabled', false);
+        input_disabled = $(document).find(':input');
+        input_disabled.prop('disabled', false)
         SimpanData();
       }
     });
@@ -292,6 +334,8 @@ $(document).on('click', '#tambah_obat', function(){
            var keterangan       =$('#keterangan').val();
            var tgl_serah_obat       =$('#tgl_serah_obat').val();
 
+
+
            var dataFile = new FormData()
 
            dataFile.append('id_pengeluaran', id_pengeluaran);
@@ -300,6 +344,17 @@ $(document).on('click', '#tambah_obat', function(){
            dataFile.append('enc_id', enc_id);
            dataFile.append('keterangan', keterangan);
            dataFile.append('tgl_serah_obat', tgl_serah_obat);
+            @if(isset($pendaftaran))
+
+            @else
+                var nama = $('#nama').val();
+                var dokter = $('#dokter').val();
+                var admin = $('#admin').val();
+                dataFile.append('nama', nama);
+                dataFile.append('dokter', dokter);
+                dataFile.append('admin', admin);
+            @endif
+
 
           $.ajax({
             type: 'POST',
@@ -325,6 +380,9 @@ $(document).on('click', '#tambah_obat', function(){
             complete: function () {
                $('#simpan').removeClass("disabled");
                $('#Loading').modal('hide');
+            //    input_disabled.prop('disabled', true);
+            //    $('#simpan').prop("disabled", false);
+            //    console.log($('#simpan'));
             },
             error: function(data){
                  $('#simpan').removeClass("disabled");

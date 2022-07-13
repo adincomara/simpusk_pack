@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Simpusk;
 
 use App\Models\Simpusk\DetailPengeluaranObat;
+use App\Models\Simpusk\DokterBPJS;
 use App\Models\Simpusk\Obat;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\PengeluaranObat;
@@ -62,8 +63,10 @@ class PengeluaranObatController extends Controller
         $start = $request->start;
         $page  = $start + 1;
         $search = $request->search['value'];
-
+        $search_tgl = $request->search_tgl;
+        // return $search_tgl;
         $records = PengeluaranObat::select('*')->orderBy('id_pengeluaran','DESC');
+        $records->whereDate('tgl_serah_obat', '=', date('Y-m-d', strtotime($search_tgl)));
 
         if (array_key_exists($request->order[0]['column'], $this->original_column)) {
             $records->orderByRaw($this->original_column[$request->order[0]['column']] . ' ' . $request->order[0]['dir']);
@@ -138,13 +141,15 @@ class PengeluaranObatController extends Controller
         $start = $request->start;
         $page  = $start +1;
         $search = $request->search['value'];
-        $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_poli.nama_poli')
+        $search_tgl = $request->search_tgl;
+        $records = Pendaftaran::select('tbl_pendaftaran.flag_periksa','tbl_pendaftaran.tanggal_daftar','tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_poli.nama_poli')
                                 ->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')
-                                ->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli')
+                                ->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')
                                 ->leftJoin('tbl_pengeluaran_obat','tbl_pendaftaran.id','tbl_pengeluaran_obat.id_pendaftaran')
                                 ->whereNull('tbl_pengeluaran_obat.id_pengeluaran')
-                                ->where('tbl_pendaftaran.flag_periksa', 1)
-                                ->orderBy('tbl_pendaftaran.no_rawat', 'DESC');
+                                ->where('tbl_pendaftaran.flag_periksa','!=', 0)
+                                ->orderBy('tbl_pendaftaran.no_rawat', 'DESC')
+                                ->whereDate('tbl_pendaftaran.tanggal_daftar', '=', date('Y-m-d', strtotime($search_tgl)));
 
         if(array_key_exists($request->order[0]['column'], $this->original_column)){
            $records->orderByRaw($this->original_column[$request->order[0]['column']].' '.$request->order[0]['dir']);
@@ -283,15 +288,11 @@ class PengeluaranObatController extends Controller
 
     public function tambah($enc_id)
     {
-
         // return $enc_id;
-        $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
-
-        if ($dec_id) {
-            $obat = Obat::all();
-
-
-             $pendaftaran = $this->getPendaftaran($dec_id);
+        $obat = Obat::all();
+        if($enc_id != 'null'){
+            $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
+            // $pendaftaran = $this->getPendaftaran($dec_id);
             $pendaftaran = Pendaftaran::where('id', $dec_id)->first();
             // return $pendaftaran->pelayanan_poli->poli_diagnosa;
             // return $pendaftaran->pelayanan_poli->poli_diagnosa[0]->nama_diagnosa;
@@ -304,18 +305,30 @@ class PengeluaranObatController extends Controller
 
             $noTrans = "S-".date("ymd")."-".$this->noPengeluaranOtomatis();
             $noPengeluaran = $this->noPengeluaranOtomatis();
+            // $dokter = [];
 
             // return $pendaftaran->pelayanan_poli->poli_resep[0]->obat;
-            return view('apotik_form/pengeluaran_obat_form',[
-                'noPengeluaran' => $noPengeluaran,
-                'noTrans' => $noTrans,
-                'pendaftaran' => $pendaftaran,
-                'obat' => $obat,
-                'batch_obat' => $batch
-            ]);
-        } else {
-            return view('errors/noaccess');
+        }else{
+            // return view('errors/noaccess');
+            $pendaftaran = null;
+            // return 'tes';
+            $batch = array();
+            $noTrans = "S-".date("ymd")."-".$this->noPengeluaranOtomatis();
+            $noPengeluaran = $this->noPengeluaranOtomatis();
         }
+        $dokter = DokterBPJS::all();
+        // $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
+
+        // return isset($pendaftaran);
+
+        return view('apotik_form/pengeluaran_obat_form',[
+            'noPengeluaran' => $noPengeluaran,
+            'noTrans' => $noTrans,
+            'pendaftaran' => $pendaftaran,
+            'obat' => $obat,
+            'batch_obat' => $batch,
+            'dokterbpjs' => $dokter
+        ]);
 
     }
 
@@ -392,14 +405,158 @@ class PengeluaranObatController extends Controller
         // $enc_id     = $req->enc_id;
 
         // $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
-
-        $checkdata = PengeluaranObat::where('id_pendaftaran', $req->id_pendaftaran)->first();
-        if ($checkdata) {
+        // return 't';
+        if($req->id_pendaftaran == null){
+            $checkdata = FALSE;
+        }else{
+            $checkdata = PengeluaranObat::where('id_pendaftaran', $req->id_pendaftaran)->first();
+            if(isset($checkdata)){
+                $checkdata = TRUE;
+            }else{
+                $checkdata = FALSE;
+            }
+        }
+        if($checkdata) {
             $json_data = array(
                 "success"         => FALSE,
                 "message"         => 'Data resep sudah diproses, obat sudah diberikan.'
             );
         } else {
+            try{
+                DB::beginTransaction();
+                if($req->id_pendaftaran == null){
+                    $pengeluaran_obat = new PengeluaranObat;
+                    $pengeluaran_obat->no_terima_obat  = $req->no_terima_obat;
+                    $pengeluaran_obat->nama_pasien  = $req->nama;
+                    $pengeluaran_obat->keterangan      = $req->keterangan;
+                    $pengeluaran_obat->tgl_serah_obat      = date('Y-m-d');
+                    $pengeluaran_obat->id_pendaftaran      = '-';
+                    $pengeluaran_obat->id_dokter           = $req->dokter;
+                    $pengeluaran_obat->save();
+                }else{
+                    $pendaftaran = Pendaftaran::find($req->id_pendaftaran);
+                    // return $pendaftaran;
+                    // $pendaftaran = $this->getPendaftaran($req->id_pendaftaran);
+                    $pengeluaran_obat = new PengeluaranObat;
+                    // $pengeluaran_obat->no_rawat = $req->no_rawat;
+                    // $dokter = DokterBPJS::where('nmDokter', $req->dokter)->first();
+                    $pengeluaran_obat->no_terima_obat  = $req->no_terima_obat;
+                    $pengeluaran_obat->nama_pasien  = $pendaftaran->pasien->nama_pasien;
+                    $pengeluaran_obat->keterangan      = $req->keterangan;
+                    $pengeluaran_obat->tgl_serah_obat      = date('Y-m-d');
+                    $pengeluaran_obat->id_pendaftaran      = $req->id_pendaftaran;
+                    $pengeluaran_obat->id_dokter           = $req->dokter;
+                    $pengeluaran_obat->save();
+                }
+                if ($pengeluaran_obat) {
+
+                    if($req->total_obat > 0){
+                        for($i=1;$i<=$req->total_obat;$i++){
+                        // return $req->input('aturan_pakai_obat_'.$i);
+
+
+                            if($req->input('obat_'.$i) > 0){
+                                $obt = $req->input('obat_'.$i);
+                                if(isset($obt)){
+
+                                    $obat = Obat::where('id',$obt)->first();
+                                    //return "tes";
+                                    $detailPengeluaranObat = new DetailPengeluaranObat();
+                                    $detailPengeluaranObat->id_pengeluaran_obat = $pengeluaran_obat->id_pengeluaran;
+                                    $detailPengeluaranObat->id_obat = $req->input('obat_'.$i);
+                                    $detailPengeluaranObat->kode_obat = $obat->kode_obat;
+                                    $detailPengeluaranObat->nama_obat = $obat->nama_obat;
+                                    $detailPengeluaranObat->jenis_obat = $obat->jenis_obat;
+                                    $detailPengeluaranObat->dosis_aturan_obat = $req->input('aturan_pakai_obat_'.$i);
+                                    $detailPengeluaranObat->jumlah = $req->input('jumlah_'.$i);
+                                    $detailPengeluaranObat->satuan = $obat->satuan;
+                                    $detailPengeluaranObat->save();
+                                    if(!$detailPengeluaranObat){
+                                        $json_data = array(
+                                            "success"         => FALSE,
+                                            "message"         => 'Salah satu data gagal ditambahkan.'
+                                        );
+                                        return json_encode($json_data);
+                                    }
+
+                                    $allstokObat = StokObat::where('id_obat',$req->input('obat_'.$i))->where('tgl_expired_obat', '>=', date('Y-m-d'))->orderBy('tgl_expired_obat','DESC')->get();
+                                    $input_jumlah_obat = $req->input('jumlah_'.$i);
+                                    if($allstokObat){
+                                        //CEK ALL STOK OBAT
+                                        $alljumlahstok = StokObat::where('id_obat', $req->input('obat_'.$i))->where('tgl_expired_obat', '>=', date('Y-m-d'))->orderBy('tgl_expired_obat','DESC')->sum('stok_obat');
+                                        if($input_jumlah_obat > $alljumlahstok){
+                                            $json_data = array(
+                                                "success"         => FALSE,
+                                                "message"         => 'Gagal, stok tidak cukup.'
+                                            );
+                                            return json_encode($json_data);
+                                        }
+
+                                        foreach($allstokObat as $stkobat){
+                                            $stokObat = StokObat::where('id', $stkobat->id)->first();
+                                            $jumlah_real_stok = $stkobat->stok_obat;
+                                            if($jumlah_real_stok >= $input_jumlah_obat){
+                                                $stokObat->stok_obat = $jumlah_real_stok - $input_jumlah_obat;
+                                                $stokObat->save();
+                                                break;
+                                            }
+                                            else{
+                                                $input_jumlah_obat = $input_jumlah_obat - $jumlah_real_stok;
+                                                $stokObat->delete();
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+                    }
+                    // foreach ($pendaftaran->pelayanan_poli->resep as $item) {
+                    //     $detailPengeluaranObat = new DetailPengeluaranObat();
+                    //     $detailPengeluaranObat->id_pengeluaran_obat = $pengeluaran_obat->id_pengeluaran;
+                    //     $detailPengeluaranObat->id_obat = $item->obat_id;
+                    //     $detailPengeluaranObat->kode_obat = $item->obat->kode_obat;
+                    //     $detailPengeluaranObat->nama_obat = $item->obat->nama_obat;
+                    //     $detailPengeluaranObat->jenis_obat = $item->obat->jenis_obat;
+                    //     $detailPengeluaranObat->dosis_aturan_obat = $item->aturan_pakai;
+                    //     $detailPengeluaranObat->jumlah = $item->jumlah;
+                    //     $detailPengeluaranObat->satuan = $item->obat->satuan;
+                    //     $detailPengeluaranObat->save();
+
+                    //     $stokObat = StokObat::where('id_obat',$item->obat_id)->first();
+                    //     if($stokObat){
+                    //         $jumlah_real_stok = $stokObat->jumlah;
+                    //         $stokObat->jumlah = $jumlah_real_stok - $item->jumlah;
+                    //         $stokObat->save();
+                    //     }else{
+                    //         $stokObat = new StokObat;
+                    //         $stokObat->id_obat = $item->obat_id;
+                    //         $stokObat->jumlah = $item->jumlah;
+                    //         $stokObat->satuan = $item->obat->satuan;
+                    //         $stokObat->save();
+                    //     }
+                    // }
+
+                    $json_data = array(
+                        "success"         => TRUE,
+                        "message"         => 'Data berhasil ditambahkan.'
+                    );
+                } else {
+                    $json_data = array(
+                        "success"         => FALSE,
+                        "message"         => 'Data gagal ditambahkan.'
+                    );
+                }
+                DB::commit();
+            }catch(\Throwable $th){
+                DB::rollback();
+                $json_data = array(
+                    "success"         => FALSE,
+                    "message"         => $th->getMessage()
+                );
+
+            }
 
             // for($v=1;$v<=$req->total_obat;$v++){
             //     $cekstokobat = StokObat::where('id', $req->input('batch_obat_'.$v))->first();
@@ -412,121 +569,7 @@ class PengeluaranObatController extends Controller
             //     }
             // }
 
-            $pendaftaran = Pendaftaran::find($req->id_pendaftaran);
-            // return $pendaftaran;
-            // $pendaftaran = $this->getPendaftaran($req->id_pendaftaran);
-            $pengeluaran_obat = new PengeluaranObat;
-            // $pengeluaran_obat->no_rawat = $req->no_rawat;
-            $pengeluaran_obat->no_terima_obat  = $req->no_terima_obat;
-            $pengeluaran_obat->nama_pasien  = $pendaftaran->pasien->nama_pasien;
-            $pengeluaran_obat->keterangan      = $req->keterangan;
-            $pengeluaran_obat->tgl_serah_obat      = date('d-m-Y');
-            $pengeluaran_obat->id_pendaftaran      = $req->id_pendaftaran;
-            $pengeluaran_obat->save();
 
-
-            if ($pengeluaran_obat) {
-
-                if($req->total_obat > 0){
-                    for($i=1;$i<=$req->total_obat;$i++){
-                       // return $req->input('aturan_pakai_obat_'.$i);
-
-
-                        if($req->input('obat_'.$i) > 0){
-                            $obt = $req->input('obat_'.$i);
-                            if(isset($obt)){
-
-                                $obat = Obat::where('id',$obt)->first();
-                                //return "tes";
-                                $detailPengeluaranObat = new DetailPengeluaranObat();
-                                $detailPengeluaranObat->id_pengeluaran_obat = $pengeluaran_obat->id_pengeluaran;
-                                $detailPengeluaranObat->id_obat = $req->input('obat_'.$i);
-                                $detailPengeluaranObat->kode_obat = $obat->kode_obat;
-                                $detailPengeluaranObat->nama_obat = $obat->nama_obat;
-                                $detailPengeluaranObat->jenis_obat = $obat->jenis_obat;
-                                $detailPengeluaranObat->dosis_aturan_obat = $req->input('aturan_pakai_obat_'.$i);
-                                $detailPengeluaranObat->jumlah = $req->input('jumlah_'.$i);
-                                $detailPengeluaranObat->satuan = $obat->satuan;
-                                $detailPengeluaranObat->save();
-                                if(!$detailPengeluaranObat){
-                                    $json_data = array(
-                                        "success"         => FALSE,
-                                        "message"         => 'Salah satu data gagal ditambahkan.'
-                                    );
-                                    return json_encode($json_data);
-                                }
-
-                                $allstokObat = StokObat::where('id_obat',$req->input('obat_'.$i))->orderBy('tgl_expired_obat','ASC')->get();
-                                $input_jumlah_obat = $req->input('jumlah_'.$i);
-
-
-                                if($allstokObat){
-
-                                    foreach($allstokObat as $stkobat){
-                                        $stokObat = StokObat::where('id', $stkobat->id)->first();
-                                        $jumlah_real_stok = $stkobat->stok_obat;
-                                        if($jumlah_real_stok >= $input_jumlah_obat){
-                                            $stokObat->stok_obat = $jumlah_real_stok - $input_jumlah_obat;
-                                            $stokObat->save();
-                                            break;
-                                        }
-                                        else{
-
-                                            $input_jumlah_obat = $input_jumlah_obat - $jumlah_real_stok;
-                                            $stokObat->delete();
-                                        }
-
-                                    }
-                                    if(!$stokObat){
-                                        $json_data = array(
-                                            "success"         => FALSE,
-                                            "message"         => 'Stok gagal di update.'
-                                        );
-                                        return json_encode($json_data);
-                                    }
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-                // foreach ($pendaftaran->pelayanan_poli->resep as $item) {
-                //     $detailPengeluaranObat = new DetailPengeluaranObat();
-                //     $detailPengeluaranObat->id_pengeluaran_obat = $pengeluaran_obat->id_pengeluaran;
-                //     $detailPengeluaranObat->id_obat = $item->obat_id;
-                //     $detailPengeluaranObat->kode_obat = $item->obat->kode_obat;
-                //     $detailPengeluaranObat->nama_obat = $item->obat->nama_obat;
-                //     $detailPengeluaranObat->jenis_obat = $item->obat->jenis_obat;
-                //     $detailPengeluaranObat->dosis_aturan_obat = $item->aturan_pakai;
-                //     $detailPengeluaranObat->jumlah = $item->jumlah;
-                //     $detailPengeluaranObat->satuan = $item->obat->satuan;
-                //     $detailPengeluaranObat->save();
-
-                //     $stokObat = StokObat::where('id_obat',$item->obat_id)->first();
-                //     if($stokObat){
-                //         $jumlah_real_stok = $stokObat->jumlah;
-                //         $stokObat->jumlah = $jumlah_real_stok - $item->jumlah;
-                //         $stokObat->save();
-                //     }else{
-                //         $stokObat = new StokObat;
-                //         $stokObat->id_obat = $item->obat_id;
-                //         $stokObat->jumlah = $item->jumlah;
-                //         $stokObat->satuan = $item->obat->satuan;
-                //         $stokObat->save();
-                //     }
-                // }
-
-                $json_data = array(
-                    "success"         => TRUE,
-                    "message"         => 'Data berhasil ditambahkan.'
-                );
-            } else {
-                $json_data = array(
-                    "success"         => FALSE,
-                    "message"         => 'Data gagal ditambahkan.'
-                );
-            }
         }
         return json_encode($json_data);
     }

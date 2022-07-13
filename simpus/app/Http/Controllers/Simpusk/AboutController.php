@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Simpusk;
-use App\Http\Controllers\Controller;
+// use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\About;
 

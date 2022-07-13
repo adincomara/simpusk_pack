@@ -1,7 +1,7 @@
 @extends('layouts.table')
 @section('title', 'Data Pengeluaran Obat')
 @section('judultable', 'Data Pengeluaran Obat')
-@section('menu1', 'Master')
+@section('menu1', 'Apotik')
 @section('menu2', 'Data Pengeluaran Obat')
 @section('table')
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -11,6 +11,7 @@
             <div class="ibox-title">
                 <h3>Data Pengeluaran Obat</h3>
                 <div class="ibox-tools">
+                    <input type="date" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:300px" value="{{ date('Y-m-d') }}">
                     @can('pengeluaran_obat.proses_resep')
                     <a href="{{ route('pengeluaran_obat.proses_resep')}}"><button class="btn btn-primary"><i class="fa fa-plus"></i> Proses Resep Obat </button></a>
                     @endcan
@@ -121,6 +122,7 @@ function text(){
                    "type": "POST",
                    data: function ( d ) {
                      d._token= "{{csrf_token()}}";
+                     d.search_tgl= $('#tgl_search').val();
                    }
                  },
           "columns": [
@@ -168,6 +170,11 @@ function text(){
 
             table.search(val).draw();
             //console.log(table);
+        });
+
+        $('#tgl_search').on('change', function(){
+
+            table.ajax.reload(null, true);
         });
 
 

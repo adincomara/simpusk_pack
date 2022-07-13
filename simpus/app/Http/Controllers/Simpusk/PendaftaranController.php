@@ -49,7 +49,7 @@ class PendaftaranController extends Controller
       $search_tgl = $request->search_tgl;
 
       $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.flag_periksa',
-      'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli');
+      'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli');
     //   $records->where('tbl_pendaftaran.flag_periksa', 0);
       $records->whereDate('tbl_pendaftaran.tanggal_daftar', '=', date('Y-m-d', strtotime($search_tgl)));
     //   return $records->get();
@@ -209,7 +209,7 @@ class PendaftaranController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -251,27 +251,28 @@ class PendaftaranController extends Controller
   }
   public function tambah()
   {
-      $pjj = $this->pjj();
-      $selectedpjj = '';
-      $status = $this->status_pasien();
-      $selectedstatus = '';
-      $poli = Poli::where('parent',null)->where('status',1)->get();
-      $norekam = Pasien::all();
-      $selectedpoli = "";
-      $dokterbpjs = $this->getDokterBpjs();
-    //   return $dokterbpjs;
-      $cek_dokter = 0;
-      if($dokterbpjs['metaData']['code'] == 200){
-          $dokter = $dokterbpjs['response']['list'];
-          $cek_dokter = 1;
-      }else{
-          $cek_dokter = 0;
-          $dokter = [];
-      }
+    // return view('pelayanan/cetak_laboratorium');
+    $pjj = $this->pjj();
+    $selectedpjj = '';
+    $status = $this->status_pasien();
+    $selectedstatus = '';
+    $poli = Poli::where('parent',null)->where('status',1)->get();
+    $norekam = Pasien::all();
+    $selectedpoli = "";
+    $dokterbpjs = $this->getDokterBpjs();
+//   return $dokterbpjs;
+    $cek_dokter = 0;
+    if($dokterbpjs['metaData']['code'] == 200){
+        $dokter = $dokterbpjs['response']['list'];
+        $cek_dokter = 1;
+    }else{
+        $cek_dokter = 0;
+        $dokter = [];
+    }
 
-    //   $tes = json_encode($dokterbpjs, true);
-    //   return $dokter;
-      return view('pelayanan_form/pendaftaran_form',compact('pjj','selectedpjj','status','selectedstatus','poli','selectedpoli', 'dokter', 'norekam', 'cek_dokter'));
+//   $tes = json_encode($dokterbpjs, true);
+//   return $dokter;
+    return view('pelayanan_form/pendaftaran_form',compact('pjj','selectedpjj','status','selectedstatus','poli','selectedpoli', 'dokter', 'norekam', 'cek_dokter'));
   }
   public function getSubPoli(Request $req,$id){
       $data= Poli::where('parent',$id)->get();
@@ -346,9 +347,11 @@ class PendaftaranController extends Controller
                     if($req->konseling == 1){
                         $kdpoli = '021';
                         $id_poli = '50';
+                        $code_poli = '021';
                     }else{
                         $kdpoli = Poli::find($req->id_poli)->kdpoli;
                         $id_poli = $req->id_poli;
+                        $code_poli = $kdpoli->kdpoli;
                     }
                     // return $kdpoli;
                     $kdProviderPeserta = $getBPJS["response"]["kdProviderPst"]["kdProvider"];
@@ -361,7 +364,8 @@ class PendaftaranController extends Controller
                         $pendaftaran->no_rawat                          = $this->generateNoRawat();
                         $pendaftaran->no_rekamedis                      = $req->no_rekamedis;
                         $pendaftaran->tanggal_daftar                    = date('Y-m-d');
-                        $pendaftaran->id_poli                           = $id_poli;
+                        // $pendaftaran->id_poli                           = $id_poli;
+                        $pendaftaran->id_poli                           = $code_poli;
                         $pendaftaran->id_dokter                         = $dokter_penanggung_jawab[0];
                         $pendaftaran->nama_penanggung_jawab             = $dokter_penanggung_jawab[1];
                         $pendaftaran->id_poli_sub                       = $req->id_poli_sub;
@@ -373,7 +377,7 @@ class PendaftaranController extends Controller
                         if($pendaftaran->save()){
                             // parameter = request, pendaftaran, no antrian jika belum integrasi bpjs
                             // return app('App\Http\Controllers\AntrianController')->ambil_antrian($req, $pendaftaran, $svPCARE['response']['message']);
-                            return app('App\Http\Controllers\AntrianController')->updateantrian($kdpoli, $pendaftaran, $svPCARE['response']['message']);
+                            return app('App\Http\Controllers\Simpusk\AntrianController')->updateantrian($kdpoli, $pendaftaran, $svPCARE['response']['message']);
                             // return app('App\Http\Controllers\AntrianController')->ambil_antrian($req, $pendaftaran, null);
                         }else{
                             return response()->json([
@@ -409,16 +413,19 @@ class PendaftaranController extends Controller
             if($req->konseling == 1){
                 $kdpoli = '021';
                 $id_poli = '50';
+                $code_poli = '021';
             }else{
                 $kdpoli = Poli::find($req->id_poli);
                 $id_poli = $req->id_poli;
+                $code_poli = $kdpoli->kdpoli;
             }
             // return $kdpoli;
             $pendaftaran = new Pendaftaran;
             $pendaftaran->no_rawat                          = $this->generateNoRawat();
             $pendaftaran->no_rekamedis                      = $req->no_rekamedis;
             $pendaftaran->tanggal_daftar                    = date('Y-m-d');
-            $pendaftaran->id_poli                           = $id_poli;
+            // $pendaftaran->id_poli                           = $id_poli;
+            $pendaftaran->id_poli                           = $code_poli;
             $pendaftaran->id_poli_sub                       = isset($req->id_poli_sub)? $req->id_poli_sub : 'null';
             $pendaftaran->id_dokter                         = $dokter_penanggung_jawab[0];
             $pendaftaran->nama_penanggung_jawab             = $dokter_penanggung_jawab[1];
@@ -426,7 +433,7 @@ class PendaftaranController extends Controller
             $pendaftaran->alamat_penanggung_jawab           = $req->alamat_penanggung_jawab;
             $pendaftaran->status_pasien                     = $req->status_pasien;
             $pendaftaran->no_bpjs                           = $req->no_bpjs;
-            return app('App\Http\Controllers\AntrianController')->updateantrian($kdpoli, $pendaftaran, null);
+            return app('App\Http\Controllers\Simpusk\AntrianController')->updateantrian($kdpoli, $pendaftaran, null);
             if($pendaftaran->save()){
                 // return app('App\Http\Controllers\AntrianController')->ambil_antrian($req, $pendaftaran, null);
 
@@ -707,7 +714,7 @@ class PendaftaranController extends Controller
         $secretKey 	= '3yVE45CCBC'; //secretKey anda
 
         $pcareUname = '0159092404'; //username pcare
-        $pcarePWD 	= '0159092404!2Pkm'; //password pcare anda
+        $pcarePWD 	= '0159092404*1Pkm'; //password pcare anda
 
         $kdAplikasi	= '095'; //kode aplikasi
 

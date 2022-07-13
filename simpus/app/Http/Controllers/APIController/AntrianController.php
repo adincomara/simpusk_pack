@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\APIController;
 
-use App\Http\Controllers\Controller;
-use App\Models\AntrianBPJS;
+// use App\Http\Controllers\Controller;
+
+use App\Http\Controllers\Simpusk\Controller;
+use App\Models\Simpusk\AntrianBPJS;
 use App\Models\Kk;
-use App\Models\Pasien;
-use App\Models\Pendaftaran;
-use App\Models\Poli;
+use App\Models\Simpusk\Pasien;
+use App\Models\Simpusk\Pendaftaran;
+use App\Models\Simpusk\Poli;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

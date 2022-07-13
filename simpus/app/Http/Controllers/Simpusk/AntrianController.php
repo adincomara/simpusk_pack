@@ -65,7 +65,8 @@ class AntrianController extends Controller
         return $antrian;
         // return $no_antrian;
     }
-    public function updateantrian($kdpoli, $pendaftaran, $no_antrian_bpjs){
+
+    public static function updateantrian($kdpoli, $pendaftaran, $no_antrian_bpjs){
         $poli = $kdpoli;
         $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime($pendaftaran->tanggal_daftar)))
         ->where('no_antrian', 'LIKE', $poli->kode_poli.'%')
@@ -94,7 +95,7 @@ class AntrianController extends Controller
                         "code"            => 201,
                         "message"         => "Pasien berhasil didaftarkan"
                     ]);
-            }
+                }
             }else{
                 return response()->json([
                     'success' => false,
@@ -103,13 +104,86 @@ class AntrianController extends Controller
                 ]);
             }
         }else{
-            return response()->json([
-                'success' => false,
-                'code' => 401,
-                'message' => 'Belum mengambil Antrian',
-            ]);
+            if($pendaftaran->save()){
+                $antrian_now = AntrianBPJS::where('tgl_daftar', date('Y-m-d'))->where('code_poli', $poli->kdpoli)->get();
+                // return count($antrian_now);
+                $no_antrian = $poli->kode_poli.''.(count($antrian_now)+1);
+                $antrian = new AntrianBPJS();
+                $antrian->id_pendaftaran = $pendaftaran->id;
+                $antrian->no_kartu  = $pendaftaran->no_bpjs;
+                $antrian->no_ktp    = $pendaftaran->pasien->no_ktp;
+                $antrian->code_poli = $poli->kdpoli;
+                $antrian->no_antrian = $no_antrian;
+                $antrian->no_antrian_bpjs = $no_antrian_bpjs;
+                $antrian->status_daftar = 1;
+                $antrian->status = 1;
+                if($antrian->save()){
+                    $cetak_antrian = collect([
+                        'poli' => $poli->nama_poli,
+                        'no_antrian' => $antrian->no_antrian,
+                    ]);
+                    return response()->json([
+                        "success"         => TRUE,
+                        'antrian'      => $cetak_antrian,
+                        "code"            => 201,
+                        "message"         => "Pasien berhasil didaftarkan"
+                    ]);
+                }
+            }
+
+            // return response()->json([
+            //     'success' => false,
+            //     'code' => 401,
+            //     'message' => 'Belum mengambil Antrian',
+            // ]);
         }
     }
+    // untuk antrian
+    // public static function updateantrian($kdpoli, $pendaftaran, $no_antrian_bpjs){
+    //     $poli = $kdpoli;
+    //     $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime($pendaftaran->tanggal_daftar)))
+    //     ->where('no_antrian', 'LIKE', $poli->kode_poli.'%')
+    //     ->where('status', 0)
+    //     ->where('status_daftar', 0)
+    //     ->orderBy('id', 'ASC')
+    //     ->where('id_pendaftaran', '=', NULL)
+    //     ->first();
+    //     if(isset($antrian)){
+    //         if($pendaftaran->save()){
+    //             $antrian->id_pendaftaran = $pendaftaran->id;
+    //             $antrian->no_kartu  = $pendaftaran->no_bpjs;
+    //             $antrian->no_ktp    = $pendaftaran->pasien->no_ktp;
+    //             $antrian->code_poli = $poli->kdpoli;
+    //             $antrian->no_antrian_bpjs = $no_antrian_bpjs;
+    //             $antrian->status_daftar = 1;
+    //             $antrian->status = 1;
+    //             if($antrian->save()){
+    //                 $cetak_antrian = collect([
+    //                     'poli' => $poli->nama_poli,
+    //                     'no_antrian' => $antrian->no_antrian,
+    //                 ]);
+    //                 return response()->json([
+    //                     "success"         => TRUE,
+    //                     'antrian'      => $cetak_antrian,
+    //                     "code"            => 201,
+    //                     "message"         => "Pasien berhasil didaftarkan"
+    //                 ]);
+    //         }
+    //         }else{
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'code' => 401,
+    //                 'message' => 'Pendaftaran antrian gagal disimpan di database SIMPUSK',
+    //             ]);
+    //         }
+    //     }else{
+    //         return response()->json([
+    //             'success' => false,
+    //             'code' => 401,
+    //             'message' => 'Belum mengambil Antrian',
+    //         ]);
+    //     }
+    // }
     public function index(){
         return view('antrian.antrian');
     }

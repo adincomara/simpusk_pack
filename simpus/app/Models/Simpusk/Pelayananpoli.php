@@ -17,6 +17,9 @@ class Pelayananpoli extends Model
     public function poli_resep(){
         return $this->hasMany(Pelayananpoliresep::class, 'pelayanan_poli_id', 'id');
     }
+    public function poli_laboratorium(){
+        return $this->hasMany(Pelayananpolilaboratorium::class, 'pelayanan_poli_id', 'id');
+    }
     public function pendaftaran(){
         return $this->hasOne(Pendaftaran::class, 'id', 'pendaftaran_id')->withDefault(
             function ($user, $post){

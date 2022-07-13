@@ -63,20 +63,18 @@ class PelayananpoliController extends Controller
         if(Auth::user()->poli != '-'){
             $poli = Auth::user()->poli;
             $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pasien.alamat',
-        'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.id', 'tbl_pendaftaran.id_poli')->join('tbl_pegawai','tbl_pegawai.id_pegawai','tbl_pendaftaran.id_dokter')->where('tbl_pendaftaran.flag_periksa',0)->where('tbl_pendaftaran.id_poli',$poli);
+        'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli', 'tbl_pendaftaran.id_poli')->join('tbl_pegawai','tbl_pegawai.id_pegawai','tbl_pendaftaran.id_dokter')->where('tbl_pendaftaran.flag_periksa',0)->where('tbl_pendaftaran.id_poli',$poli);
 
         }
         else{
-            $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pasien.alamat',
-            'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli')->where('tbl_pendaftaran.flag_periksa',0);
+            $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.flag_periksa', 'tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pasien.alamat',
+            'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')->where(function ($query) use ($search_tgl) {
+                $query->orwhere('tbl_pendaftaran.flag_periksa', 0);
+                $query->orwhere('tbl_pendaftaran.flag_periksa', 3);
+            });
             // return $records->get();
         }
         $records->whereDate('tbl_pendaftaran.tanggal_daftar', '=', date('Y-m-d', strtotime($search_tgl)));
-        //return Pendaftaran::where('flag_periksa',0)->get();
-    //   $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien',
-    //     'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli')->where('tbl_pendaftaran.flag_periksa',0);
-
-        // return $records->get();
 
       if(array_key_exists($request->order[0]['column'], $this->original_column)){
          $records->orderByRaw($this->original_column[$request->order[0]['column']].' '.$request->order[0]['dir']);
@@ -101,6 +99,7 @@ class PelayananpoliController extends Controller
       $data = $records->get();
       foreach ($data as $key=> $record)
       {
+        // return $record;
         $enc_id = $this->safe_encode(Crypt::encryptString($record->id));
         $action = "";
 
@@ -109,7 +108,14 @@ class PelayananpoliController extends Controller
         // }
 
         if($request->user()->can('pelayanan_poli.tindakan_dokter')){
-          $action.='<a href="'.route('pelayanan_poli.tindakan_dokter',$enc_id).'"  class="btn btn-success" title="Periksa Dokter">Tindakan Dokter</a>&nbsp;';
+            if($record->flag_periksa == 0){
+                $action.='<a href="'.route('pelayanan_poli.tindakan_dokter',$enc_id).'"  class="btn btn-success" title="Periksa Dokter">Tindakan Dokter</a>&nbsp;';
+
+            }else if($record->flag_periksa == 3){
+                $action.='<a href="'.route('pelayanan_poli.tindakan_dokter',$enc_id).'"  class="btn btn-warning" title="Periksa Dokter">Diagnosa & Resep Obat</a>&nbsp;';
+                // $pelayananpoli = Pelayananpoli::where('pendaftaran_id', $record->id)->first();
+                // return $pelayananpoli;
+            }
         }
 
         $record->no             = $key+$page;
@@ -223,13 +229,33 @@ class PelayananpoliController extends Controller
   public function tindakan_dokter($enc_id)
   {
     $Tindakans = Tindakan::all();
+    // return $Tindakans;
     $Obats = Obat::all();
-    $Lab = Pelayananlaboratorium::all();
+    $Lab = Pelayananlaboratorium::where('status',1)->get();
     $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
 
       if ($dec_id) {
         //$poli= Pelayananpoli::find($dec_id);
-        $poli = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pendaftaran.id_dokter','tbl_pendaftaran.nama_penanggung_jawab','tbl_pasien.nama_pasien','tbl_pasien.tanggal_lahir','tbl_pendaftaran.status_pasien','tbl_poli.nama_poli','tbl_poli.id as poliid','tbl_pendaftaran.no_bpjs')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.id','tbl_pendaftaran.id_poli')->where('tbl_pendaftaran.id',$dec_id)->first();
+        $poli = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pendaftaran.id_dokter','tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pendaftaran.flag_periksa', 'tbl_pasien.nama_pasien','tbl_pasien.tanggal_lahir','tbl_pendaftaran.status_pasien','tbl_poli.nama_poli','tbl_poli.kdpoli as poliid','tbl_pendaftaran.no_bpjs')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')->where('tbl_pendaftaran.id',$dec_id)->first();
+        // return $poli;
+        if($poli->flag_periksa == 0){
+            return view('pelayanan_form/pelayanan_poli_form',compact('enc_id','poli','Tindakans','Obats','Lab'));
+        }else if($poli->flag_periksa == 3){
+            $kunjungan = Kunjungan::where('id_pendaftaran', $poli->id)->with('rujuk_lanjut', 'faskes_rujuk')->first();
+            // return $kunjungan;
+            $pelayananpoli = Pelayananpoli::where('pendaftaran_id', $kunjungan->pendaftaran->id)->with('poli_laboratorium','poli_laboratorium.pelayananlaboratorium')->first();
+            $PelayananLab = $pelayananpoli->poli_laboratorium;
+            // return $PelayananLab;
+            // $diagnosa1 = $kunjungan->diagnosa1;
+            // $diagnosa2 = $kunjungan->diagnosa2;
+            // $diagnosa3 = $kunjungan->diagnosa3;
+            // $pendaftaran = $pelayananpoli->pendaftaran;
+            // $pasien = $pelayananpoli->pendaftaran->pasien;
+            return view('pelayanan_form/pelayanan_poli_form',compact('enc_id','poli','Tindakans','Obats','Lab', 'kunjungan', 'PelayananLab'));
+
+            // return $diagnosa1;
+        }
+
         //dd($poli);
         // return response()->json([
         //   'datas' => $poli
@@ -237,7 +263,6 @@ class PelayananpoliController extends Controller
          //return $poli;
         //  return $dec_id;
         //   return $poli;
-        return view('pelayanan_form/pelayanan_poli_form',compact('enc_id','poli','Tindakans','Obats','Lab'));
       } else {
         return view('errors/noaccess');
       }
@@ -265,7 +290,7 @@ class PelayananpoliController extends Controller
       }else{
         $dec_id = null;
       }
-      $pendaftaran = Pendaftaran::where('id',$dec_id)->where('flag_periksa', 0)->first();
+      $pendaftaran = Pendaftaran::where('id',$dec_id)->first();
       if(isset($pendaftaran)){
         if($req->status_pasien == "Umum"){
         //    $pelayananpoli = $this->simpanPelayananPoli($req);
@@ -286,6 +311,7 @@ class PelayananpoliController extends Controller
             // return $daftar_kunjungan;
             if($daftar_kunjungan['success'] == true){
                 $pelayananpoli = $this->simpanPelayananPoli($req);
+                // return $pelayananpoli;
                 if($pelayananpoli['success'] == true){
                     if($req->status_pulang == '4'){
                         return response()->json([
@@ -348,20 +374,25 @@ class PelayananpoliController extends Controller
       }
     }
     public function simpanPelayananPoli($req){
-        $Pelayananpoli = new Pelayananpoli;
-
-        $Pelayananpoli->pendaftaran_id         = $req->pendaftaran_id;
-        $Pelayananpoli->penunjang              = $req->penunjang;
-        $Pelayananpoli->note                   = $req->note;
-        $Pelayananpoli->dokter_id              = $req->kdDokter;
-        $Pelayananpoli->created_at             = date('Y-m-d H:i:s');
-        if(!$Pelayananpoli->save()){
-            return array(
-                "success" => false,
-                "message" => "Gagal menyimpan pelayanan poli",
-                "code" => 401
-            );
+        $Pelayananpoli = Pelayananpoli::where('pendaftaran_id', $req->pendaftaran_id)->first();
+        // return $Pelayananpoli;
+        if(!isset($Pelayananpoli)){
+            $Pelayananpoli = new Pelayananpoli;
+            $Pelayananpoli->pendaftaran_id         = $req->pendaftaran_id;
+            $Pelayananpoli->penunjang              = $req->penunjang;
+            $Pelayananpoli->note                   = $req->note;
+            $Pelayananpoli->dokter_id              = $req->kdDokter;
+            $Pelayananpoli->created_at             = date('Y-m-d H:i:s');
+            if(!$Pelayananpoli->save()){
+                return array(
+                    "success" => false,
+                    "message" => "Gagal menyimpan pelayanan poli",
+                    "code" => 401
+                );
+            }
         }
+
+        $ppolidiagnosa = Pelayananpolidiagnosa::where('pelayanan_poli_id',$Pelayananpoli->id)->delete();
         for($i=1; $i<=3 ; $i++){
             if($req->input('diagnosa'.$i) != null){
               $ppolidiagnosa = new Pelayananpolidiagnosa;
@@ -450,41 +481,92 @@ class PelayananpoliController extends Controller
         }else{
             // return $Pelayananpoli;
             if($Pelayananpoli){
+                // return $Pelayananpoli;
                 $datalab = Pelayananlaboratorium::all();
                 foreach($datalab as $lab){
-                $cekLab    = $req->input('lab_pemeriksaan_'.$lab->id);
-                if($cekLab == 1){
-                    $p_lab = new Pelayananpolilaboratorium;
-                    $p_lab->pelayanan_poli_id         = $Pelayananpoli->id;
-                    $p_lab->pelayanan_laboratorium_id = $lab->id;
-                    $p_lab->nilai = 0;
-                    if($p_lab->save()){
-                        continue;
+                    $cekLab    = $req->input('lab_pemeriksaan_'.$lab->id);
+                    if($cekLab == 1){
+                        $p_lab = new Pelayananpolilaboratorium;
+                        $p_lab->pelayanan_poli_id         = $Pelayananpoli->id;
+                        $p_lab->pelayanan_laboratorium_id = $lab->id;
+                        $p_lab->nilai = 0;
+                        if($p_lab->save()){
+                            continue;
+                        }else{
+                            return array(
+                                "success" => false,
+                                "code" => 401,
+                                "message" => "Data lab gagal disimpan",
+                            );
+                        }
+                    }
+                }
+                if(!empty($p_lab)) {
+                    $pendaftaran = Pendaftaran::find($req->pendaftaran_id);
+                    $pendaftaran->flag_periksa = 2;
+
+                    if($pendaftaran->save()){
+                        return array(
+                            "success" => true,
+                            "message" => "Data berhasil disimpan",
+                            "code" => 201,
+                        );
                     }else{
                         return array(
                             "success" => false,
                             "code" => 401,
-                            "message" => "Data lab gagal disimpan",
+                            "message" => "Data pelayanan poli gagal disimpan",
                         );
                     }
-                }
-                }
-                if(!empty($p_lab)) {
-                $pendaftaran = Pendaftaran::find($req->pendaftaran_id);
-                $pendaftaran->flag_periksa = 1;
-                if($pendaftaran->save()){
-                    return array(
-                        "success" => true,
-                        "message" => "Data berhasil disimpan",
-                        "code" => 201,
-                    );
                 }else{
-                    return array(
-                        "success" => false,
-                        "code" => 401,
-                        "message" => "Data pendaftaran gagal disimpan",
-                    );
-                }
+                    $pendaftaran = Pendaftaran::find($req->pendaftaran_id);
+                    if(isset($pendaftaran)){
+                        if($pendaftaran->flag_periksa == 3){
+                            $pendaftaran->flag_periksa = 1;
+                            if($req->total_obat != 0){
+                                for ($i=1; $i <= $req->total_obat ; $i++) {
+                                    if($req->input('obat_'.$i) != "" || $req->input('obat_'.$i) != "0"){
+                                        //   return $req->input('obat_'.$i);
+                                        $poliresep    = new Pelayananpoliresep;
+
+                                        $poliresep->pelayanan_poli_id = $Pelayananpoli->id;
+                                        $poliresep->obat_id           = $req->input('obat_'.$i);
+                                        $poliresep->jumlah            = $req->input('jumlah_obat_'.$i);
+                                        // $poliresep->cara_pakai        = $req->input('cara_pakai_obat_'.$i);
+                                        $poliresep->aturan_pakai      = $req->input('aturan_pakai_obat_'.$i);
+                                        if($poliresep->save()){
+                                            continue;
+                                        }else{
+                                            return array(
+                                                "success" => false,
+                                                "message" => "Gagal menyimpan obat",
+                                                "code" => 401
+                                            );
+                                        }
+                                    }
+                                }
+                            }
+                            if(!$pendaftaran->save()){
+                                return array(
+                                    "success" => false,
+                                    "code" => 401,
+                                    "message" => "Data pelayanan poli gagal disimpan, update flag periksa gagal",
+                                );
+                            }
+                        }else{
+                            return array(
+                                "success" => false,
+                                "code" => 401,
+                                "message" => "Data pelayanan poli gagal disimpan, data pendaftaran pasien tidak ditemukan",
+                            );
+                        }
+                    }else{
+                        return array(
+                            "success" => false,
+                            "code" => 401,
+                            "message" => "Data pelayanan poli gagal disimpan, silahkan pilih laboratorium untuk pemeriksaan",
+                        );
+                    }
                 }
             }
             return array(
@@ -497,7 +579,7 @@ class PelayananpoliController extends Controller
     public function daftarKunjungan($request, $pendaftaran){
         // return "tes";
         //   return $pendaftaran;
-        $poli = Poli::find($request->poli_id);
+        $poli = Poli::where('kdpoli',$request->poli_id)->first();
         // return $poli;
         if($request->no_kunjungan != null){
             $nokunjungan = $request->no_kunjungan;
@@ -1361,7 +1443,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1424,7 +1506,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1517,7 +1599,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1565,7 +1647,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1611,7 +1693,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1657,7 +1739,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1708,7 +1790,7 @@ class PelayananpoliController extends Controller
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
     $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404!2Pkm'); //password pcare anda
+    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 

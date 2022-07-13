@@ -11,6 +11,7 @@
             <div class="ibox-title">
                 <h3>Data Laboratorium</h3>
                 <div class="ibox-tools">
+                    <input type="date" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:30px" value="{{ date('Y-m-d') }}">
                     {{-- @can('laboratorium.tambah')
                         <a href="{{ route('laboratorium.tambah') }}"><button class="btn btn-primary">Tambah Laboratorium</button></a>
                     @endcan --}}
@@ -122,6 +123,7 @@ function text(){
                    "type": "POST",
                    data: function ( d ) {
                      d._token= "{{csrf_token()}}";
+                     d.search_tgl= $('#tgl_search').val();
                    }
                  },
           "columns": [
@@ -169,6 +171,11 @@ function text(){
 
             table.search(val).draw();
             //console.log(table);
+        });
+
+        $('#tgl_search').on('change', function(){
+
+            table.ajax.reload(null, true);
         });
 
 

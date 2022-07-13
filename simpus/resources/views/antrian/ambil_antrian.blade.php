@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>INSPINIA - Landing Page</title>
+    <title>SIMPUSK - AMBIL ANTRIAN</title>
 
      <!-- Bootstrap core CSS -->
      <link href="{{ asset('/inspinia/css/bootstrap.min.css') }}" rel="stylesheet">

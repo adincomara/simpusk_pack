@@ -1,8 +1,8 @@
 @extends('layouts.table')
-@section('title', 'Data Supplier')
-@section('judultable', 'Data Supplier')
-@section('menu1', 'Master')
-@section('menu2', 'Data Supplier')
+@section('title', 'Data Proses Resep Obat')
+@section('judultable', 'Data Proses Resep Obat')
+@section('menu1', 'Pengeluaran Obat')
+@section('menu2', 'Data Proses Resep Obat')
 @section('table')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -11,6 +11,9 @@
             <div class="ibox-title">
                 <h3>Pilih Data Pemeriksaan</h3>
                 <div class="ibox-tools">
+                    <input type="date" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:300px" value="{{ date('Y-m-d') }}">
+
+                    <a href="{{ route('pengeluaran_obat.tambah', [null]) }}/null"><button class="btn btn-primary">Tambah Proses Resep</button></a>
                     {{-- <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
@@ -74,6 +77,7 @@
                    "type": "POST",
                    data: function ( d ) {
                      d._token= "{{csrf_token()}}";
+                     d.search_tgl= $('#tgl_search').val();
                    }
                  },
           "columns": [
@@ -113,7 +117,9 @@
           }
         });
 
-
+        $('#tgl_search').on('change', function(){
+            table.ajax.reload(null, true);
+        });
 
 
        });
