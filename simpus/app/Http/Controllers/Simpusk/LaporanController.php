@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Simpusk;
 
 use App\Models\Simpusk\Bidang;
 use App\Models\Simpusk\DetailPengeluaranObat;
+use App\Models\Simpusk\DiagnosaPenyakit;
 use App\Models\Simpusk\Jabatan;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\Pendaftaran;
@@ -59,6 +60,11 @@ class LaporanController extends Controller
   {
     //$pasien = Pasien::all();
     return view('laporan/laporanpasientindakan');
+  }
+  public function penyakitterbesar()
+  {
+    //$pasien = Pasien::all();
+    return view('laporan/laporan10besarpenyakit');
   }
 
 
@@ -352,6 +358,8 @@ class LaporanController extends Controller
     return $data;
   }
 
+
+
   function laporan_diagnosis($enc_id)
   {
 
@@ -433,6 +441,82 @@ class LaporanController extends Controller
       ->where('tbl_pendaftaran.no_rekamedis', $no_rekamedis)->get();
 
     return view('laporan_dll/laporanpasientindakandetail', compact('poli', 'records', 'no_rekamedis', 'enc_id'));
+  }
+
+  public function getdatapenyakitterbesar(Request $request)
+  { {
+    // return $request->all();
+
+      $limit = $request->length;
+      $start = $request->start;
+      $page  = $start + 1;
+      $search = $request->search['value'];
+      $tgl_search = $request->tgl_search.'-01';
+
+      $records = Tindakan::select('*');
+      $records = Pelayananpoli::whereYear('created_at', date('Y', strtotime($tgl_search)))->whereMonth('created_at', date('m', strtotime($tgl_search)))->pluck('id');
+      $group = Pelayananpolidiagnosa::whereIn('pelayanan_poli_id', $records)->groupBy('diagnosa')->get();
+    //   return $group;
+      $allpolidiagnosa = Pelayananpolidiagnosa::whereIn('pelayanan_poli_id', $records)->get();
+    //   return $allpolidiagnosa;
+      $data_array = collect([]);
+      foreach($group as $key => $g){
+        $jml = collect($allpolidiagnosa)->where('diagnosa', $g->diagnosa);
+        $tamp = collect([
+            'nilai' => count($jml),
+            'kode_diagnosa' => $g->diagnosa,
+            'nama_diagnosa' => $g->nama_diagnosa->nama_penyakit
+        ]);
+        // $collect[$key]['nilai'] = count($jml);
+        // $collect[$key]['diagnosa'] = $g->diagnosa;
+        $data_array->push($tamp);
+      }
+
+
+
+    //   return $data_array->sortByDesc('nilai')->values();
+    //   return $collect;
+
+
+      if (array_key_exists($request->order[0]['column'], $this->original_column)) {
+        $records->orderByRaw($this->original_column[$request->order[0]['column']] . ' ' . $request->order[0]['dir']);
+      }
+
+      if ($search) {
+        $records->where(function ($query) use ($search) {
+          $query->orWhere('nama_tindakan', 'LIKE', "%{$search}%");
+          $query->orWhere('kode_tindakan', 'LIKE', "%{$search}%");
+        });
+      }
+      $totalData = count($data_array);
+
+      $totalFiltered = count($data_array);
+
+
+
+      $json_data = array(
+        "draw"            => intval($request->input('draw')),
+        "recordsTotal"    => intval($totalData),
+        "recordsFiltered" => intval($totalFiltered),
+        "data"            => $data_array->sortByDesc('nilai')->values()
+      );
+    //   if ($request->user()->can('pasien.index')) {
+    //     $json_data = array(
+    //       "draw"            => intval($request->input('draw')),
+    //       "recordsTotal"    => intval($totalData),
+    //       "recordsFiltered" => intval($totalFiltered),
+    //       "data"            => $data
+    //     );
+    //   } else {
+    //     $json_data = array(
+    //       "draw"            => intval($request->input('draw')),
+    //       "recordsTotal"    => 0,
+    //       "recordsFiltered" => 0,
+    //       "data"            => []
+    //     );
+    //   }
+      return json_encode($json_data);
+    }
   }
 
   public function gettindakanpasien(Request $request)

@@ -45,6 +45,18 @@
                             </div>
                           </div>
 
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label class="form-label">Tarif Tindakan<span></span></label>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Rp</div>
+                                    </div>
+                                    <input type="text" class="form-control" name="tarif_tindakan" id="tarif_tindakan" value="{{isset($tindakan)? format_uang($tindakan->tarif_tindakan) : ''}}">
+                                </div>
+                            </div>
+                        </div>
+
                           <div class="form-row">
                             <div class="form-group col-md-12">
                               <label class="form-label">Tindakan Oleh<span>*</span></label>
@@ -163,6 +175,7 @@
 
            var kode_tindakan       =$('#kode_tindakan').val();
            var nama_tindakan       =$('#nama_tindakan').val();
+           var tarif_tindakan       =$('#tarif_tindakan').val();
            var poliklinik          =$('#poliklinik').val();
            var tindakan_oleh       =$('#tindakan_oleh').val();
            var dataFile = new FormData()
@@ -170,6 +183,7 @@
            dataFile.append('kode_tindakan', kode_tindakan);
            dataFile.append('enc_id', enc_id);
            dataFile.append('nama_tindakan', nama_tindakan);
+           dataFile.append('tarif_tindakan', tarif_tindakan);
            dataFile.append('poliklinik', poliklinik);
            dataFile.append('tindakan_oleh', tindakan_oleh);
 
@@ -211,6 +225,23 @@
 
    });
   </script>
+<script>
+    $('#tarif_tindakan').on('keyup', function(){
+        // console.log(this.value.replace('.',''));
+        var replace = this.value.split('.').join("");
+        if(isNaN(replace)){
+            this.value = '';
+        }else if(replace == ''){
+            this.value = '';
+        }else{
+            // console.log(replace);
+            var number = parseInt(replace.toLocaleString('id'));
+            this.value = String((number).toLocaleString('id'));
+            // console.log((number).toLocaleString('id'));
+
+        }
+    })
+</script>
 
 @endpush
 

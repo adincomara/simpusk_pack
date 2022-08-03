@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Simpusk;
 
+use App\Models\Simpusk\Pcare;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\Tindakan;
 use App\Models\Simpusk\Poli;
@@ -17,6 +18,51 @@ class TindakanController extends Controller
 
   public function index()
   {
+    // $uri = env('API_URL', 'https://new-api.bpjs-kesehatan.go.id/pcare-rest-v3.0');
+    // $consID 	= env('API_CONSID', '9243'); //customer ID anda
+    // $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
+
+    // $pcare = Pcare::first();
+    // $pcareUname = $pcare->username;
+    // $pcarePWD = $pcare->password;
+
+    // $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
+
+    // $stamp    = time();
+    // $data     = $consID.'&'.$stamp;
+
+    // $signature = hash_hmac('sha256', $data, $secretKey, true);
+    // $encodedSignature = base64_encode($signature);
+    // $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
+    // // return $uri;
+    // $headers = array(
+    //             "Accept: application/json",
+    //             "X-cons-id:".$consID,
+    //             "X-timestamp: ".$stamp,
+    //             "X-signature: ".$encodedSignature,
+    //             "X-authorization: Basic " .$encodedAuthorization,
+    //             "Content-Type: application/json"
+    //         );
+
+    //     $ch = curl_init($uri.'/tindakan/kdTkp/10/0/100');
+    //     // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    //     // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    //     curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
+    //     $data = curl_exec($ch);
+    //     if (curl_errno($ch)) {
+    //         echo curl_error($ch);
+    //     }
+    //     curl_close($ch);
+
+    //     // header("Content-Type: application/json");
+    //     $data = json_decode($data, true);
+    //     // return response()->json([
+    //     //     'datas' => $data,
+    //     //     'success' => true,
+    //     // ]);
+    //     return $data;
 
     return view('master/data_tindakan');
   }
@@ -135,6 +181,7 @@ class TindakanController extends Controller
 
         $tindakan->kode_tindakan   = $req->kode_tindakan;
         $tindakan->nama_tindakan   = $req->nama_tindakan;
+        $tindakan->tarif_tindakan   = str_replace('.','',$req->tarif_tindakan);
         $tindakan->id_poliklinik   = $req->poliklinik;
         $tindakan->tindakan_oleh   = $req->tindakan_oleh;
         $tindakan->save();
@@ -155,6 +202,7 @@ class TindakanController extends Controller
 
         $tindakan->kode_tindakan   = $req->kode_tindakan;
         $tindakan->nama_tindakan   = $req->nama_tindakan;
+        $tindakan->tarif_tindakan   = str_replace('.','',$req->tarif_tindakan);
         $tindakan->id_poliklinik   = $req->poliklinik;
         $tindakan->tindakan_oleh   = $req->tindakan_oleh;
         $tindakan->save();

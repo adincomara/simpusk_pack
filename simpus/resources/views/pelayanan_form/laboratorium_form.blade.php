@@ -132,7 +132,7 @@
                                 </div>
                                 @endforeach
                                 <div class="text-left mb-3">
-                                    <a class="btn btn-success"  href="#" onclick="cetak({{ $poli->pelayanan_poli->id }})"><i class="fa fa-print"></i> cetak</a> <br>
+                                    <a class="btn btn-success" target="__blank" href="#" onclick="cetak({{ $poli->pelayanan_poli->id }})"><i class="fa fa-print"></i> cetak</a> <br>
                                     <small style="color: red">Klik tombol diatas jika ingin mencetak hasil pemeriksaan laboratorium</small>
                                 </div>
                              </div>
@@ -292,7 +292,8 @@
         // alert(tes);
             // alert(tes);
             // var =
-        window.location.href = '{{ route('laboratorium.cetak_lab',[null]) }}/'+'pelayanan_poli_id='+id+'&nilai='+nilai;
+        // window.location.href = '{{ route('laboratorium.cetak_lab',[null]) }}/'+'pelayanan_poli_id='+id+'&nilai='+nilai;
+        window.open('{{ route('laboratorium.cetak_lab',[null]) }}/'+'pelayanan_poli_id='+id+'&nilai='+nilai, '_blank') = '{{ route('laboratorium.cetak_lab',[null]) }}/'+'pelayanan_poli_id='+id+'&nilai='+nilai;
         // {{ route('laboratorium.cetak_lab',$poli->pelayanan_poli->id) }}
     }
 </script>
