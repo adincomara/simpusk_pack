@@ -22,9 +22,10 @@
     <link href="{{ asset('/inspinia/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.css')}}">
+    <link href="{{ asset('assets/css/toasty.css')}}" rel="stylesheet" />
 
-    <!-- Toastr style -->
-    <link href="{{ asset('/inspinia/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
+    <!-- Toasty style -->
+    <link href="{{ asset('inspinia/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 
     <!-- Gritter -->
     <link href="{{ asset('/inspinia/js/plugins/gritter/jquery.gritter.css') }}" rel="stylesheet">
@@ -148,7 +149,7 @@
                     @endcan
                     @can('poli.index')
                     <li class=""><a
-                            href="{{ route('poli.index') }}">Data Poli</a></li>
+                            href="{{ route('poli.index') }}">Data Poli </a></li>
                     @endcan
                     @can('jenisoperasi.index')
                     <li class=""><a
@@ -173,6 +174,11 @@
                 </ul>
             </li>
             @endcan
+            <li>
+                {{-- <a href="{{ route('antrian.index') }}"><i class="fa fa-ticket" style="font-size:16px"></i> <span class="nav-label">Antrian</span></a> --}}
+                {{-- <ul class="nav nav-second-level">
+                </ul> --}}
+            </li>
             @can('pelayanan.index')
             <li
                 class="">
@@ -181,15 +187,15 @@
                 <ul class="nav nav-second-level">
                     @can('pendaftaran.index')
                     <li class=""><a
-                            href="{{ route('pendaftaran.index') }}">Pendaftaran</a></li>
+                            href="{{ route('pendaftaran.index') }}">Pendaftaran <span class="label label-danger float-right" id="notif_pendaftaran">0</span></a></li>
                     @endcan
                     @can('pelayanan_poli.index')
                     <li class=""><a
-                            href="{{ route('pelayanan_poli.index') }}">Poli</a></li>
+                            href="{{ route('pelayanan_poli.index') }}">Poli <span class="label label-danger float-right" id="notif_poli">0</span></a></li>
                     @endcan
                     @can('laboratorium.index')
                     <li class=""><a
-                            href="{{ route('laboratorium.index') }}">Laboratorium</a></li>
+                            href="{{ route('laboratorium.index') }}">Laboratorium <span class="label label-danger float-right" id="notif_lab">0</span></a></li>
                     @endcan
                 </ul>
             </li>
@@ -218,7 +224,7 @@
                     @endcan
                     @can('pengeluaran_obat.index')
                     <li class=""><a
-                            href="{{ route('pengeluaran_obat.index') }}">Pengeluaran Obat</a></li>
+                            href="{{ route('pengeluaran_obat.index') }}">Pengeluaran Obat <span class="label label-danger float-right" id="notif_out_obat">0</span></a></li>
                     @endcan
                 </ul>
             </li>
@@ -228,6 +234,9 @@
                 <a href="#"><i class="fa fa-sticky-note" style="font-size:16px"></i> <span
                         class="nav-label">Laporan</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
+                    <li
+                        class="">
+                        <a href="{{route('report.penyakitterbesar')}}">Laporan 10 Besar Penyakit</a></li>
                     <li
                         class="">
                         <a href="{{route('report.pasienDiagnosa')}}">Laporan Pasien Berdasarkan Diagnosa</a></li>
@@ -252,7 +261,7 @@
                 <a href="#"><i class="fa fa-ambulance" style="font-size:16px"></i> <span class="nav-label">Integrasi
                         BPJS</span> <span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li class=""><a href="{{route('kunjungan.pasienBPJS')}}">Kunjungan Pasien BPJS (PCARE)</a></li>
+                    <li class=""><a href="{{route('kunjungan.pasienBPJS')}}">Kunjungan Pasien</a></li>
                             <li class=""><a href="{{route('report.rujukanBPJS')}}">Rujukan Pasien BPJS (PCARE)</a></li>
                 </ul>
             </li>
@@ -876,6 +885,10 @@
     <script type="text/javascript" src="{{ asset('assets/js/sweetalert2.js')}}"></script>
     <script src="{{ asset('assets/js/jquery.validate.js')}}"></script>
 
+    <!-- TOASTY -->
+
+    {{-- <script src="{{ asset('assets/js/toasty.js')}}"></script> --}}
+
     <!-- jQuery UI -->
     <script src="{{ asset('/inspinia/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 
@@ -930,6 +943,93 @@
             }).addClass('active').parents('li').slideDown(function() {
             });
         });
+    </script>
+    <script>
+        $(document).ready(function(){
+
+            notif_poli();
+            // notif_lab();
+            // notif_pendaftaran();
+            // notif_out_obat();
+
+
+        })
+        function notif_poli(){
+            setTimeout(() => {
+                $.ajax({
+                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    type:"GET",
+                    beforeSend: function(){
+                    // Swal.showLoading();
+                    },
+                    success:function (data) {
+                        $('#notif_poli').text(data);
+                    },
+                    complete: function(){
+                        // setTimeout(notif_poli(), 2000);
+                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
+                    },
+                });
+                notif_poli();
+            }, 1500);
+        }
+        function notif_lab(){
+            setTimeout(() => {
+                $.ajax({
+                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    type:"GET",
+                    beforeSend: function(){
+                    // Swal.showLoading();
+                    },
+                    success:function (data) {
+                        $('#notif_lab').text(data);
+                    },
+                    complete: function(){
+                        // setTimeout(notif_poli(), 2000);
+                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
+                    },
+                });
+                notif_poli();
+            }, 1500);
+        }
+        function notif_pendaftaran(){
+            setTimeout(() => {
+                $.ajax({
+                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    type:"GET",
+                    beforeSend: function(){
+                    // Swal.showLoading();
+                    },
+                    success:function (data) {
+                        $('#notif_pendaftaran').text(data);
+                    },
+                    complete: function(){
+                        // setTimeout(notif_poli(), 2000);
+                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
+                    },
+                });
+                notif_poli();
+            }, 1500);
+        }
+        function notif_out_obat(){
+            setTimeout(() => {
+                $.ajax({
+                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    type:"GET",
+                    beforeSend: function(){
+                    // Swal.showLoading();
+                    },
+                    success:function (data) {
+                        $('#notif_out_obat').text(data);
+                    },
+                    complete: function(){
+                        // setTimeout(notif_poli(), 2000);
+                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
+                    },
+                });
+                notif_poli();
+            }, 1500);
+        }
     </script>
 </body>
 

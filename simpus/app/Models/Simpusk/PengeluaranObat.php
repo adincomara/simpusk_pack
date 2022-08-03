@@ -11,4 +11,8 @@ class PengeluaranObat extends Model
     protected $table = 'tbl_pengeluaran_obat';
     protected $primaryKey = 'id_pengeluaran';
     public $timestamps = false;
+
+    public function pendaftaran(){
+        return $this->hasOne(Pendaftaran::class, 'id', 'id_pendaftaran');
+    }
 }

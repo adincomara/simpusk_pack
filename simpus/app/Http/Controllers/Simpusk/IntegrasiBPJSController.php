@@ -265,7 +265,7 @@ class IntegrasiBPJSController extends Controller
             if($record->no_kunjungan != '-'){
                 $action .= '<a href="' . route('report.printRujukan', $record->no_kunjungan) . '" target="_blank"  class="btn btn-success" title="Detail Rujukan"><i class="fa fa-eye"></i></a>&nbsp;';
             }else{
-                $action .= '<a href="' . route('report.printRujukanUmum', $record->id_pendaftaran) . '" target="_blank" class="btn btn-success" title="Detail Rujukan"><i class="fa fa-eye"></i></a>&nbsp;';
+                $action .= '<a href="' . route('report.printRujukanUmum', $record->id_pendaftaran) . '" target="_blank" class="btn btn-success" title="Detail Rujukan"><i class="fa fa-file-pdf"></i></a>&nbsp;';
             }
 
             $record->no             = $key + $page;

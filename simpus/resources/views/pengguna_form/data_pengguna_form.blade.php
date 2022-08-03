@@ -112,12 +112,12 @@
                             @foreach($poli as $row)
                             @if(isset($staff))
                                 @if($staff->poli == $row->id)
-                                    <option value="{{$row->id}}" selected>{{ucfirst($row->nama_poli)}}</option>
+                                    <option value="{{$row->kdpoli}}" selected>{{ucfirst($row->nama_poli)}}</option>
                                 @else
-                                    <option value="{{$row->id}}">{{ucfirst($row->nama_poli)}}</option>
+                                    <option value="{{$row->kdpoli}}">{{ucfirst($row->nama_poli)}}</option>
                                 @endif
                             @else
-                                <option value="{{$row->id}}">{{ucfirst($row->nama_poli)}}</option>
+                                <option value="{{$row->kdpoli}}">{{ucfirst($row->nama_poli)}}</option>
 
                             @endif
 

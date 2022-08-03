@@ -116,6 +116,7 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
 
         //PCARE
         Route::get('pcare', [PcareController::class, 'index'])->name('pcare.index');
+        Route::post('pcare/simpan', [PcareController::class, 'simpan'])->name('pcare.simpan');
 
         //PERMISSION
         Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
@@ -255,12 +256,14 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('pengeluaran_obat/tambah/{id?}', [PengeluaranObatController::class, 'tambah'])->name('pengeluaran_obat.tambah');
         Route::get('pengeluaran_obat/proses_resep', [PengeluaranObatController::class, 'proses_resep'])->name('pengeluaran_obat.proses_resep');
         Route::get('pengeluaran_obat/detail/{id}', [PengeluaranObatController::class, 'detail'])->name('pengeluaran_obat.detail');
+        Route::get('pengeluaran_obat/cetak_label/{id}', [PengeluaranObatController::class, 'cetak_label'])->name('pengeluaran_obat.cetak_label');
         Route::get('pengeluaran_obat/ubah/{id}', [PengeluaranObatController::class, 'ubah'])->name('pengeluaran_obat.ubah');
         Route::delete('pengeluaran_obat/hapus/{id?}', [PengeluaranObatController::class, 'hapus'])->name('pengeluaran_obat.hapus');
         Route::post('pengeluaran_obat/simpan', [PengeluaranObatController::class, 'simpan'])->name('pengeluaran_obat.simpan');
         Route::post('pengeluaran_obat/cetak/beri', [PengeluaranObatController::class, 'cetakBeriObat'])->name('pengeluaran_obat.cetakberiobat');
         Route::post('pengeluaran_obat/addObat', [PengeluaranObatController::class, 'addObat'])->name('pengeluaran_obat.addObat');
         Route::post('pengeluaran_obat/batch_obat', [PengeluaranObatController::class, 'batch_obat'])->name('pengeluaran_obat.batch_obat');
+        // Route::get('pengeluaran_obat/cetak_label', [PengeluaranObatController::class, 'cetak_label'])->name('pengeluaran_obat.')
 
         //JENIS OPERASI
         Route::get('jenisoperasi', [JenisOperasiController::class, 'index'])->name('jenisoperasi.index');
@@ -401,6 +404,8 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('pelayanan_poli/search_tindakan', [PelayananpoliController::class, 'searchTindakan'])->name('pelayanan_poli.searchTindakan');
         Route::get('pelayanan_poli/search_obat', [PelayananpoliController::class, 'searchObat'])->name('pelayanan_poli.searchObat');
         Route::post('pelayanan_poli/getstatuspulang', [PelayananpoliController::class, 'getStatusPulang'])->name('pelayanan_poli.statuspulang');
+        Route::get('pelayanan_poli/notifikasi', [PelayananpoliController::class, 'notifikasi'])->name('pelayanan_poli.notifikasi');
+        Route::get('pelayanan_poli/toast', [PelayananpoliController::class, 'toast'])->name('pelayanan_poli.toast');
 
         // RUJUKAN INTEGRASI BPJS
         Route::get('pelayanan_poli/rujukan/bpjs', [IntegrasiBPJSController::class, 'index'])->name('rujukan.index');
@@ -445,6 +450,8 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('laporan/laporan_tindakan/{id?}', [LaporanController::class, 'laporan_tindakan'])->name('report.detailTindakan');
         Route::get('laporan/laporan_rujukan/{id?}', [LaporanController::class, 'laporan_rujukan'])->name('report.detailRujukan');
 
+        Route::get('laporan/penyakitterbesar', [LaporanController::class, 'penyakitterbesar'])->name('report.penyakitterbesar');
+        Route::post('laporan/getpenyakitterbesar', [LaporanController::class, 'getdatapenyakitterbesar'])->name('report.getdatapenyakitterbesar');
         Route::get('laporan/tindakanPasienindex', [LaporanController::class, 'tindakanpasien_index'])->name('report.tindakanpasien_index');
         Route::get('laporan/tindakanPasien_detail/{id}', [LaporanController::class, 'tindakanPasien_detail'])->name('report.tindakanPasien_detail');
         Route::get('laporan/cetakDiagnosa/{id?}', [LaporanController::class, 'cetakDiagnosa'])->name('report.cetakDiagnosa');

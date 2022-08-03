@@ -8,6 +8,7 @@ use App\Models\Simpusk\Poli;
 use App\Models\Simpusk\Pasien;
 use App\Models\Simpusk\Pegawai;
 use App\Models\Simpusk\AntrianBPJS;
+use App\Models\Simpusk\Pcare;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
@@ -208,8 +209,9 @@ class PendaftaranController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 

@@ -22,4 +22,8 @@ function hari_sekarang(){
 function tes(){
     return "testing";
 }
+function format_uang($angka){
+    $hasil=number_format($angka,0,',','.');
+	return $hasil;
+}
 ?>

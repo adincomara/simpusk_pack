@@ -45,7 +45,7 @@
                 alt=''>
                 {{-- <div class="ui-bg-overlay bg-dark opacity-50"></div> --}}
                 <div class="w-100 text-white px-5">
-                    <h1 class="display-2 text-gray font-weight-bolder mb-4">SIAPMAS</h1>
+                    <h1 class="display-2 text-gray font-weight-bolder mb-4">SIMPUSKU</h1>
                     <div class="text-large text-gray font-weight-light">
                         Sistem Aplikasi Puskesmas
                     </div>

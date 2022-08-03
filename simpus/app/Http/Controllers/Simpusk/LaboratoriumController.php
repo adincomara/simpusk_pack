@@ -333,7 +333,7 @@ class LaboratoriumController extends Controller
             if($record->flag_lab == 0){
                 $action.='<a href="'.route('laboratorium.periksa',$enc_id).'"  class="btn btn-primary" style="min-width:210px" title="Periksa Laboratorium">Periksa Laboratorium</a>&nbsp;';
             }else{
-                $action.='<a href="'.route('laboratorium.cetak_lab',$params).'"  class="btn btn-success" style="min-width:210px" title="Lihat Hasil Laboratorium"><i class="fa fa-print"></i> Cetak Hasil Pemeriksaan</a>&nbsp;';
+                $action.='<a target="__blank" href="'.route('laboratorium.cetak_lab',$params).'"  class="btn btn-success" style="min-width:210px" title="Lihat Hasil Laboratorium"><i class="fa fa-print"></i> Cetak Hasil Pemeriksaan</a>&nbsp;';
             }
         }
 
@@ -851,11 +851,15 @@ class LaboratoriumController extends Controller
       $data['pendaftaran'] = $record->pendaftaran;
       $data['pasien'] = $record->pendaftaran->pasien;
       $data['pelayanan_poli_lab'] = Pelayananpolilaboratorium::where('pelayanan_poli_id', $record->id)->with('pelayananlaboratorium')->get();
+      $red = array();
       foreach($data['pelayanan_poli_lab'] as $key => $lab){
         if($lab['pelayananlaboratorium']['min'] > $nilai[$key] || $lab['pelayananlaboratorium']['max'] < $nilai[$key]){
-            $nilai[$key] = '<p style="color:red"> '.$nilai[$key].' </p>';
+            $red[$key] = 1;
+        }else{
+            $red[$key] =0;
         }
       }
-    return view('pelayanan/cetak_laboratorium', ['data' => $data, 'nilai' => $nilai]);
+    //   return $red;
+    return view('pelayanan/cetak_laboratorium', ['data' => $data, 'nilai' => $nilai, 'red' => $red]);
   }
 }

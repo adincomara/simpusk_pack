@@ -17,12 +17,14 @@ use App\Models\Simpusk\Pelayananpolilaboratorium;
 use App\Models\Simpusk\Tindakan;
 use App\Models\Simpusk\Obat;
 use App\Models\Simpusk\LaporanBPJS;
+use App\Models\Simpusk\Pcare;
 use App\Models\Simpusk\RujukLanjut;
 use App\Models\Simpusk\StokObat;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use DB;
 use Auth;
+use Illuminate\Support\Carbon;
 
 use function GuzzleHttp\Psr7\str;
 
@@ -62,8 +64,11 @@ class PelayananpoliController extends Controller
       $search_tgl = $request->search_tgl;
         if(Auth::user()->poli != '-'){
             $poli = Auth::user()->poli;
-            $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pasien.alamat',
-        'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli', 'tbl_pendaftaran.id_poli')->join('tbl_pegawai','tbl_pegawai.id_pegawai','tbl_pendaftaran.id_dokter')->where('tbl_pendaftaran.flag_periksa',0)->where('tbl_pendaftaran.id_poli',$poli);
+            $records = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_pendaftaran.flag_periksa', 'tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pasien.alamat',
+                'tbl_poli.nama_poli')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')->where(function ($query) use ($search_tgl) {
+                    $query->orwhere('tbl_pendaftaran.flag_periksa', 0);
+                    $query->orwhere('tbl_pendaftaran.flag_periksa', 3);
+                })->where('tbl_pendaftaran.id_poli', Auth::user()->poli);
 
         }
         else{
@@ -1442,8 +1447,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1505,8 +1511,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1598,8 +1605,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1646,8 +1654,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1692,8 +1701,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1738,8 +1748,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1789,8 +1800,9 @@ class PelayananpoliController extends Controller
     $consID 	= env('API_CONSID', '9243'); //customer ID anda
     $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404*1Pkm'); //password pcare anda
+    $pcare = Pcare::first();
+    $pcareUname = $pcare->username;
+    $pcarePWD = $pcare->password;
 
     $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
 
@@ -1968,6 +1980,38 @@ class PelayananpoliController extends Controller
             "message" => "Data Laporan Gagal Disimpan"
         );
     }
+
+  }
+  public function notifikasi(){
+    $pendaftaran = Pendaftaran::where('tanggal_daftar', date('Y-m-d'));
+    $pendaftaran->where(function($q){
+        $q->orwhere('flag_periksa', 0);
+        $q->orwhere('flag_periksa', 3);
+    });
+    if(auth()->user()->poli != '-'){
+        $pendaftaran->where('id_poli', auth()->user()->poli);
+    }
+    $pendaftaran = $pendaftaran->get();
+    return count($pendaftaran);
+  }
+  public function toast(){
+    $pendaftaran = Pendaftaran::where('tanggal_daftar', date('Y-m-d'));
+    $pendaftaran->where(function($q){
+        $q->orwhere('flag_periksa', 0);
+        $q->orwhere('flag_periksa', 3);
+    });
+    if(auth()->user()->poli != '-'){
+        $pendaftaran->where('id_poli', auth()->user()->poli);
+    }
+    // $timestamp = strtotime(date('H:i')) - 60;
+    // return date('Y-m-d H:i:s', strtotime('now - 1 minutes'));
+    // return date('H:i:s', strtotime('now - 1 minutes'));
+    $datetime = new Carbon(date('H:i:s', strtotime('now - 2 seconds')));
+    // return $datetime;
+    $pendaftaran->where('created_at', '>=', $datetime);
+    $pendaftaran = $pendaftaran->get();
+    return count($pendaftaran);
+
 
   }
 }

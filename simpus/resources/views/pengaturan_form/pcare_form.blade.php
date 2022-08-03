@@ -30,15 +30,16 @@
                 <div class="ibox-content">
                     <form id="submitData">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="enc_id" id="enc_id" value="{{isset($jabatan)? $enc_id : ''}}">
+                        {{-- <input type="hidden" name="enc_id" id="enc_id" value="{{isset($pcare)? $enc_id : ''}}"> --}}
                         <div class="form-row">
                             <div class="form-group col-md-12">
                               <label class="form-label">Username Pcare <span>*</span></label>
-                              <input type="text" class="form-control mb-1" name="nama_jabatan" id="nama_jabatan" value="{{isset($jabatan)? $jabatan->nama_jabatan : ''}}">
+                              <input type="text" class="form-control mb-1" name="username" id="username" value="{{isset($pcare)? $pcare->username : ''}}">
                             </div>
                             <div class="form-group col-md-12">
                               <label class="form-label">Password Pcare <span>*</span></label>
-                              <input type="text" class="form-control mb-1" name="nama_jabatan" id="nama_jabatan" value="{{isset($jabatan)? $jabatan->nama_jabatan : ''}}">
+                              <input type="password" class="form-control mb-1" name="password" id="password" value="{{isset($pcare)? $pcare->password : ''}}">
+                              <label><input type="checkbox" class="form_control mb-1" name="show_pass" id="show_pass" onclick="show()"> Show Password</label>
                             </div>
                           </div>
 
@@ -63,19 +64,19 @@
     $('#submitData').validate({
       ignore: ":hidden:not(.editor)",
       rules: {
-        nama_jabatan:{
+        username:{
           required: true
         },
-        description:{
+        password:{
           required: true
         }
       },
       messages: {
-        nama_jabatan: {
-          required: "Nama jabatan tidak boleh kosong"
+        username: {
+          required: "Username tidak boleh kosong"
         },
-        description: {
-          required: "Deskripsi jabatan tidak boleh kosong",
+        password: {
+          required: "Password tidak boleh kosong",
         }
       },
       errorElement: 'span',
@@ -96,32 +97,22 @@
     });
      function SimpanData(){
           $('#simpan').addClass("disabled");
-           var enc_id         =$('#enc_id').val();
-           var nama_jabatan          =$('#nama_jabatan').val();
-
-           var dataFile = new FormData()
-
-           dataFile.append('enc_id', enc_id);
-           dataFile.append('nama_jabatan', nama_jabatan);
 
           $.ajax({
             type: 'POST',
-            url : "{{route('jabatan.simpan')}}",
+            url : "{{route('pcare.simpan')}}",
             headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
-            data:dataFile,
-            processData: false,
-            contentType: false,
+            data:$('#submitData').serialize(),
             dataType: "json",
             beforeSend: function () {
                 $('#Loading').modal('show');
             },
             success: function(data){
               if (data.success) {
-                 Swal.fire('Yes',data.message,'info');
-                 if(data.success == true){
-                    window.location.href = "{{ route('jabatan.index') }}";
-                 }
-
+                 Swal.fire('Yes',data.message,'success');
+                //  if(data.success == true){
+                //     window.location.href = "{{ route('pcare.index') }}";
+                //  }
               } else {
                  Swal.fire('Ups',data.message,'info');
               }
@@ -137,7 +128,19 @@
                 console.log(data);
             }
           });
-      }
+    }
+
+
+  </script>
+  <script>
+    function show(){
+        var checkbox = $('#show_pass').is(":checked");
+        if(checkbox){
+            $("#password").prop("type", "text");
+        }else{
+            $("#password").prop("type", "password");
+        }
+    }
   </script>
 @endpush
 

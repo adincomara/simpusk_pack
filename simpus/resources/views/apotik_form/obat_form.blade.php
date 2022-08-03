@@ -50,6 +50,17 @@
                               <input type="text" class="form-control mb-1" name="nama_obat" id="nama_obat" value="{{isset($obat)? $obat->nama_obat : ''}}">
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                              <label class="form-label">Harga Obat<span></span></label>
+                              <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                  <div class="input-group-text">Rp</div>
+                                </div>
+                                <input type="text" class="form-control" name="harga_obat" id="harga_obat" value="{{isset($obat)? format_uang($obat->harga_obat) : ''}}">
+                              </div>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label class="form-label">Jenis Obat</label>
@@ -127,6 +138,7 @@
 
            var kode_obat   =$('#kode_obat').val();
            var nama_obat   =$('#nama_obat').val();
+           var harga_obat   =$('#harga_obat').val();
            var jenis_obat          =$('#jenis_obat').val();
            var dosis_aturan_obat       =$('#dosis_aturan_obat').val();
            var satuan       =$('#satuan').val();
@@ -136,6 +148,7 @@
 
            dataFile.append('kode_obat', kode_obat);
            dataFile.append('nama_obat', nama_obat);
+           dataFile.append('harga_obat', harga_obat);
            dataFile.append('enc_id', enc_id);
            dataFile.append('jenis_obat', jenis_obat);
            dataFile.append('barcode_obat', barcode_obat);
@@ -179,6 +192,23 @@
 
 
    });
+</script>
+<script>
+    $('#harga_obat').on('keyup', function(){
+        // console.log(this.value.replace('.',''));
+        var replace = this.value.split('.').join("");
+        if(isNaN(replace)){
+            this.value = '';
+        }else if(replace == ''){
+            this.value = '';
+        }else{
+            // console.log(replace);
+            var number = parseInt(replace.toLocaleString('id'));
+            this.value = String((number).toLocaleString('id'));
+            // console.log((number).toLocaleString('id'));
+
+        }
+    })
 </script>
 @endpush
 

@@ -1,24 +1,18 @@
 @extends('layouts.table')
-@section('title', 'Data Pelayanan Poli')
-@section('judultable', 'Data Pelayanan Poli')
-@section('menu1', 'Master')
-@section('menu2', 'Data Pelayanan Poli')
+@section('title', 'Laporan 10 Besar Penyakit')
+@section('judultable', 'Laporan 10 Besar Penyakit')
+@section('menu1', 'Laporan')
+@section('menu2', 'Laporan 10 Besar Penyakit')
 @section('table')
-<audio id="myAudio">
-    {{-- <source src="horse.ogg" type="audio/ogg"> --}}
-    <source src="{{ asset('assets/musik/success.mp3') }}" type="audio/mpeg">
-</audio>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
         <div class="ibox ">
             <div class="ibox-title">
-                <h3>Data Pelayanan Poli</h3>
+                <h3>Laporan 10 Besar Penyakit</h3>
                 <div class="ibox-tools">
-                    <input type="date" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:150px" value="{{ date('Y-m-d') }}">
-                    <a href="#"><button class="btn btn-default text-dark border border-secondary btn-refresh">Refresh</button></a>
-
-
+                    <input type="month" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:300px" value="{{ date('Y-m') }}">
+                    {{-- <a href="{{ route('report.cetakTindakanPasien')}}" target="_blank"><button class="btn btn-primary"><i class="fa fa-file-pdf"></i></button></a> --}}
                     {{-- <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
@@ -37,11 +31,9 @@
                 </div>
             </div>
             <div class="ibox-content">
-
                 <!--<form action="#" method="post">
                     <div class="form-row">
                         {{ csrf_field() }}
-
 
                             <label class="col mb-4"><p style="font-size: 20px"> Pencarian </p></label>
 
@@ -70,21 +62,15 @@
                 <div class="table-responsive">
 
 
-            <table class="table table-striped table-bordered table-hover dataTables-example coba" id="table_pelayanan_poli" >
+            <table class="table table-striped table-bordered table-hover dataTables-example coba" id="table1" >
             <thead>
+                <tr>
+                    <th>Kode Diagnosa</th>
+                    <th>Nama Diagnosa</th>
+                    <th>Jumlah</th>
 
-            <tr>
-                <th>No</th>
-                <th>No Rawat</th>
-                <th>No Rekmed</th>
-                <th>Nama Pasien</th>
-                <th>Alamat</th>
-                <th>Status Pasien</th>
-                <th>Dokter PJ</th>
-                <th>Poli</th>
-                <th>Action</th>
-            </tr>
-            </thead>
+                </tr>
+                </thead>
 
             </table>
                 </div>
@@ -95,9 +81,6 @@
 @endsection
 @push('scripts')
 <script type="text/javascript">
-$('.btn-refresh').on('click', function(){
-    table.ajax.reload(null, true);
-})
 function change_filter(){
     var type = $('#filter').val();
 //    console.log(type);
@@ -120,7 +103,7 @@ function text(){
         $.ajaxSetup({
               headers: { "X-CSRF-Token" : $("meta[name=csrf-token]").attr("content") }
           });
-          table= $('#table_pelayanan_poli').DataTable({
+          table= $('#table1').DataTable({
           "processing": true,
           "serverSide": true,
           "stateSave"  : true,
@@ -128,32 +111,24 @@ function text(){
           "pageLength": 10,
           "select" : true,
           "ajax":{
-                   "url": "{{ route("pelayanan_poli.getdata") }}",
+                   "url": "{{ route("report.getdatapenyakitterbesar") }}",
                    "dataType": "json",
                    "type": "POST",
                    data: function ( d ) {
                      d._token= "{{csrf_token()}}";
-                     d.search_tgl= $('#tgl_search').val();
+                     d.tgl_search = $('#tgl_search').val();
                    }
                  },
           "columns": [
-            {
-                "data": "no",
+              {
+                "data": "kode_diagnosa",
                 "orderable" : true,
                 "className" : 'reorder',
                 "targets"   : 0
               },
-              { "data": "no_rawat" },
-              { "data": "no_rekamedis",},
-              { "data": "nama_pasien",},
-              { "data": "alamat",},
-              { "data": "status_pasien",},
-              { "data": "nama_penanggung_jawab",},
-              { "data": "nama_poli",},
-              { "data" : "action",
-                "orderable" : false,
-                "className" : "text-center",
-            },
+              { "data": "nama_diagnosa",},
+              { "data": "nilai",},
+
           ],
           responsive: true,
           language: {
@@ -175,6 +150,11 @@ function text(){
           }
         });
         table.search('').draw();
+
+        $('#tgl_search').on('change', function(){
+            table.ajax.reload(null, true);
+        });
+
         $("input[type='search']").on("keyup", function () {
 
             var val = $(this).val();
@@ -183,16 +163,13 @@ function text(){
             table.search(val).draw();
             //console.log(table);
         });
-        $('#tgl_search').on('change', function(){
 
-            table.ajax.reload(null, true);
-        });
 
 
 
        });
        function deleteData(e,enc_id){
-          @cannot('pelayanan_poli.hapus')
+          @cannot('jabatan.hapus')
               Swal.fire('Ups!', "Anda tidak memiliki HAK AKSES! Hubungi ADMIN Anda.",'error'); return false;
           @else
           var token = '{{ csrf_token() }}';
@@ -214,7 +191,7 @@ function text(){
             });
              $.ajax({
               type: 'DELETE',
-              url: '{{route("pelayanan_poli.hapus",[null])}}/' + enc_id,
+              url: '{{route("jabatan.hapus",[null])}}/' + enc_id,
               headers: {'X-CSRF-TOKEN': token},
               success: function(data){
                 if (data.status=='success') {
@@ -237,61 +214,5 @@ function text(){
          });
           @endcannot
       }
-</script>
-<script>
-    $(document).ready(function(){
-        toastt();
-
-    })
-    function toastt(){
-        setTimeout(() => {
-            toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "progressBar": true,
-            "preventDuplicates": false,
-            "positionClass": "toast-bottom-right",
-            "onclick": null,
-            "showDuration": "400",
-            "hideDuration": "1000",
-            "timeOut": "7000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-
-            }
-
-
-            $.ajax({
-                url:"{{ route('pelayanan_poli.toast') }}",
-                type:"GET",
-                beforeSend: function(){
-                // Swal.showLoading();
-                },
-                success:function (data) {
-                    // Swal.hideLoading();
-                    // console.log(data.success);
-                    console.log('toast');
-                    for(i=0;i<data;i++){
-                        toastr.success("Halo, ada pasien yang perlu di periksa, silahkan klik tombol refresh")
-                        // var audio = new Audio("{{ asset('assets/musik/success.mp3') }}");
-                        // audio.play();
-                        var file = "{{ asset('assets/musik/success.mp3') }}";
-                        var audio = new Audio(file);
-                        audio.play();
-                        // audio.play();
-                    }
-                    // setTimeout(notif_poli(), 3000)
-                },
-                complete: function(){
-                    // setTimeout(notif_poli(), 2000);
-                    // setInterval(notif_poli(), 20000000000000000000000000000000000000);
-                },
-            });
-            toastt();
-        }, 1500);
-    }
 </script>
 @endpush

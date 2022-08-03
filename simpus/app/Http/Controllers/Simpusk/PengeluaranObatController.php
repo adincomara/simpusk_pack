@@ -94,6 +94,9 @@ class PengeluaranObatController extends Controller
 
             // if ($request->user()->can('pengeluaran_obat.ubah')) {
                 $action .= '<a href="' . route('pengeluaran_obat.detail', $enc_id) . '" class="btn btn-success btn-xs icon-btn md-btn-flat product-tooltip mb-1" style="min-width:60px" title="Detail"><i class="fa fa-sticky-note"></i> Detail</a>&nbsp;';
+
+                $action .= '<a href="' . route('pengeluaran_obat.cetak_label', $enc_id) . '" class="btn btn-warning btn-xs icon-btn md-btn-flat product-tooltip mb-1" style="min-width:60px" title="Detail"><i class="fa fa-print"></i> Cetak</a>&nbsp;';
+
             // }
             // if ($request->user()->can('pengeluaran_obat.hapus')) {
             //     $action .= '<a href="#" onclick="deleteData(this,\'' . $enc_id . '\')" class="btn btn-danger btn-xs icon-btn md-btn-flat product-tooltip" style="min-width:60px" title="Hapus"><i class="fa fa-trash"></i> Hapus</a>&nbsp;';
@@ -123,6 +126,16 @@ class PengeluaranObatController extends Controller
             );
         }
         return json_encode($json_data);
+    }
+    function cetak_label($enc_id){
+        // return $enc_id;
+        $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
+        $pengeluaran_obat = PengeluaranObat::find($dec_id);
+        $id_pengeluaran_obat = PengeluaranObat::select('id_pengeluaran')->where('id_pendaftaran',$pengeluaran_obat->id_pendaftaran)->first();
+        $detailPengeluaranObat = DetailPengeluaranObat::where('id_pengeluaran_obat',$id_pengeluaran_obat->id_pengeluaran)->get();
+        // return $detailPengeluaranObat;
+        return view('apotik/cetak_label', ['detail_pengeluaran' => $pengeluaran_obat,'detail_obat' => $detailPengeluaranObat]);
+
     }
 
     function safe_encode($string)
@@ -484,6 +497,7 @@ class PengeluaranObatController extends Controller
                                     if($allstokObat){
                                         //CEK ALL STOK OBAT
                                         $alljumlahstok = StokObat::where('id_obat', $req->input('obat_'.$i))->where('tgl_expired_obat', '>=', date('Y-m-d'))->orderBy('tgl_expired_obat','DESC')->sum('stok_obat');
+                                        // return $alljumlahstok;
                                         if($input_jumlah_obat > $alljumlahstok){
                                             $json_data = array(
                                                 "success"         => FALSE,

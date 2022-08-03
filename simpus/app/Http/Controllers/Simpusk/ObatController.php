@@ -141,6 +141,7 @@ class ObatController extends Controller
             $obat->nama_obat  = $req->nama_obat;
             $obat->jenis_obat         = $req->jenis_obat;
             $obat->barcode_obat = $req->barcode_obat;
+            $obat->harga_obat = str_replace('.','',$req->harga_obat);
             $obat->satuan      = $req->satuan;
             $obat->save();
 
@@ -170,6 +171,7 @@ class ObatController extends Controller
                 $obat->jenis_obat         = $req->jenis_obat;
                 $obat->barcode_obat = $req->barcode_obat;
                 $obat->satuan      = $req->satuan;
+                $obat->harga_obat = str_replace('.','',$req->harga_obat);
                 $obat->save();
 
                 if ($obat) {
