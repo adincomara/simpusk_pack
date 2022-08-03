@@ -8,6 +8,7 @@ use App\Models\Simpusk\Poli;
 use App\Models\Simpusk\Pasien;
 use App\Models\Simpusk\Pegawai;
 use App\Models\Simpusk\AntrianBPJS;
+use App\Models\Simpusk\DokterBPJS;
 use App\Models\Simpusk\Pcare;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
@@ -205,50 +206,19 @@ class PendaftaranController extends Controller
 
    }
    public function getDokterBpjs(){
-    $uri = env('API_URL', 'https://new-api.bpjs-kesehatan.go.id/pcare-rest-v3.0');
-    $consID 	= env('API_CONSID', '9243'); //customer ID anda
-    $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
-
-    $pcare = Pcare::first();
-    $pcareUname = $pcare->username;
-    $pcarePWD = $pcare->password;
-
-    $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
-
-    $stamp    = time();
-    $data     = $consID.'&'.$stamp;
-
-    $signature = hash_hmac('sha256', $data, $secretKey, true);
-    $encodedSignature = base64_encode($signature);
-    $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-    // return $uri;
-    $headers = array(
-                "Accept: application/json",
-                "X-cons-id:".$consID,
-                "X-timestamp: ".$stamp,
-                "X-signature: ".$encodedSignature,
-                "X-authorization: Basic " .$encodedAuthorization,
-                "Content-Type: application/json"
-            );
-
-        $ch = curl_init($uri.'/dokter/0/100');
-        // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo curl_error($ch);
+        $url = '/dokter/0/100';
+        $data = APIBpjsController::get($url);
+        if($data['metaData']['code'] == 200){
+            foreach($data['response']['list'] as $dokter){
+                $dkt = DokterBPJS::where('kdDokter', $dokter['kdDokter'])->first();
+                if(!isset($dkt)){
+                    $dkt = new DokterBPJS();
+                    $dkt->nmDokter = $dokter['nmDokter'];
+                    $dkt->kdDokter = $dokter['kdDokter'];
+                    $dkt->save();
+                }
+            }
         }
-        curl_close($ch);
-
-        // header("Content-Type: application/json");
-        $data = json_decode($data, true);
-        // return response()->json([
-        //     'datas' => $data,
-        //     'success' => true,
-        // ]);
         return $data;
   }
   public function tambah()
@@ -546,45 +516,11 @@ class PendaftaranController extends Controller
     }
 
     public function pasienbpjs(Request $request){
-    $uri = env('API_URL');
     $nik = $request->noKartu;
 
-    $consID 	= env('API_CONSID'); //customer ID anda
-    $secretKey 	= env('API_SECRETKEY'); //secretKey anda
+    $url = '/peserta/'.$nik;
 
-    $pcareUname = env('API_PCAREUNAME'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
-
-    $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-
-    $stamp    = time();
-    $data     = $consID.'&'.$stamp;
-
-    $signature = hash_hmac('sha256', $data, $secretKey, true);
-    $encodedSignature = base64_encode($signature);
-    $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-
-    $headers = array(
-                "Accept: application/json",
-                "X-cons-id:".$consID,
-                "X-timestamp: ".$stamp,
-                "X-signature: ".$encodedSignature,
-                "X-authorization: Basic " .$encodedAuthorization
-            );
-
-        $ch = curl_init($uri.'/peserta/'.$nik);
-        // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo curl_error($ch);
-        }
-        curl_close($ch);
-
-        $result = json_decode($data, true);
+        $result = APIBpjsController::get($url);
         // return $result;
         if($result['metaData']['code'] != 200){
             return response()->json([

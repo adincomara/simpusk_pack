@@ -375,77 +375,18 @@ class PasienController extends Controller
   }
 
   public function validatePasien(Request $request){
-    $uri = env('API_URL');
-    // return $uri;
-    $consID 	= env('API_CONSID', '9243'); //customer ID anda
-    $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404$2Pkm'); //password pcare anda
-
-    $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
-
-    $stamp    = time();
-    $data     = $consID.'&'.$stamp;
-
-    $signature = hash_hmac('sha256', $data, $secretKey, true);
-    $encodedSignature = base64_encode($signature);
-    $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-    // return $uri;
-    $headers = array(
-                "Accept: application/json",
-                "X-cons-id:".$consID,
-                "X-timestamp: ".$stamp,
-                "X-signature: ".$encodedSignature,
-                "X-authorization: Basic " .$encodedAuthorization,
-                "Content-Type: application/json"
-            );
-
-    // $base_url = 'https://new-api.bpjs-kesehatan.go.id/pcare-rest-v3.0';
 
     $nik = $request->nik;
     $cek = substr($nik,0,1);
-
-
-    // $consID 	= '9243'; //customer ID anda
-    // $secretKey 	= '3yVE45CCBC'; //secretKey anda
-
-    // $pcareUname = '0159092404'; //username pcare
-    // $pcarePWD 	= '0159092404$2Pkm'; //password pcare anda
-
-    // $kdAplikasi	= '095'; //kode aplikasi
-
-    // $stamp		= time();
-    // $data 		= $consID.'&'.$stamp;
-
-    // $signature = hash_hmac('sha256', $data, $secretKey, true);
-
-    // $header = array(
-    //             'Accept: application/json',
-    //             'X-cons-id: '.$consID,
-    //             'X-timestamp: '.$stamp,
-    //             'X-signature: '.base64_encode($signature),
-    //             'X-authorization: Basic ' .base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi)
-    //           );
     if($cek == '0'){
-        $ch = curl_init($uri.'/peserta/'.$nik);
+        $url = '/peserta/'.$nik;
     }else{
-        $ch = curl_init($uri.'/peserta/nik/'.$nik);
+        $url = '/peserta/nik/'.$nik;
     }
 
 
-    // $ch = curl_init($base_url.'/peserta/'.$nik);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-    $data = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo curl_error($ch);
-    }
-    curl_close($ch);
-
-    $result = json_decode($data, true);
-
+   $result = APIBpjsController::get($url);
     if($result['metaData']['code'] == 200){
         return response()->json([
             'datas' => $result
