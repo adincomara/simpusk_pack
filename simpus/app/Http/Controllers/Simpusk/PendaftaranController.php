@@ -330,7 +330,7 @@ class PendaftaranController extends Controller
                 'message' => 'Pasien sudah pernah didaftarkan'
             ]);
         }
-        $cek_kode_poli = Poli::find($req->id_poli)->kode_poli;
+        $cek_kode_poli = Poli::where('kdpoli',$req->id_poli)->first()->kode_poli;
         if(!isset($cek_kode_poli)){
             return response()->json([
                 'success' => false,
@@ -351,7 +351,7 @@ class PendaftaranController extends Controller
                         $id_poli = '50';
                         $code_poli = '021';
                     }else{
-                        $kdpoli = Poli::find($req->id_poli)->kdpoli;
+                        $kdpoli = Poli::where('kdpoli',$req->id_poli)->first();
                         $id_poli = $req->id_poli;
                         $code_poli = $kdpoli->kdpoli;
                     }
@@ -693,7 +693,7 @@ class PendaftaranController extends Controller
       ]);
     }
 
-    public function simpanBPJS($no_bpjs, $no_provider, $tanggal_daftar, $kdpoli){
+    public function simpanBPJS($no_bpjs, $no_provider, $tanggal_daftar, $poli){
             //   $uri = env('API_URL'); //url web service bpjs
         //   //return $uri.'/pendaftaran';
         //   $consID 	= env('API_CONSID'); //customer ID anda
@@ -703,7 +703,7 @@ class PendaftaranController extends Controller
         //     $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
 
         //     $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-        $poli = Poli::where('kdpoli', $kdpoli)->first();
+        // $poli = Poli::where('kdpoli', $kdpoli)->first();
         // return $poli;
         if($poli->kunjungan_sakit == 0){
             $kjsakit = false;
@@ -732,7 +732,7 @@ class PendaftaranController extends Controller
                 "kdProviderPeserta"=> $no_provider,
                 "tglDaftar"=> date('d-m-Y'),
                 "noKartu"=> $no_bpjs,
-                "kdPoli"=> $kdpoli,
+                "kdPoli"=> $poli->kdpoli,
                 "keluhan"=> null,
                 "kunjSakit"=> $kjsakit,
                 "sistole"=> 0,
