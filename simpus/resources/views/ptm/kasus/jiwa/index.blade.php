@@ -66,7 +66,8 @@
                                     <span class="input-group-addon px-3 bg-primary rounded-left"><i
                                             class="fa fa-calendar"></i></span>
                                     <input type="text" class="form-control input-group-addon rounded-right py-2"
-                                        name="periode" id="periode" name="periode" autocomplete="off" value="{{ date('M-Y') }}">
+                                        name="periode" id="periode" name="periode" autocomplete="off"
+                                        value="{{ date('M-Y') }}">
                                 </div>
                             </div>
                         </div>
@@ -84,37 +85,46 @@
                     <div class="table-responsive">
                         <table id="table1" class="table p-0 table-bordered text-center table-hover"
                             style="overflow-x: auto;">
+
                             <thead>
                                 <tr class="text-white bg-green">
                                     <th width="5%" class="align-middle" rowspan="4">No</th>
-
-
                                     <th class="align-middle" rowspan="4">PUSKESMAS</th>
-
-
                                     <th class="align-middle text-center" colspan="74">D I A G N O S A</th>
                                     <th class="align-middle text-center" rowspan="4">JUMLAH KASUS</th>
-
                                     <th class="align-middle" rowspan="4">Action</th>
-
                                 </tr>
                                 <tr class="text-white bg-green">
-                                    <th class="align-middle text-center" colspan="2" rowspan="2">DEMENSIA F00</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN ANSIETAS F.40</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN CAMPURAN ANSIETAS DAN DEPRESI
-                                        F41.2</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN DEPRESI F.32</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN PENYALAHGUNAAN NAPZA F10#</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN PERKEMBANGAN PADA ANAK DAN REMAJA
-                                        F80-90#</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN PSIKOTIK AKUT F23#</th>
-                                    <th class="align-middle text-center" colspan="6">SKIZOFRENIA F20</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN SOMATOFORM F45</th>
-                                    <th class="align-middle text-center" colspan="6">INSOMNIA F51.0</th>
-                                    <th class="align-middle text-center" colspan="6">PERCOBAAN BUNUH DIRI</th>
-                                    <th class="align-middle text-center" colspan="6">REDARTASI MENTAL F.70 - F.79</th>
-                                    <th class="align-middle text-center" colspan="6">GANGGUAN KEPRIBADIAN DAN PERILAKU F.60-F.61
+                                    <th class="align-middle text-center bg-primary" colspan="2" rowspan="2">DEMENSIA F00
                                     </th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN ANSIETAS F.4
+                                    </th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN CAMPURAN
+                                        ANSIETAS DAN
+                                        DEPRESI
+                                        F41.2</th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN DEPRESI F.32
+                                        dan F33
+                                    </th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN PENYALAHGUNAAN
+                                        NAPZA
+                                        F10 - F19</th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN PERKEMBANGAN
+                                        PADA ANAK
+                                        DAN REMAJA F80-90#</th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN PSIKOTIK AKUT
+                                        F23</th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">SKIZOFRENIA F20</th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN SOMATOFORM F45
+                                    </th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">INSOMNIA F51.0</th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">PERCOBAAN BUNUH DIRI
+                                    </th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">REDARTASI MENTAL F.70 -
+                                        F.79
+                                    </th>
+                                    <th class="align-middle text-center bg-primary" colspan="6">GANGGUAN KEPRIBADIAN DAN
+                                        PERILAKU F.60</th>
                                 </tr>
                                 <tr class="text-white bg-green">
                                     <th class="align-middle text-center" colspan="2">0-14 th</th>

@@ -36,14 +36,14 @@
                                         <label class="col-sm-2 col-sm-2 col-form-label">Kabupaten</label>
                                         <div class="form-group col-md">
                                             <input type="text" class="form-control py-2" name="kab" id="kab"
-                                            value="{{ isset($puskesmas)? $puskesmas->kabupaten : ''}}" disabled>
+                                                value="{{ isset($puskesmas)? $puskesmas->kabupaten : ''}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <label class="col-sm-2 col-sm-2 col-form-label">Puskesmas</label>
                                         <div class="form-group col-md">
                                             <input type="text" class="form-control py-2" name="pusk" id="pusk"
-                                            value="{{ isset($puskesmas)? $puskesmas->name : ''}}" disabled>
+                                                value="{{ isset($puskesmas)? $puskesmas->name : ''}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -62,58 +62,70 @@
                                         </div>
                                     </div>
                                 </div>
-                                <label class="col-sm-12 col-sm-12 col-form-label font-bold">Jumlah yang
-                                    didetekdi dini (SDQ)</label>
+                                <label class="col-sm-12 col-sm-12 col-form-label font-bold"> <strong>Jumlah yang
+                                        didetekdi dini</strong> </label>
+                                <label class="col-sm-12 col-sm-12 col-form-label font-bold">SDQ</label>
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="col-sm-12 row my-2">
                                             <div class="col-sm-6">
-                                                <label class="">Laki-laki 4-10 tahun</label>
-                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_l" id="ca_mammae"
-                                                value="{{isset($sdq)? $sdq->dd_sdq_4_10_l : 0}}">
+                                                <label class="">&lt;15 tahun</label>
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_l"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_l : 0}}">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label class="">Perempuan 4-10 tahun</label>
-                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_p" id="ca_mammae"
-                                                value="{{isset($sdq)? $sdq->dd_sdq_4_10_p : 0}}">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <label class="">Laki-laki 11-18 tahun</label>
-                                                <input type="text" class="form-control rounded" name="dd_sdq_11_18_l"
-                                                id="ca_serviks" value="{{isset($sdq)? $sdq->dd_sdq_11_18_l : 0}}">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <label class="">Perempuan 11-18 tahun</label>
-                                                <input type="text" class="form-control rounded" name="dd_sdq_11_18_p"
-                                                id="ca_serviks" value="{{isset($sdq)? $sdq->dd_sdq_11_18_p : 0}}">
+                                                <label class="">15-18 tahun</label>
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_p"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_p : 0}}">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <label class="col-sm-12 col-sm-12 col-form-label font-bold">Jumlah yang mendapat
-                                    tatalaksanan (hasil borderline/abnormal)</label>
+                                <label class="col-sm-12 col-sm-12 col-form-label font-bold"><strong>Jumlah yang mendapat
+                                        tatalaksanaan </strong> </label>
+                                <label class="col-sm-12 col-sm-12 col-form-label font-bold">Haisl sampai dengan
+                                    borderlaine </label>
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="col-sm-12 row my-2">
                                             <div class="col-sm-6">
-                                                <label class="">Laki-laki 4-10 tahun</label>
-                                                <input type="text" class="form-control rounded" name="abnormal_4_10_l"
-                                                id="ca_mammae" value="{{isset($sdq)? $sdq->abnormal_4_10_l : 0}}">
+                                                <label class="">&lt;15 tahun</label>
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_l"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_l : 0}}">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label class="">Perempuan 4-10 tahun</label>
-                                                <input type="text" class="form-control rounded" name="abnormal_4_10_p"
-                                                id="ca_mammae" value="{{isset($sdq)? $sdq->abnormal_4_10_p : 0}}">
+                                                <label class="">15-18 tahun</label>
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_p"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_p : 0}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="col-sm-12 col-sm-12 col-form-label font-bold">Hasil sampai dengan
+                                    abnormal</label>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12 row my-2">
+                                            <div class="col-sm-6">
+                                                <label class="">&lt;15 tahun</label>
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_l"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_l : 0}}">
                                             </div>
                                             <div class="col-sm-6">
-                                                <label class="">Laki-laki 11-18 tahun</label>
-                                                <input type="text" class="form-control rounded" name="abnormal_11_18_l"
-                                                id="ca_serviks" value="{{isset($sdq)? $sdq->abnormal_11_18_l : 0}}">
+                                                <label class="">15-18 tahun</label>
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_p"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_p : 0}}">
                                             </div>
-                                            <div class="col-sm-6">
-                                                <label class="">Perempuan 11-18 tahun</label>
-                                                <input type="text" class="form-control rounded" name="abnormal_11_18_p"
-                                                id="ca_serviks" value="{{isset($sdq)? $sdq->abnormal_11_18_P : 0}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="col-sm-12 col-sm-12 col-form-label font-bold">Jumlah Dirujuk</label>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12 row my-2">
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control rounded" name="dd_sdq_4_10_l"
+                                                    id="ca_mammae" value="{{isset($sdq)? $sdq->dd_sdq_4_10_l : 0}}">
                                             </div>
                                         </div>
                                     </div>

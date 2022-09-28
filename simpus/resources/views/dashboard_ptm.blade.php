@@ -13,43 +13,7 @@
 <!-- content -->
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-6">
-            <div class="ibox">
-                <div class="ibox-content b-r-xl">
-                    <div>
-                        <h5>Hasil Skrining ASSIST</h5>
-                        <div class="row">
-                            <div class="col-lg text-center">
-                                <h3>0</h3>
-                                <p class="element">RINGAN</p>
-                            </div>
-                            <div class="col-lg text-center">
-                                <h3>0</h3>
-                                <p class="element">SEDANG</p>
-                            </div>
-                            <div class=" col-lg text-center">
-                                <h3>0</h3>
-                                <p class="element">BERAT</p>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="my-2">
-                        <p>Total</p>
-                        <div class="row">
-                            <div class="col-lg-2 my-auto">
-                                <button class="btn btn-primary btn-lg" type="button"><i class="fa fa-user"></i>
-                                </button>
-                            </div>
-                            <div class="col-lg">
-                                <h2 class="">0</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content b-r-xl">
                     <div>
@@ -89,31 +53,37 @@
                 </div>
             </div>
         </div>
-
-
     </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title b-r-xl bg-primary">
-                    <h5>Grafk Kasus PTM Periode <span> 04-2022 </span></h5>
-                </div>
-                <div class="ibox-content b-r-xl mt-2">
                     <div class="d-flex w-25">
-                        <div class="p-2 my-auto">
+                        <div class="my-auto">
                             <p class="font-bold">Periode</p>
                         </div>
                         <div class="p-2">
                             <div class="form-group col-md row" id="periode_bln">
                                 <div class="input-group date">
                                     <input type="text" class="form-control input-group-addon rounded py-2"
-                                        name="periode" id="periode" name="periode" autocomplete="off" value="Apr-2022">
+                                        style="color: black" name="periode" id="periode" name="periode"
+                                        autocomplete="off" value="Apr-2022">
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="ibox-content b-r-xl mt-2">
+                    <h3 class="pb-4">Grafik Kasus Penyakit Tidak Menular</h3>
+
                     <div class="p-2">
                         <canvas id="myChart" height="140"></canvas>
+                    </div>
+                </div>
+                <div class="ibox-content b-r-xl mt-2">
+                    <h3 class="pb-4">Grafik Kasus Gangguan Jiwa</h3>
+                    <div class="p-2">
+                        <canvas id="myChart2" height="140"></canvas>
                     </div>
                 </div>
             </div>
@@ -234,6 +204,29 @@
             }
         ]
     };
+    const data2 = {
+        labels: ['DEMENSIA F00', 'GANGGUAN ANSIETAS F.4', 'GANGGUAN CAMPURAN ANSIETAS DAN DEPRESI F41.2', 'GANGGUAN DEPRESI F.32 dan F33', 'GANGGUAN PENYALAHGUNAAN NAPZA F10 - F19', 'GANGGUAN PERKEMBANGAN PADA ANAK DAN REMAJA F80-90#','GANGGUAN PSIKOTIK AKUT F23','SKIZOFRENIA F20','GANGGUAN SOMATOFORM F45','INSOMNIA F51.0','PERCOBAAN BUNUH DIRI','REDARTASI MENTAL F.70 - F.79','GANGGUAN KEPRIBADIAN DAN PERILAKU F.60'],
+        datasets: [
+            {
+                label: 'Laki-laki',
+                data: [6,3,8,3,12, 13,1,6,9,9,12,8,7],
+                backgroundColor: '#1ab394',
+                borderColor: [
+                ],
+                borderWidth: 1,
+                borderRadius: 5,
+            },
+            {
+                label: 'Perempuan',
+                data: [6,3,9,3,1,5,13,9,9,3,7, 7, 3],
+                backgroundColor: '#ed5565',
+                borderColor: [
+                ],
+                borderWidth: 1,
+                borderRadius: 5,
+            }
+        ]
+    };
     const config = {
         type: 'bar',
         data: data,
@@ -250,25 +243,12 @@
         },
     };
     const config2 = {
-        type: 'pie',
-        data: data,
+        type: 'bar',
+        data: data2,
         options: {
             responsive: true,
             legend: {
-                position: 'right',
-            },
-            title: {
                 display: false,
-                text: 'Chart.js Pie Chart'
-            }
-        },
-    };
-    const config3 = {
-        type: 'pie',
-        data: data,
-        options: {
-            responsive: true,
-            legend: {
                 position: 'right',
             },
             title: {
@@ -278,11 +258,9 @@
         },
     };
     const ctx = document.getElementById('myChart');
-    const ctx2 = document.getElementById('pieChart1');
-    const ctx3 = document.getElementById('pieChart2');
+    const ctx2 = document.getElementById('myChart2');
     const myChart = new Chart(ctx, config);
-    const pieChart1 = new Chart(ctx2, config2);
-    const pieChart2 = new Chart(ctx3, config3);
+    const myChart2 = new Chart(ctx2, config2);
 
 
 </script>
