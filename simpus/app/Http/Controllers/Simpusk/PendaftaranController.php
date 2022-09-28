@@ -8,7 +8,6 @@ use App\Models\Simpusk\Poli;
 use App\Models\Simpusk\Pasien;
 use App\Models\Simpusk\Pegawai;
 use App\Models\Simpusk\AntrianBPJS;
-use App\Models\Simpusk\DokterBPJS;
 use App\Models\Simpusk\PasienBPJS;
 use App\Models\Simpusk\Pcare;
 use Carbon\Carbon;

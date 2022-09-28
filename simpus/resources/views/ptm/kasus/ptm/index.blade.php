@@ -5,6 +5,26 @@
 @section('menu1', 'Kasus')
 @section('menu2', 'Kasus PTM')
 @section('table_ptm')
+<style>
+    #table1 th {
+        background: #1ab394 !important;
+    }
+
+    #table1 td {
+        background: white !important;
+    }
+
+    tr th:nth-child(1),
+    tr th:nth-child(2) {
+        z-index: 56;
+    }
+
+    .text-datatable {
+        width: 50px;
+        text-align: right;
+        border: none;
+    }
+</style>
 <div class="wrapper wrapper-content animated fadeInRight">
     {{ csrf_field() }}
     <div class="row">
@@ -27,183 +47,185 @@
                 <div class="ibox-content b-r-xl mt-3">
                     <form action="{{ route('kasus_ptm.cetak_pdf') }}" method="POST">
                         {{ csrf_field() }}
-                    <div class="d-flex justify-content-between my-3">
-                        <div class="p-0">
-                            <div class="form-group col-md" id="periode_bln">
-                                <p class="font-bold">Range Periode</p>
-                                <div class="form-group" id="range_periode">
-                                    <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text" class=" form-control rounded-left periode" id="start"
-                                            name="start" value="{{ date('M-Y') }}" />
-                                        <span class="input-group-addon px-3 bg-primary">to</span>
-                                        <input type="text" class=" form-control rounded-right periode" id="end"
-                                            name="end" value="{{ date('M-Y') }}" />
+                        <div class="d-flex justify-content-between my-3">
+                            <div class="p-0">
+                                <div class="form-group col-md" id="periode_bln">
+                                    <p class="font-bold">Range Periode</p>
+                                    <div class="form-group" id="range_periode">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            <input type="text" class=" form-control rounded-left periode" id="start"
+                                                name="start" value="{{ date('M-Y') }}" />
+                                            <span class="input-group-addon px-3 bg-primary">to</span>
+                                            <input type="text" class=" form-control rounded-right periode" id="end"
+                                                name="end" value="{{ date('M-Y') }}" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="p-0 my-auto">
+                            <div class="p-0 my-auto">
 
-                            <p>
-                                <a class="btn btn-default" href=""> <i class=" fa fa-print"></i>
-                                    &nbsp; Print</a>
-                                <button type="submit" name="cetakan" value="pdf" class="btn btn-danger" href="#"> <i class=" fa fa-file-pdf-o"></i>
-                                    &nbsp; PDF</button>
-                                <button type="submit" name="cetakan" value="excel" class="btn btn-primary" href="#"> <i class=" fa fa-file-excel-o"></i>
-                                    &nbsp; Excel</button>
-                            </p>
-                        </div>
+                                <p>
+                                    <a class="btn btn-default" href=""> <i class=" fa fa-print"></i>
+                                        &nbsp; Print</a>
+                                    <button type="submit" name="cetakan" value="pdf" class="btn btn-danger" href="#"> <i
+                                            class=" fa fa-file-pdf-o"></i>
+                                        &nbsp; PDF</button>
+                                    <button type="submit" name="cetakan" value="excel" class="btn btn-primary" href="#">
+                                        <i class=" fa fa-file-excel-o"></i>
+                                        &nbsp; Excel</button>
+                                </p>
+                            </div>
                     </form>
-                    </div>
-                    <div class="table-responsive">
-                        <table id="table1" class="table p-0 table-bordered text-center table-hover"
-                            style="overflow-x: auto;">
-                            <thead>
-                                <tr class="bg-primary">
-                                    <th class="align-middle bg-primary" rowspan="2">NO</th>
-                                    <th class="align-middle" rowspan="2">GOLONGAN UMUR
-                                    </th>
-                                    <th class="bg-primary" colspan="3">IMA</th>
-                                    <th class="bg-primary" colspan="3">Decom Cordis</th>
-                                    <th class="bg-primary" colspan="3">Hipertensi</th>
-                                    <th class="bg-primary" colspan="3">Stroke</th>
-                                    <th class="bg-primary" colspan="3">DM Tgt Insulin</th>
-                                    <th class="bg-primary" colspan="3">DM Tdk Tgt Insulin</th>
-                                    <th class="bg-primary" colspan="3">Ca Mammae</th>
-                                    <th class="bg-primary" colspan="3">Ca Cerviks</th>
-                                    <th class="bg-primary" colspan="3">Leukimia</th>
-                                    <th class="bg-primary" colspan="3">Retinoblastoma</th>
-                                    <th class="bg-primary" colspan="3">Ca Colorektal</th>
-                                    <th class="bg-primary" colspan="3">Thalasemia</th>
-                                    <th class="bg-primary" colspan="3">PPOK</th>
-                                    <th class="bg-primary" colspan="3">Asma Bronkhial</th>
-                                    <th class="bg-primary" colspan="3">Gagal Ginjal Kronik</th>
-                                    <th class="bg-primary" colspan="3">Osteoporosis</th>
-                                    <th class="bg-primary" colspan="3">Obesitas</th>
-                                </tr>
-                                <tr class="bg-primary">
-                                    <th style="z-index:50">L</th>
-                                    <th style="z-index:50">P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                    <th>L</th>
-                                    <th>P</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center">
+                </div>
+                <div class="table-responsive">
+                    <table id="table1" class="table p-0 table-bordered text-center table-hover"
+                        style="overflow-x: auto;">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th class="align-middle bg-primary" rowspan="2">NO</th>
+                                <th class="align-middle" rowspan="2">GOLONGAN UMUR
+                                </th>
+                                <th class="bg-primary" colspan="3">IMA</th>
+                                <th class="bg-primary" colspan="3">Decom Cordis</th>
+                                <th class="bg-primary" colspan="3">Hipertensi</th>
+                                <th class="bg-primary" colspan="3">Stroke</th>
+                                <th class="bg-primary" colspan="3">DM Tgt Insulin</th>
+                                <th class="bg-primary" colspan="3">DM Tdk Tgt Insulin</th>
+                                <th class="bg-primary" colspan="3">Ca Mammae</th>
+                                <th class="bg-primary" colspan="3">Ca Cerviks</th>
+                                <th class="bg-primary" colspan="3">Leukimia</th>
+                                <th class="bg-primary" colspan="3">Retinoblastoma</th>
+                                <th class="bg-primary" colspan="3">Ca Colorektal</th>
+                                <th class="bg-primary" colspan="3">Thalasemia</th>
+                                <th class="bg-primary" colspan="3">PPOK</th>
+                                <th class="bg-primary" colspan="3">Asma Bronkhial</th>
+                                <th class="bg-primary" colspan="3">Gagal Ginjal Kronik</th>
+                                <th class="bg-primary" colspan="3">Osteoporosis</th>
+                                <th class="bg-primary" colspan="3">Obesitas</th>
+                            </tr>
+                            <tr class="bg-primary">
+                                <th style="z-index:50">L</th>
+                                <th style="z-index:50">P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
 
-                            </tbody>
-                            <tfoot>
-                                <tr class="text-center text-white bg-primary">
-                                    <th></th>
-                                    <th>Total</th>
-                                    <th id="ima_l"></th>
-                                    <th id="ima_p"></th>
-                                    <th id="ima_total"></th>
-                                    <th id="decompcordis_l"></th>
-                                    <th id="decompcordis_p"></th>
-                                    <th id="decompcordis_total"></th>
-                                    <th id="hipertensi_l"></th>
-                                    <th id="hipertensi_p"></th>
-                                    <th id="hipertensi_total"></th>
-                                    <th id="stroke_l"></th>
-                                    <th id="stroke_p"></th>
-                                    <th id="stroke_total"></th>
-                                    <th id="dmtgtinsulin_l"></th>
-                                    <th id="dmtgtinsulin_p"></th>
-                                    <th id="dmtgtinsulin_total"></th>
-                                    <th id="dmtdktgtinsulin_l"></th>
-                                    <th id="dmtdktgtinsulin_p"></th>
-                                    <th id="dmtdktgtinsulin_total"></th>
-                                    <th id="camammae_l"></th>
-                                    <th id="camammae_p"></th>
-                                    <th id="camammae_total"></th>
-                                    <th id="caserviks_l"></th>
-                                    <th id="caserviks_p"></th>
-                                    <th id="caserviks_total"></th>
-                                    <th id="leukimia_l"></th>
-                                    <th id="leukimia_p"></th>
-                                    <th id="leukimia_total"></th>
-                                    <th id="retiniblastoma_l"></th>
-                                    <th id="retiniblastoma_p"></th>
-                                    <th id="retiniblastoma_total"></th>
-                                    <th id="cakolorectal_l"></th>
-                                    <th id="cakolorectal_p"></th>
-                                    <th id="cakolorectal_total"></th>
-                                    <th id="talasemia_l"></th>
-                                    <th id="talasemia_p"></th>
-                                    <th id="talasemia_total"></th>
-                                    <th id="ppok_l"></th>
-                                    <th id="ppok_p"></th>
-                                    <th id="ppok_total"></th>
-                                    <th id="asmabronkhiale_l"></th>
-                                    <th id="asmabronkhiale_p"></th>
-                                    <th id="asmabronkhiale_total"></th>
-                                    <th id="gagalginjalkronik_l"></th>
-                                    <th id="gagalginjalkronik_p"></th>
-                                    <th id="gagalginjalkronik_total"></th>
-                                    <th id="osteoporosis_l"></th>
-                                    <th id="osteoporosis_p"></th>
-                                    <th id="osteoporosis_total"></th>
-                                    <th id="obesitas_l"></th>
-                                    <th id="obesitas_p"></th>
-                                    <th id="obesitas_total"></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                        </tbody>
+                        <tfoot>
+                            <tr class="text-center text-white bg-primary">
+                                <th></th>
+                                <th>Total</th>
+                                <th id="ima_l"></th>
+                                <th id="ima_p"></th>
+                                <th id="ima_total"></th>
+                                <th id="decompcordis_l"></th>
+                                <th id="decompcordis_p"></th>
+                                <th id="decompcordis_total"></th>
+                                <th id="hipertensi_l"></th>
+                                <th id="hipertensi_p"></th>
+                                <th id="hipertensi_total"></th>
+                                <th id="stroke_l"></th>
+                                <th id="stroke_p"></th>
+                                <th id="stroke_total"></th>
+                                <th id="dmtgtinsulin_l"></th>
+                                <th id="dmtgtinsulin_p"></th>
+                                <th id="dmtgtinsulin_total"></th>
+                                <th id="dmtdktgtinsulin_l"></th>
+                                <th id="dmtdktgtinsulin_p"></th>
+                                <th id="dmtdktgtinsulin_total"></th>
+                                <th id="camammae_l"></th>
+                                <th id="camammae_p"></th>
+                                <th id="camammae_total"></th>
+                                <th id="caserviks_l"></th>
+                                <th id="caserviks_p"></th>
+                                <th id="caserviks_total"></th>
+                                <th id="leukimia_l"></th>
+                                <th id="leukimia_p"></th>
+                                <th id="leukimia_total"></th>
+                                <th id="retiniblastoma_l"></th>
+                                <th id="retiniblastoma_p"></th>
+                                <th id="retiniblastoma_total"></th>
+                                <th id="cakolorectal_l"></th>
+                                <th id="cakolorectal_p"></th>
+                                <th id="cakolorectal_total"></th>
+                                <th id="talasemia_l"></th>
+                                <th id="talasemia_p"></th>
+                                <th id="talasemia_total"></th>
+                                <th id="ppok_l"></th>
+                                <th id="ppok_p"></th>
+                                <th id="ppok_total"></th>
+                                <th id="asmabronkhiale_l"></th>
+                                <th id="asmabronkhiale_p"></th>
+                                <th id="asmabronkhiale_total"></th>
+                                <th id="gagalginjalkronik_l"></th>
+                                <th id="gagalginjalkronik_p"></th>
+                                <th id="gagalginjalkronik_total"></th>
+                                <th id="osteoporosis_l"></th>
+                                <th id="osteoporosis_p"></th>
+                                <th id="osteoporosis_total"></th>
+                                <th id="obesitas_l"></th>
+                                <th id="obesitas_p"></th>
+                                <th id="obesitas_total"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
-        @endsection
-        @push('scripts')
-        <script type="text/javascript">
-            var table,tabledata,table_index;
+    </div>
+    @endsection
+    @push('scripts')
+    <script type="text/javascript">
+        var table,tabledata,table_index;
             $(document).ready(function(){
                 // getsumdata();
                 $(".btn-refresh").click(function() {
@@ -1435,5 +1457,5 @@
                     }
                 });
             }
-        </script>
-        @endpush
+    </script>
+    @endpush

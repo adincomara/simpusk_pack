@@ -65,12 +65,10 @@
                             <p class="font-bold">Periode</p>
                             <div class="form-group" id="range_periode">
                                 <div class="input-daterange input-group" id="datepicker">
-                                    <input type="text"
-                                        class="form-control-sm form-control rounded-left periode"
+                                    <input type="text" class="form-control-sm form-control rounded-left periode"
                                         id="start" name="start" value="{{ $start_date }}" />
                                     <span class="input-group-addon px-3 bg-primary">to</span>
-                                    <input type="text"
-                                        class="form-control-sm form-control rounded-right periode"
+                                    <input type="text" class="form-control-sm form-control rounded-right periode"
                                         id="end" name="end" value="{{ $end_date }}" />
                                 </div>
                             </div>
@@ -92,44 +90,90 @@
                         style="overflow-x: auto;">
                         <thead>
                             <tr class="text-white bg-green text-center">
-                                <th width="5%" class="align-bottom" rowspan="3">No</th>
-
-                                <th class="align-bottom" rowspan="3">PUSKESMAS</th>
-
-
-                                <th class="align-bottom" rowspan="3">Jumlah Sekolah yg telah dilakukan Skrining
+                                <th width="5%" class="align-bottom bg-primary" rowspan="4">No</th>
+                                <th class="align-bottom bg-primary" rowspan="4">PUSKESMAS</th>
+                                <th class="align-bottom bg-primary" rowspan="4">Jumlah Sekolah yg telah dilakukan
+                                    Skrining
                                     ASSIST</th>
-                                <th class="align-bottom" colspan="4">Jumlah Peserta Skrining ASSIST</th>
-                                <th class="align-bottom" colspan="20">Jenis Zat yang digunakan</th>
-                                <th class="align-bottom" colspan="6">Hasil Skrining ASSISTT</th>
-                                <th class="align-bottom" colspan="4">Tindak Lanjut Skrining ASSIST</th>
-
-                                <th class="align-bottom" rowspan="3">Action</th>
-
+                                <th class="align-bottom bg-primary" colspan="6">Jumlah Peserta Skrining ASSIST</th>
+                                <th class="align-bottom bg-primary" rowspan="4">TOTAL DI SKRINING</th>
+                                <th class="align-bottom bg-primary" colspan="20">Jenis Zat yang digunakan</th>
+                                <th class="align-bottom bg-primary" colspan="18">Hasil Skrining ASSISTT</th>
+                                <th class="align-bottom bg-primary" colspan="4">Tindak Lanjut Skrining ASSIST</th>
+                                <th class="align-bottom bg-primary" rowspan="4">Action</th>
                             </tr>
                             <tr class="text-white bg-green text-center">
-                                <th class="align-bottom" colspan="2">Puskesmas</th>
-                                <th class="align-bottom" colspan="2">Sekolah</th>
-                                <th class="align-bottom" colspan="2">Produk tembakau (rokok, cerutu, kretek, dll.)</th>
-                                <th class="align-bottom" colspan="2">Minuman beralkohol (bir, anggur, sopi, tomi, dll.)</th>
-                                <th class="align-bottom" colspan="2">Kanabis (marijuana, ganja, gelek, cimengpot, dll.)</th>
-                                <th class="align-bottom" colspan="2">Kokain (coke, crack, etc.)</th>
-                                <th class="align-bottom" colspan="2">Stimulan jenis amfetamin (ekstasi, shabu, dll)</th>
-                                <th class="align-bottom" colspan="2">Inhalansia (lem, bensin, tiner, dll)</th>
-                                <th class="align-bottom" colspan="2">Sedativa atau obat tidur (Benzodiazepin, Lexotan, Rohypnol,
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">15-18 th</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">19-59 th</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">≥ 60 th</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Produk tembakau (rokok,
+                                    cerutu,
+                                    kretek, dll.)
+                                </th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Minuman beralkohol (bir,
+                                    anggur,
+                                    sopi, tomi,
+                                    dll.)</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Kanabis (marijuana, ganja,
+                                    gelek,
+                                    cimengpot,
+                                    dll.)</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Kokain (coke, crack, etc.)
+                                </th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Stimulan jenis amfetamin
+                                    (ekstasi,
+                                    shabu, dll)
+                                </th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Inhalansia (lem, bensin,
+                                    tiner, dll)
+                                </th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Sedativa atau obat tidur
+                                    (Benzodiazepin,
+                                    Lexotan, Rohypnol,
                                     Mogadon, dll.)</th>
-                                <th class="align-bottom" colspan="2">Halusinogens (LSD, mushrooms, PCP, dll.)</th>
-                                <th class="align-bottom" colspan="2">Opioida (heroin, morfin, metadon, kodein, dll.)</th>
-                                <th class="align-bottom" colspan="2">Zat lain</th>
-                                <th class="align-bottom" colspan="2">Ringan</th>
-                                <th class="align-bottom" colspan="2">Sedang</th>
-                                <th class="align-bottom" colspan="2">Berat</th>
-                                <th class="align-bottom" colspan="2">Rujuk IPWL</th>
-                                <th class="align-bottom" colspan="2">Pelayanan Langsung di Puskesmas</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Halusinogens (LSD,
+                                    mushrooms, PCP,
+                                    dll.)</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Opioida (heroin, morfin,
+                                    metadon,
+                                    kodein, dll.)
+                                </th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">Zat lain</th>
+                                <th class="align-bottom bg-primary" colspan="6">RENDAH</th>
+                                <th class="align-bottom bg-primary" colspan="6">SEDANG</th>
+                                <th class="align-bottom bg-primary" colspan="6">TINGGI</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">KONSELING</th>
+                                <th class="align-bottom bg-primary" colspan="2" rowspan="2">RUJUK IPWL</th>
+                            </tr>
+                            <tr class="bg-primary text-center">
+                                <th class="align-bottom bg-primary" colspan="2">15-18 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">19-59 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">≥ 60 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">15-18 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">19-59 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">≥ 60 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">15-18 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">19-59 th</th>
+                                <th class="align-bottom bg-primary" colspan="2">≥ 60 th</th>
+
                             </tr>
                             <tr class="text-white bg-green text-center">
                                 <th class="align-bottom" style="z-index: 50">L</th>
                                 <th class="align-bottom" style="z-index: 50">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
+                                <th class="align-bottom">L</th>
+                                <th class="align-bottom">P</th>
                                 <th class="align-bottom">L</th>
                                 <th class="align-bottom">P</th>
                                 <th class="align-bottom">L</th>
@@ -206,6 +250,22 @@
                                 <th id="tindak_skrining_rujuk_p"></th>
                                 <th id="tindak_skrining_langsung_l"></th>
                                 <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+                                <th id="tindak_skrining_langsung_p"></th>
+
                                 <th id="action"></th>
                             </tr>
                         </tfoot>
@@ -216,10 +276,10 @@
 
 
 
-    @endsection
-    @push('scripts')
-    <script type="text/javascript">
-        var table,tabledata,table_index;
+        @endsection
+        @push('scripts')
+        <script type="text/javascript">
+            var table,tabledata,table_index;
         $(document).ready(function(){
             $(".btn-refresh").click(function() {
                 table.ajax.reload();
@@ -481,5 +541,5 @@
                 Swal.fire('Ups','Maaf gagal','error');
             @endif
         });
-    </script>
-    @endpush
+        </script>
+        @endpush

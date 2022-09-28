@@ -1,9 +1,9 @@
 @extends('layouts.table_ptm')
-@section('title', 'SPM')
-@section('judultable', 'SPM')
-{{-- @section('subjudul', '(SPM)') --}}
-@section('menu1', 'Indikator')
-@section('menu2', 'SPM')
+@section('title', 'Pelayanan Kesehatan Penderita Diabetes Melitus (DM)')
+@section('judultable', 'Pelayanan Kesehatan Penderita Diabetes Melitus (DM)')
+{{-- @section('subjudul', '(Pelayanan Kesehatan Penderita Diabetes Melitus (DM))') --}}
+@section('menu1', 'Profil')
+@section('menu2', 'Pelayanan Kesehatan Penderita Diabetes Melitus (DM)')
 @section('table_ptm')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -12,11 +12,11 @@
                 <div class="ibox-title b-r-xl">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="ml-3">SPM</h3>
+                            <h3 class="ml-3">Pelayanan Kesehatan Penderita Diabetes Melitus (DM)</h3>
                         </div>
                         <div class="ibox-tools">
                             <div class="text-right">
-                                <a href="{{ route('indikator_spm.form') }}" class="btn btn-primary b-r-xl"><i
+                                <a href="{{ route('profil_sdm.form') }}" class="btn btn-primary b-r-xl"><i
                                         class="fa fa-plus-circle"></i>&nbsp;
                                     Tambah</a>
                                 <a href="javascript:void(0);"
@@ -30,15 +30,12 @@
                     <div class="d-flex justify-content-between my-3">
                         <div class="p-0">
                             <div class="form-group col-md" id="periode_bln">
-                                <p class="font-bold">Range Periode</p>
-                                <div class="form-group" id="range_periode">
-                                    <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text" class=" form-control rounded-left periode" id="start"
-                                            name="start" value="Apr-2022" />
-                                        <span class="input-group-addon px-3 bg-primary">to</span>
-                                        <input type="text" class=" form-control rounded-right periode" id="end"
-                                            name="end" value="Apr-2022" />
-                                    </div>
+                                <p class="font-bold">Periode</p>
+                                <div class="input-group date">
+                                    <span class="input-group-addon px-3 bg-primary rounded-left"><i
+                                            class="fa fa-calendar"></i></span>
+                                    <input type="text" class="form-control input-group-addon rounded-right py-2"
+                                        name="periode" id="periode" name="periode" autocomplete="off" value="Apr-2022">
                                 </div>
                             </div>
                         </div>
@@ -57,37 +54,51 @@
                         <table id="table1" class="table p-0 table-bordered text-center table-hover"
                             style="overflow-x: auto;">
                             <thead>
-                                <tr class="text-white bg-primary">
-                                    <th width="5%" class="align-middle bg-primary text-center" rowspan="2">No</th>
-                                    <th class="align-middle " rowspan="2" id="header_puskesmas">PUSKESMAS</th>
-                                    {{-- <th class="align-middle " rowspan="2">PUSKESMAS</th> --}}
-                                    <th class="align-middle bg-primary" colspan="3">PELAYANAN KESEHATAN USIA PRODUKTIF
-                                    </th>
-                                    <th class="align-middle bg-primary" colspan="3">PELAYANAN KESEHATAN PENDERITA
-                                        HIPERTENSI</th>
-                                    <th class="align-middle bg-primary" colspan="3">PELAYANAN KESEHATAN PENDERITA DM
-                                    </th>
-                                    <th class="align-middle bg-primary" colspan="3">PELAYANAN KESEHATAN ODGJ</th>
+                                <tr class="text-white text-center bg-primary">
+                                    <th width="5%" class="align-middle bg-primary" rowspan="2">No</th>
+                                    <th class="align-middle" rowspan="2">PUSKESMAS</th>
+                                    <th class="align-middle" rowspan="2">JUMLAH ESTIMASI PENDERITA DIABETES MELITUS</th>
+                                    <th class="align-middle bg-primary" colspan="2">PENDERITA DIABETES MELITUS YANG
+                                        MENDAPATKAN
+                                        PELAYANAN
+                                        KESEHATAN SESUAI STANDAR</th>
                                     <th class="align-middle bg-primary" rowspan="2">Action</th>
                                 </tr>
-                                <tr class="text-white bg-primary">
-                                    <th class="align-middle" style="z-index: 50">SASARAN</th>
-                                    <th class="align-middle" style="z-index: 50">REALISASI</th>
-                                    <th class="align-middle">%</th>
-                                    <th class="align-middle">SASARAN</th>
-                                    <th class="align-middle">REALISASI</th>
-                                    <th class="align-middle">%</th>
-                                    <th class="align-middle">SASARAN</th>
-                                    <th class="align-middle">REALISASI</th>
-                                    <th class="align-middle">%</th>
-                                    <th class="align-middle">SASARAN</th>
-                                    <th class="align-middle">REALISASI</th>
+                                <tr class="text-white text-center bg-primary">
+                                    <th class="align-middle">JUMLAH</th>
                                     <th class="align-middle">%</th>
                                 </tr>
+
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>nama puskesmas</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>
+                                        <div class='btn-group '>
+                                            <a href="#"
+                                                class="btn btn-warning btn-xs icon-btn md-btn-flat product-tooltip b-r-xl"
+                                                title="Edit"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+                                            <a href="#"
+                                                class="btn btn-danger btn-xs icon-btn md-btn-flat product-tooltip b-r-xl"
+                                                title="Hapus"><i class="fa fa-times"></i> Hapus</a>&nbsp;
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                             <tfoot>
+                                <tr class="bg-primary">
+                                    <th></th>
+                                    <th>Total</th>
+                                    <th>0</th>
+                                    <th>0</th>
+                                    <th>0</th>
+                                    <th></th>
+                                </tr>
+
                             </tfoot>
                         </table>
                     </div>
@@ -107,7 +118,7 @@
                     dom: '<"html5buttons"B>lTfgitp',
                     buttons: [],
                 });
-                $('.periode').datepicker({
+                $('#periode_bln .input-group.date').datepicker({
                     minViewMode: 1,
                     keyboardNavigation: false,
                     forceParse: false,

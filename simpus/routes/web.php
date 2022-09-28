@@ -650,6 +650,15 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
                 return view('ptm/deteksi_dini/form_e/form');
             })->name('form');
         });
+        //Deteksi Dini Form F
+        Route::group(['prefix' => 'form_f', 'as' => 'form_f.'], function () {
+            Route::get('/', function () {
+                return view('ptm/deteksi_dini/form_f/index');
+            })->name('index');
+            Route::get('/form', function () {
+                return view('ptm/deteksi_dini/form_f/form');
+            })->name('form');
+        });
         //Deteksi Dini UBM
         Route::group(['prefix' => 'dd_ubm', 'as' => 'dd_ubm.'], function () {
             Route::get('/', function () {
@@ -675,6 +684,51 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
             })->name('index');
             Route::get('/form', function () {
                 return view('ptm/profil/sdm/form');
+            })->name('form');
+        });
+        //Profil Uspro
+        Route::group(['prefix' => 'profil_uspro', 'as' => 'profil_uspro.'], function () {
+            Route::get('/', function () {
+                return view('ptm/profil/uspro/index');
+            })->name('index');
+            Route::get('/form', function () {
+                return view('ptm/profil/uspro/form');
+            })->name('form');
+        });
+        //Profil Hipertensi
+        Route::group(['prefix' => 'profil_ht', 'as' => 'profil_ht.'], function () {
+            Route::get('/', function () {
+                return view('ptm/profil/hipertensi/index');
+            })->name('index');
+            Route::get('/form', function () {
+                return view('ptm/profil/hipertensi/form');
+            })->name('form');
+        });
+        //Profil Dm
+        Route::group(['prefix' => 'profil_dm', 'as' => 'profil_dm.'], function () {
+            Route::get('/', function () {
+                return view('ptm/profil/dm/index');
+            })->name('index');
+            Route::get('/form', function () {
+                return view('ptm/profil/dm/form');
+            })->name('form');
+        });
+        //Profil ODGJ
+        Route::group(['prefix' => 'profil_odgj', 'as' => 'profil_odgj.'], function () {
+            Route::get('/', function () {
+                return view('ptm/profil/odgj/index');
+            })->name('index');
+            Route::get('/form', function () {
+                return view('ptm/profil/odgj/form');
+            })->name('form');
+        });
+        //Profil Iva Sadanis
+        Route::group(['prefix' => 'profil_iva', 'as' => 'profil_iva.'], function () {
+            Route::get('/', function () {
+                return view('ptm/profil/iva/index');
+            })->name('index');
+            Route::get('/form', function () {
+                return view('ptm/profil/iva/form');
             })->name('form');
         });
         //Analisa Kasus PTM

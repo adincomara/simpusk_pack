@@ -4,7 +4,6 @@
 @section('menu1', 'Master')
 @section('menu2', 'Data Pelayanan Poli')
 @section('table')
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">

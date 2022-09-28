@@ -64,12 +64,10 @@
                             <div class="col-md-9">
                                 <div class="form-group" id="range_periode">
                                     <div class="input-daterange input-group" id="datepicker">
-                                        <input type="text"
-                                            class="form-control-sm form-control rounded-left periode"
+                                        <input type="text" class="form-control-sm form-control rounded-left periode"
                                             id="start" name="start" value="{{ $start_date }}" />
                                         <span class="input-group-addon px-3 bg-primary">to</span>
-                                        <input type="text"
-                                            class="form-control-sm form-control rounded-right periode"
+                                        <input type="text" class="form-control-sm form-control rounded-right periode"
                                             id="end" name="end" value="{{ $end_date }}" />
                                     </div>
                                 </div>
@@ -91,33 +89,26 @@
                             style="overflow-x: auto;">
                             <thead>
                                 <tr class="text-white bg-green text-center">
-                                    <th width="5%" class="align-middle" rowspan="4">No</th>
-                                    <th class="align-middle" rowspan="4">PUSKESMAS</th>
-                                    <th class="align-bottom" colspan="4">Jumlah yang dideteksi dini</th>
+                                    <th width="5%" class="align-middle" rowspan="3">No</th>
+                                    <th class="align-middle" rowspan="3">PUSKESMAS</th>
+                                    <th class="align-bottom" colspan="2">Jumlah yang dideteksi dini</th>
                                     <th class="align-bottom" colspan="4">Jumlah yang mendapat tatalaksanan</th>
-                                    <th class="align-middle" rowspan="4">Action</th>
+                                    <th class="align-middle" rowspan="3">Jumlah Dirujuk</th>
+                                    <th class="align-middle" rowspan="3">Action</th>
+                                </tr>
+                                <tr class="text-white bg-green text-center">
+                                    <th class="align-middle" colspan="2">SDQ</th>
+                                    <th class="align-middle" colspan="2">Hasil sampai dengan bonderline</th>
+                                    <th class="align-middle" colspan="2">Hasil sampai dengan abnormal</th>
                                 </tr>
 
                                 <tr class="text-white bg-green text-center">
-                                    <th class="align-middle" colspan="4">SDQ</th>
-                                    <th class="align-middle" colspan="4">Hasil sampai dengan bonderline/abnormal</th>
-                                </tr>
-
-                                <tr class="text-white bg-green text-center">
-                                    <th class="align-middle" colspan="2">4 - 10 th</th>
-                                    <th class="align-middle" colspan="2">11 - 18 th</th>
-                                    <th class="align-middle" colspan="2">4 - 10 th</th>
-                                    <th class="align-middle" colspan="2">11 - 18 th</th>
-                                </tr>
-                                <tr class="text-white bg-green text-center">
-                                    <th class="align-middle">L</th>
-                                    <th class=" align-middle">P</th>
-                                    <th class="align-middle">L</th>
-                                    <th class=" align-middle">P</th>
-                                    <th class="align-middle">L</th>
-                                    <th class=" align-middle">P</th>
-                                    <th class="align-middle">L</th>
-                                    <th class=" align-middle">P</th>
+                                    <th class="align-middle">&lt;15 th</th>
+                                    <th class="align-middle">15 - 18 th</th>
+                                    <th class="align-middle">&lt;15 th</th>
+                                    <th class="align-middle">15 - 18 th</th>
+                                    <th class="align-middle">&lt;15 th</th>
+                                    <th class="align-middle">15 - 18 th</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,7 +125,7 @@
                                     <th id="abnormal_4_10_l"></th>
                                     <th id="abnormal_4_10_p"></th>
                                     <th id="abnormal_11_18_l"></th>
-                                    <th id="abnormal_11_18_P"></th>
+                                    {{-- <th id="abnormal_11_18_P"></th> --}}
                                     <th id="action"></th>
                                 </tr>
                             </tfoot>

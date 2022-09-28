@@ -1,9 +1,9 @@
 @extends('layouts.table_ptm')
-@section('title', 'Rekapitulasi Deteksi Dini Kanker Leher Rahim & Kanker Payudara di Puskesmas (Form E)')
-@section('judultable', 'Rekapitulasi Deteksi Dini Kanker Leher Rahim & Kanker Payudara di Puskesmas (Form E)')
-{{-- @section('subjudul', '(Rekapitulasi Deteksi Dini Kanker Leher Rahim & Kanker Payudara di Puskesmas (Form E))') --}}
-@section('menu1', 'Deteksi Dini')
-@section('menu2', 'Rekapitulasi Deteksi Dini Kanker Leher Rahim & Kanker Payudara di Puskesmas (Form E)')
+@section('title', 'Hipertensi')
+@section('judultable', 'Hipertensi')
+{{-- @section('subjudul', '(Hipertensi)') --}}
+@section('menu1', 'Profil')
+@section('menu2', 'Hipertensi')
 @section('table_ptm')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -12,12 +12,11 @@
                 <div class="ibox-title b-r-xl">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="ml-3">Rekapitulasi Deteksi Dini Kanker Leher Rahim & Kanker Payudara di Puskesmas
-                                (Form E)</h3>
+                            <h3 class="ml-3">Hipertensi</h3>
                         </div>
                         <div class="ibox-tools">
                             <div class="text-right">
-                                <a href="{{ route('form_e.form') }}" class="btn btn-primary b-r-xl"><i
+                                <a href="{{ route('profil_sdm.form') }}" class="btn btn-primary b-r-xl"><i
                                         class="fa fa-plus-circle"></i>&nbsp;
                                     Tambah</a>
                                 <a href="javascript:void(0);"
@@ -55,74 +54,54 @@
                         <table id="table1" class="table p-0 table-bordered text-center table-hover"
                             style="overflow-x: auto;">
                             <thead>
-                                <tr class="bg-primary">
-                                    <th width="5%" class="align-middle bg-primary text-center" rowspan="3">No</th>
-                                    <th class="align-middle bg-primary" rowspan="3">No. Reg</th>
-                                    <th class="align-middle bg-primary" rowspan="3">Nama</th>
-                                    <th class="align-middle bg-primary" rowspan="3">Umur</th>
-                                    <th class="align-middle bg-primary" rowspan="3">Alamat</th>
-                                    <th class="align-middle bg-primary" rowspan="3">Tgl. IVA</th>
-                                    <th class="align-middle bg-primary" rowspan="1" colspan="2">IVA ulang Pra Krio</th>
-                                    <th class="align-middle bg-primary" colspan="3">Pelaksanaan Krio</th>
-                                    <th class="align-middle bg-primary" colspan="7">Alasan Kunjungan Ulang</th>
-                                    <th class="align-middle bg-primary" rowspan="3">Keterangan</th>
+                                <tr class="text-white text-center bg-primary">
+                                    <th width="5%" class="align-middle text-center bg-primary" rowspan="3">NO</th>
+                                    <th class="align-middle bg-primary" rowspan="3">PUSKESMAS</th>
+                                    <th class="align-middle bg-primary" colspan="3" rowspan="2">JUMLAH ESTIMASI
+                                        PENDERITA
+                                        HIPERTENSI BERUSIA ≥ 15 TAHUN</th>
+                                    <th class="align-middle bg-primary" colspan="6">MENDAPATKAN PELAYANAN KESEHATAN</th>
                                     <th class="align-middle bg-primary" rowspan="3">Action</th>
-                                    {{-- <th class="align-middle bg-primary" rowspan="3"><i class="fas fa-th"></i></th>
-                                    --}}
                                 </tr>
-                                <tr class="bg-primary">
-                                    <td class="align-middle bg-primary" rowspan="2">Positif</td>
-                                    <td class="align-middle bg-primary" rowspan="2">Negatif</td>
-                                    <td class="align-middle bg-primary" rowspan="2">Hari Ini</td>
-                                    <td class="align-middle bg-primary" rowspan="2">
-                                        < 1 bln </td>
-                                    <td class="align-middle bg-primary" rowspan="2">> 1 bln
-                                    </td>
-                                    <td class="align-middle bg-primary" rowspan="2">Ada Keluhan</td>
-                                    <td class="align-middle bg-primary" colspan="2">IVA Pasca krio kurang 6 bln</td>
-                                    <td class="align-middle bg-primary" colspan="2">IVA Pasca krio 6 bln</td>
-                                    <td class="align-middle bg-primary" colspan="2">IVA Pasca krio 1 thn</td>
+                                <tr class="text-white text-center bg-primary fw-600">
+                                    <td class="align-middle bg-primary" colspan="2">LAKI-LAKI</td>
+                                    <td class="align-middle bg-primary" colspan="2">PEREMPUAN</td>
+                                    <td class="align-middle bg-primary" colspan="2">lAKI-LAKI + PEREMPUAN</td>
                                 </tr>
-                                <tr class="bg-primary">
-                                    <td class="align-middle bg-primary">Positif</td>
-                                    <td class="align-middle bg-primary">Negatif</td>
-                                    <td class="align-middle bg-primary">Positif</td>
-                                    <td class="align-middle bg-primary">Negatif</td>
-                                    <td class="align-middle bg-primary">Positif</td>
-                                    <td class="align-middle bg-primary">Negatif</td>
+                                <tr class="text-white text-center fw-600">
+                                    <td class="align-middle bg-primary">LAKI-LAKI</td>
+                                    <td class="align-middle bg-primary"> PEREMPUAN</td>
+                                    <td class="align-middle bg-primary">LAKI-LAKI + PEREMPUAN</td>
+                                    <td class="align-middle bg-primary"> JUMLAH </td>
+                                    <td class="align-middle bg-primary"> %</td>
+                                    <td class="align-middle bg-primary"> JUMLAH</td>
+                                    <td class="align-middle bg-primary"> % </td>
+                                    <td class="align-middle bg-primary"> JUMLAH </td>
+                                    <td class="align-middle bg-primary"> % </td>
                                 </tr>
-                                <tr class="bg-primary font-weight-light">
+                                <tr class="text-white text-center font-weight-light">
                                     <?php
-                                                                                                                                                            for($i = 1; $i <= 20; $i++ ) {
-                                                                                                                                                            ?>
+                                                                                                            for($i = 1; $i <= 12; $i++ ) {
+                                                                                                            ?>
                                     <td class="align-middle bg-primary" style="opacity: 0.8;">[
                                         <?= $i ?>]
                                     </td>
                                     <?php } ?>
                                 </tr>
-
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>1</td>
-                                    <td>11-Apr-2022</td>
-                                    <td>A123123ZCD</td>
-                                    <td>Panji</td>
-                                    <td>23</td>
-                                    <td>Jl.Kemiri 12</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
+                                    <td>nama puskesmas</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>0</td>
+                                    <td>0%</td>
                                     <td>
                                         <div class='btn-group '>
                                             <a href="#"
@@ -136,6 +115,20 @@
                                 </tr>
                             </tbody>
                             <tfoot>
+                                <tr class="bg-primary">
+                                    <th></th>
+                                    <th>Total</th>
+                                    <th>0</th>
+                                    <th>0</th>
+                                    <th>0</th>
+                                    <th>0</th>
+                                    <td>0%</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <th></th>
+                                </tr>
 
                             </tfoot>
                         </table>
@@ -151,7 +144,7 @@
                     table.ajax.reload();
                 });
                 table = $('#table1').DataTable({
-                    pageLength: 100,
+                    pageLength: 10,
                     responsive: true,
                     dom: '<"html5buttons"B>lTfgitp',
                     buttons: [],
