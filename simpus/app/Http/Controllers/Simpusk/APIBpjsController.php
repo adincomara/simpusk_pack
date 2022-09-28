@@ -40,6 +40,7 @@ class APIBpjsController extends Controller
         // return APIBpjsController::decompress($output);
     }
     public static function get($url){
+        // $return $url
         try{
             $uri = env('API_URL');
             $consID 	= env('API_CONSID'); //customer ID anda
@@ -90,7 +91,7 @@ class APIBpjsController extends Controller
                 $metadata = $data['metaData'];
             }
 
-            if($metadata['message'] == 'OK' && $metadata['code'] == 200){
+            if($metadata['code'] == 200){
                 for(;;){
                     $response = APIBpjsController::stringDecrypt($api['response'], $stamp);
                     $result = json_decode($response,true);
@@ -108,6 +109,217 @@ class APIBpjsController extends Controller
             $data['metaData'] = $metadata;
             $data['response'] = $result;
             // return $data;
+        }catch(\Throwable $th){
+            $data['metaData']['code'] = 204;
+            $data['metaData']['message'] = 'Error!';
+            $data['response'] = 'Error!';
+        }
+        return $data;
+    }
+    public static function post($url, $post){
+        // return $post;
+        try{
+            $uri = env('API_URL');
+            $consID 	= env('API_CONSID'); //customer ID anda
+            $secretKey 	= env('API_SECRETKEY'); //secretKey anda
+
+            $pcare = Pcare::first();
+            $pcareUname = $pcare->username;
+            $pcarePWD = $pcare->password;
+
+            $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
+            $user_key = env('API_USER_KEY');
+
+            $stamp    = time();
+            // return $stamp;
+            $data     = $consID.'&'.$stamp;
+
+            $signature = hash_hmac('sha256', $data, $secretKey, true);
+            $encodedSignature = base64_encode($signature);
+            $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
+            // return $uri;
+            $headers = array(
+                        "Accept: application/json",
+                        "X-cons-id:".$consID,
+                        "X-timestamp: ".$stamp,
+                        "X-signature: ".$encodedSignature,
+                        "X-authorization: Basic " .$encodedAuthorization,
+                        "user_key:".$user_key,
+                        "Content-Type: text/plain"
+                    );
+            $ch = curl_init($uri.''.$url);
+            // return $uri.''.$url;
+            // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
+            $data = curl_exec($ch);
+            if (curl_errno($ch)) {
+                echo curl_error($ch);
+            }
+            curl_close($ch);
+
+            // header("Content-Type: application/json");
+            $data = json_decode($data, true);
+            // return $data;
+            if(isset($data['metaData'])){
+                $api = $data;
+                $metadata = $data['metaData'];
+            }
+
+            if($metadata['code'] == 201){
+                for(;;){
+                    $response = APIBpjsController::stringDecrypt($api['response'], $stamp);
+                    $result = json_decode($response,true);
+                    if($result == null){
+                        continue;
+                    }else{
+                        break;
+                    }
+
+                }
+            }
+            // if(empty($result)){
+            //     return self::get($url);
+            // }
+            $data['metaData'] = $metadata;
+            $data['response'] = $result;
+            // return $data;
+        }catch(\Throwable $th){
+            $data['metaData']['code'] = 204;
+            $data['metaData']['message'] = 'Error! '.$metadata;
+            $data['response'] = 'Error! '.$api['response'];
+        }
+        return $data;
+    }
+    public static function put($url, $post){
+        // return $post;
+        try{
+            $uri = env('API_URL');
+            $consID 	= env('API_CONSID'); //customer ID anda
+            $secretKey 	= env('API_SECRETKEY'); //secretKey anda
+
+            $pcare = Pcare::first();
+            $pcareUname = $pcare->username;
+            $pcarePWD = $pcare->password;
+
+            $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
+            $user_key = env('API_USER_KEY');
+
+            $stamp    = time();
+            // return $stamp;
+            $data     = $consID.'&'.$stamp;
+
+            $signature = hash_hmac('sha256', $data, $secretKey, true);
+            $encodedSignature = base64_encode($signature);
+            $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
+            // return $uri;
+            $headers = array(
+                        "Accept: application/json",
+                        "X-cons-id:".$consID,
+                        "X-timestamp: ".$stamp,
+                        "X-signature: ".$encodedSignature,
+                        "X-authorization: Basic " .$encodedAuthorization,
+                        "user_key:".$user_key,
+                        "Content-Type: text/plain"
+                    );
+            $ch = curl_init($uri.''.$url);
+            // return $uri.''.$url;
+            // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
+            $data = curl_exec($ch);
+            if (curl_errno($ch)) {
+                echo curl_error($ch);
+            }
+            curl_close($ch);
+
+            // header("Content-Type: application/json");
+            $data = json_decode($data, true);
+            return $data;
+            if(isset($data['metaData'])){
+                $api = $data;
+                $metadata = $data['metaData'];
+            }
+
+            if($metadata['code'] == 201){
+                for(;;){
+                    $response = APIBpjsController::stringDecrypt($api['response'], $stamp);
+                    $result = json_decode($response,true);
+                    if($result == null){
+                        continue;
+                    }else{
+                        break;
+                    }
+
+                }
+            }
+            // if(empty($result)){
+            //     return self::get($url);
+            // }
+            $data['metaData'] = $metadata;
+            $data['response'] = $result;
+            // return $data;
+        }catch(\Throwable $th){
+            $data['metaData']['code'] = 204;
+            $data['metaData']['message'] = 'Error!';
+            $data['response'] = 'Error!';
+        }
+        return $data;
+    }
+    public static function delete($url){
+        try{
+            $uri = env('API_URL');
+            $fullurl = $uri.''.$url;
+            $consID 	= env('API_CONSID'); //customer ID anda
+            $secretKey 	= env('API_SECRETKEY'); //secretKey anda
+
+            $pcare = Pcare::first();
+            $pcareUname = $pcare->username;
+            $pcarePWD = $pcare->password;
+
+            $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
+            $user_key = env('API_USER_KEY');
+
+            $stamp    = time();
+            // return $stamp;
+            $data     = $consID.'&'.$stamp;
+
+            $signature = hash_hmac('sha256', $data, $secretKey, true);
+            $encodedSignature = base64_encode($signature);
+            $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
+            // return $uri;
+            $headers = array(
+                        "Accept: application/json",
+                        "X-cons-id:".$consID,
+                        "X-timestamp: ".$stamp,
+                        "X-signature: ".$encodedSignature,
+                        "X-authorization: Basic " .$encodedAuthorization,
+                        "user_key:".$user_key,
+                        "Content-Type: application/json; charset=utf-8"
+                    );
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+            curl_setopt($ch, CURLOPT_URL, $fullurl);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $data = curl_exec($ch);
+            if (curl_errno($ch)) {
+                echo curl_error($ch);
+            }
+            curl_close($ch);
+
+            // header("Content-Type: application/json");
+            $data = json_decode($data, true);
+            return $data;
         }catch(\Throwable $th){
             $data['metaData']['code'] = 204;
             $data['metaData']['message'] = 'Error!';

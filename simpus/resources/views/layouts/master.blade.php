@@ -21,7 +21,7 @@
 
     <link href="{{ asset('/inspinia/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert.css')}}">
     <link href="{{ asset('assets/css/toasty.css')}}" rel="stylesheet" />
 
     <!-- Toasty style -->
@@ -187,15 +187,15 @@
                 <ul class="nav nav-second-level">
                     @can('pendaftaran.index')
                     <li class=""><a
-                            href="{{ route('pendaftaran.index') }}">Pendaftaran <span class="label label-danger float-right" id="notif_pendaftaran">0</span></a></li>
+                            href="{{ route('pendaftaran.index') }}" id="notif_pendaftaran">Pendaftaran</a></li>
                     @endcan
                     @can('pelayanan_poli.index')
                     <li class=""><a
-                            href="{{ route('pelayanan_poli.index') }}">Poli <span class="label label-danger float-right" id="notif_poli">0</span></a></li>
+                            href="{{ route('pelayanan_poli.index') }}" id="notif_poli">Poli</a></li>
                     @endcan
                     @can('laboratorium.index')
                     <li class=""><a
-                            href="{{ route('laboratorium.index') }}">Laboratorium <span class="label label-danger float-right" id="notif_lab">0</span></a></li>
+                            href="{{ route('laboratorium.index') }}" id="notif_lab">Laboratorium</a></li>
                     @endcan
                 </ul>
             </li>
@@ -224,7 +224,7 @@
                     @endcan
                     @can('pengeluaran_obat.index')
                     <li class=""><a
-                            href="{{ route('pengeluaran_obat.index') }}">Pengeluaran Obat <span class="label label-danger float-right" id="notif_out_obat">0</span></a></li>
+                            href="{{ route('pengeluaran_obat.index') }}" id="notif_out_obat">Pengeluaran Obat</a></li>
                     @endcan
                 </ul>
             </li>
@@ -882,7 +882,7 @@
     <!-- Custom and plugin javascript -->
     <script src="{{ asset('/inspinia/js/inspinia.js') }}"></script>
     <script src="{{ asset('/inspinia/js/plugins/pace/pace.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/sweetalert2.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/sweetalert.js')}}"></script>
     <script src="{{ asset('assets/js/jquery.validate.js')}}"></script>
 
     <!-- TOASTY -->
@@ -948,9 +948,9 @@
         $(document).ready(function(){
 
             notif_poli();
-            // notif_lab();
-            // notif_pendaftaran();
-            // notif_out_obat();
+            notif_pendaftaran();
+            notif_lab();
+            notif_out_obat();
 
 
         })
@@ -963,7 +963,13 @@
                     // Swal.showLoading();
                     },
                     success:function (data) {
-                        $('#notif_poli').text(data);
+                        let html
+                        if(data > 0){
+                            html = 'Poli <span class="label label-danger float-right">'+data+'</span>';
+                        }else{
+                            html = 'Poli';
+                        }
+                        $('#notif_poli').html(html);
                     },
                     complete: function(){
                         // setTimeout(notif_poli(), 2000);
@@ -971,64 +977,75 @@
                     },
                 });
                 notif_poli();
-            }, 1500);
+            }, 3000);
         }
         function notif_lab(){
             setTimeout(() => {
                 $.ajax({
-                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    url:"{{ route('laboratorium.notifikasi') }}",
                     type:"GET",
                     beforeSend: function(){
                     // Swal.showLoading();
                     },
                     success:function (data) {
-                        $('#notif_lab').text(data);
+                        let html
+                        if(data > 0){
+                            html = 'Laboratorium <span class="label label-danger float-right">'+data+'</span>';
+                        }else{
+                            html = 'Laboratorium';
+                        }
+                        $('#notif_lab').html(html);
                     },
                     complete: function(){
-                        // setTimeout(notif_poli(), 2000);
-                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
                     },
                 });
-                notif_poli();
-            }, 1500);
+                notif_lab();
+            }, 3000);
         }
         function notif_pendaftaran(){
             setTimeout(() => {
                 $.ajax({
-                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    url:"{{ route('pendaftaran.notifikasi') }}",
                     type:"GET",
                     beforeSend: function(){
                     // Swal.showLoading();
                     },
                     success:function (data) {
-                        $('#notif_pendaftaran').text(data);
+                        let html;
+                        if(data > 0){
+                            html = 'Pendaftaran <span class="label label-danger float-right">'+data+'</span>';
+                        }else{
+                            html = 'Pendaftaran';
+                        }
+                        $('#notif_pendaftaran').html(html);
                     },
                     complete: function(){
-                        // setTimeout(notif_poli(), 2000);
-                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
                     },
                 });
-                notif_poli();
-            }, 1500);
+                notif_pendaftaran();
+            }, 3000);
         }
         function notif_out_obat(){
             setTimeout(() => {
                 $.ajax({
-                    url:"{{ route('pelayanan_poli.notifikasi') }}",
+                    url:"{{ route('pengeluaran_obat.notifikasi') }}",
                     type:"GET",
                     beforeSend: function(){
-                    // Swal.showLoading();
                     },
                     success:function (data) {
-                        $('#notif_out_obat').text(data);
+                        let html;
+                        if(data > 0){
+                            html = 'Pengeluaran Obat <span class="label label-danger float-right">'+data+'</span>';
+                        }else{
+                            html = 'Pengeluaran Obat';
+                        }
+                        $('#notif_out_obat').html(html);
                     },
                     complete: function(){
-                        // setTimeout(notif_poli(), 2000);
-                        // setInterval(notif_poli(), 20000000000000000000000000000000000000);
                     },
                 });
-                notif_poli();
-            }, 1500);
+                notif_out_obat();
+            }, 3000);
         }
     </script>
 </body>

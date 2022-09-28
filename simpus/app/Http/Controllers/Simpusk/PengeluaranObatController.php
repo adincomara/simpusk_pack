@@ -156,13 +156,14 @@ class PengeluaranObatController extends Controller
         $search = $request->search['value'];
         $search_tgl = $request->search_tgl;
         $records = Pendaftaran::select('tbl_pendaftaran.flag_periksa','tbl_pendaftaran.tanggal_daftar','tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pasien.nama_pasien','tbl_pendaftaran.status_pasien', 'tbl_poli.nama_poli')
-                                ->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')
-                                ->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')
-                                ->leftJoin('tbl_pengeluaran_obat','tbl_pendaftaran.id','tbl_pengeluaran_obat.id_pendaftaran')
-                                ->whereNull('tbl_pengeluaran_obat.id_pengeluaran')
-                                ->where('tbl_pendaftaran.flag_periksa','!=', 0)
-                                ->orderBy('tbl_pendaftaran.no_rawat', 'DESC')
-                                ->whereDate('tbl_pendaftaran.tanggal_daftar', '=', date('Y-m-d', strtotime($search_tgl)));
+        ->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')
+        ->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')
+        ->leftJoin('tbl_pengeluaran_obat','tbl_pendaftaran.id','tbl_pengeluaran_obat.id_pendaftaran')
+        ->whereNull('tbl_pengeluaran_obat.id_pengeluaran')
+        ->where('tbl_pendaftaran.flag_periksa','!=', 0)
+        ->whereHas('pelayanan_poli.poli_resep')
+        ->orderBy('tbl_pendaftaran.no_rawat', 'DESC')
+        ->whereDate('tbl_pendaftaran.tanggal_daftar', '=', date('Y-m-d', strtotime($search_tgl)));
 
         if(array_key_exists($request->order[0]['column'], $this->original_column)){
            $records->orderByRaw($this->original_column[$request->order[0]['column']].' '.$request->order[0]['dir']);
@@ -192,7 +193,7 @@ class PengeluaranObatController extends Controller
           $enc_id = $this->safe_encode(Crypt::encryptString($record->id));
           $action = "";
 
-          $action .= '<a href="' . route('pengeluaran_obat.tambah', $enc_id) . '" class="btn btn-warning btn-xs icon-btn md-btn-flat product-tooltip" title="Pilih/Proses"><i class="fa fa-pencil"></i> Ubah</a>&nbsp;';
+          $action .= '<a href="' . route('pengeluaran_obat.tambah', $enc_id) . '" class="btn btn-warning btn-xs icon-btn md-btn-flat product-tooltip" title="Pilih/Proses"><i class="fa fa-pencil"></i>Proses Resep</a>&nbsp;';
 
           $record->no             = $key+$page;
           $record->DT_RowId       = $record->id;
@@ -747,6 +748,43 @@ class PengeluaranObatController extends Controller
         ";
 
       }
+    public function notifikasi(){
+        $pendaftaran = Pendaftaran::where('tanggal_daftar', date('Y-m-d'));
+        $pendaftaran->whereHas('pelayanan_poli.poli_resep');
+        if(auth()->user()->poli != '-'){
+            $pendaftaran->where('id_poli', auth()->user()->poli);
+        }
+        $pendaftaran = $pendaftaran->get();
+        return count($pendaftaran);
+    }
+    public function toast(){
+        $pendaftaran = Pendaftaran::where('tanggal_daftar', date('Y-m-d'))->with(['pasien']);
+        $pendaftaran->whereHas('pelayanan_poli.poli_resep');
+        // return $pendaftaran->get();
+        if(auth()->user()->poli != '-'){
+            $pendaftaran->where('id_poli', auth()->user()->poli);
+        }
+        // $timestamp = strtotime(date('H:i')) - 60;
+        // return date('Y-m-d H:i:s', strtotime('now - 1 minutes'));
+        // return date('H:i:s', strtotime('now - 1 minutes'));
+        // $datetime = new Carbon(date('H:i:s', strtotime('now - 1 seconds')));
+        // // return $datetime;
+        // $pendaftaran->where('created_at', '>=', date('Y-m-d H:i:s', strtotime($datetime)));
+        // return  date('Y-m-d H:i:s', strtotime($datetime));
+        // return $pendaftaran->get();
+        $pendaftaran->where('show_notif_obat', 0);
+        $pendaftaran->whereHas('pasien');
+        $all_pendaftaran = $pendaftaran->get();
+        // return 'tes';
+        $pendaftaran->update(['show_notif_obat' => 1]);
+
+        return response()->json([
+            'jumlah' => count($all_pendaftaran),
+            'pendaftaran' => $all_pendaftaran,
+        ]);
+        // return count($pendaftaran);
+
+    }
       public function batch_obat(Request $request){
           //return $request->all();
           $stok_obat = StokObat::where('id_obat', $request->id_obat)->orderBy('tgl_expired_obat', 'ASC')->get();

@@ -140,7 +140,7 @@
                      </tr>
                      <tr>
 
-                         <th colspan="3">Di Puskesmas Jepang</th>
+                         <th colspan="3"></th>
 
                      </tr>
                  </thead>

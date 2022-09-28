@@ -335,7 +335,15 @@ function onlyNumberKey(evt) {
             'nik': nik
           },
           beforeSend:function(){
-            Swal.showLoading();
+            Swal.fire({
+                title: 'Mohon Tunggu !',
+                html: 'Loading',// add html attribute if you want or remove
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                },
+            });
           },
           success: function (data) {
             console.log(data.datas);
@@ -376,7 +384,15 @@ function onlyNumberKey(evt) {
             'nik': nik
           },
           beforeSend:function(){
-            Swal.showLoading();
+            Swal.fire({
+                                title: 'Mohon Tunggu !',
+                                html: 'Loading',// add html attribute if you want or remove
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                onBeforeOpen: () => {
+                                    Swal.showLoading()
+                                },
+                            });
           },
           success: function (data) {
             console.log(data.datas);

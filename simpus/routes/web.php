@@ -66,6 +66,33 @@ Route::get('/', function () {
 
 Route::get('/manage/login', [LoginController::class, 'index'])->name('manage.login');
 Route::post('/manage/login', [LoginController::class, 'checkLogin'])->name('manage.checklogin');
+
+//ANTRIAN
+Route::get('/antrian/dashboard', [AntrianController::class, 'index'])->name('antrian.dashboard');
+Route::get('/antrian/setting', [AntrianController::class, 'setting'])->name('antrian.setting');
+// Route::get('/antrian/display', function(){
+//     return view('antrian/kioska_display');
+// })->name('antrian.display');
+Route::get('/antrian/display', [AntrianController::class, 'display'])->name('antrian.display');
+Route::get('/antrian/antrian_all', [AntrianController::class, 'antrian_all'])->name('antrian.antrian_all');
+Route::post('/antrian/petugas_panggil', [AntrianController::class, 'petugas_panggil'])->name('antrian.petugas_panggil');
+Route::get('/antrian/antrian_selanjutnya/{id?}', [AntrianController::class, 'antrian_selanjutnya'])->name('antrian.antrian_selanjutnya');
+Route::get('/antrian/panggil/{id?}', [AntrianController::class, 'panggil'])->name('antrian.panggil');
+// Route::get('/antrian/pendaftaran_bpjs', function(){
+//     return view('antrian/pendaftaran_bpjs');
+// })->name('antrian.pendaftaran_bpjs');
+Route::get('/antrian/pendaftaran_bpjs', [AntrianController::class, 'pendaftaran_bpjs'])->name('antrian.pendaftaran_bpjs');
+Route::post('/antrian/pendaftaran_bpjs/simpan', [AntrianController::class, 'simpan_pendaftaran_bpjs'])->name('antrian.pendaftaran_bpjs_simpan');
+Route::post('/antrian/pendaftaran_umum/simpan', [AntrianController::class, 'simpan_pendaftaran_umum'])->name('antrian.pendaftaran_umum_simpan');
+Route::get('/antrian/pendaftaran_umum', [AntrianController::class, 'pendaftaran_umum'])->name('antrian.pendaftaran_umum');
+Route::get('/antrian/cek_pendaftaran/{key?}', [AntrianController::class, 'cek_pendaftaran'])->name('antrian.cek_pendaftaran');
+Route::delete('/antrian/hapus/{key?}', [AntrianController::class, 'hapus'])->name('antrian.hapus');
+// Route::get('/antrian/pendaftaran_umum', function(){
+//     return view('antrian/pendaftaran_umum');
+// })->name('antrian.pendaftaran_umum');
+Route::get('/antrian/pendaftaran/ngetes', function(){
+    return 'ngetes';
+})->name('antrian.ngetesting');
 Route::get('/antrian/operator', function(){
     return view('antrian/operator_antrian');
 });
@@ -74,9 +101,10 @@ Route::get('/antrian/getdataantrian', [AntrianController::class, 'getDataAntrian
 Route::get('/antrian/getallpoli', [AntrianController::class, 'getallpoli'])->name('getallpoli');
 Route::get('/antrian/ambil_antrian', function(){
     return view('antrian/ambil_antrian');
-});
+})->name('antrian.ambil_antrian');
 Route::post('/antrian/postantrian', [AntrianController::class, 'postantrian'])->name('postantrian');
 Route::get('manage/antrian/cetak/{no?}', [AntrianController::class, 'antriancetak'])->name('antrian.cetak');
+//END ANTRIAN
 
 
 
@@ -263,6 +291,10 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('pengeluaran_obat/cetak/beri', [PengeluaranObatController::class, 'cetakBeriObat'])->name('pengeluaran_obat.cetakberiobat');
         Route::post('pengeluaran_obat/addObat', [PengeluaranObatController::class, 'addObat'])->name('pengeluaran_obat.addObat');
         Route::post('pengeluaran_obat/batch_obat', [PengeluaranObatController::class, 'batch_obat'])->name('pengeluaran_obat.batch_obat');
+        Route::get('pengeluaran_obat/notifikasi', [PengeluaranObatController::class, 'notifikasi'])->name('pengeluaran_obat.notifikasi');
+        Route::get('pengeluaran_obat/toast', [PengeluaranObatController::class, 'toast'])->name('pengeluaran_obat.toast');
+
+
         // Route::get('pengeluaran_obat/cetak_label', [PengeluaranObatController::class, 'cetak_label'])->name('pengeluaran_obat.')
 
         //JENIS OPERASI
@@ -319,6 +351,8 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('pendaftaran/daftarbpjs', [PendaftaranController::class, 'pendaftaranBpjs'])->name('pendaftaran.daftarbpjs');
         Route::post('pendaftaran/savenoantrian', [PendaftaranController::class, 'simpanNoAntrian'])->name('pendaftaran.simpanantrian');
         Route::get('pendaftaran/search_rekam', [PendaftaranController::class, 'searchRekam'])->name('pendaftaran.searchRekam');
+        Route::get('pendaftaran/notifikasi', [PendaftaranController::class, 'notifikasi'])->name('pendaftaran.notifikasi');
+
         // Route::get('/manage/ambil_antrian', [AntrianController::class, 'ambil_antrian'])->name('pendaftaran.ambil_antrian');
 
         //ANTRIAN
@@ -383,6 +417,7 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('pelayanan_poli/tindakan_dokter/{id}',[PelayananpoliController::class, 'tindakan_dokter'])->name('pelayanan_poli.tindakan_dokter');
         Route::get('pelayanan_poli/cetak/{id}',[PelayananpoliController::class, 'cetak'])->name('pelayanan_poli.cetak');
         Route::delete('pelayanan_poli/hapus/{id?}',[PelayananpoliController::class, 'hapus'])->name('pelayanan_poli.hapus');
+        Route::get('pelayanan_poli/deletekunjungan/{id}', [PelayananpoliController::class, 'hapus_kunjungan'])->name('pelayanan_poli.hapus_kunjungan');
         // Route::post('pelayanan_poli/simpan',[PelayananpoliController::class, 'simpanPelayananPoli'])->name('pelayanan_poli.simpan');
         Route::post('pelayanan_poli/simpan',[PelayananpoliController::class, 'simpan'])->name('pelayanan_poli.simpan');
         Route::get('pelayanan_poli/getNoRekam',[PelayananpoliController::class, 'getNoRekam'])->name('pelayanan_poli.getNoRekam');
@@ -438,6 +473,8 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('laboratorium/simpanmaster', [LaboratoriumController::class, 'simpanMaster'])->name('laboratorium.simpanMaster');
         Route::post('laboratorium/simpanResepLab', [LaboratoriumController::class, 'simpanResepLab'])->name('laboratorium.simpanResepLab');
         Route::get('laboratorium/cetak/{lab?}', [LaboratoriumController::class, 'cetak_lab'])->name('laboratorium.cetak_lab');
+        Route::get('laboratorium/notifikasi', [LaboratoriumController::class, 'notifikasi'])->name('laboratorium.notifikasi');
+
 
 
 
@@ -452,6 +489,7 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
 
         Route::get('laporan/penyakitterbesar', [LaporanController::class, 'penyakitterbesar'])->name('report.penyakitterbesar');
         Route::post('laporan/getpenyakitterbesar', [LaporanController::class, 'getdatapenyakitterbesar'])->name('report.getdatapenyakitterbesar');
+        Route::get('laporan/penyakitterbesarcetak', [LaporanController::class, 'cetak10besarpenyakit'])->name('report.cetak10besarpenyakit');
         Route::get('laporan/tindakanPasienindex', [LaporanController::class, 'tindakanpasien_index'])->name('report.tindakanpasien_index');
         Route::get('laporan/tindakanPasien_detail/{id}', [LaporanController::class, 'tindakanPasien_detail'])->name('report.tindakanPasien_detail');
         Route::get('laporan/cetakDiagnosa/{id?}', [LaporanController::class, 'cetakDiagnosa'])->name('report.cetakDiagnosa');

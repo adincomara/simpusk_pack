@@ -113,6 +113,14 @@ class PoliController extends Controller
                             }
                             else{
                                 Swal.fire('Peringatan',data.message,'info');
+                                var check = $('#data_".$record->id."');
+                                if(check.prop('checked') == false){
+                                    check.prop('checked', true);
+                                }
+                                else{
+                                    check.prop('checked', false);
+                                }
+
                             }
                         }
                     });
@@ -173,6 +181,14 @@ class PoliController extends Controller
                             }
                             else{
                                 Swal.fire('Peringatan',data.message,'info');
+                                var check = $('#data_".$record->id."');
+                                if(check.prop('checked') == false){
+                                    check.prop('checked', true);
+                                }
+                                else{
+                                    check.prop('checked', false);
+                                }
+
                             }
                         }
                     });
@@ -222,6 +238,10 @@ class PoliController extends Controller
       $selectedinduk = "";
       return view('master_form/poli_form',compact('induk','selectedinduk'));
   }
+  public function tambah_(){
+    $url = '/poli/fktp/1/100';
+    return APIBpjsController::get($url);
+  }
   // ubah : Form ubah data
   public function ubah($enc_id)
   {
@@ -240,6 +260,13 @@ class PoliController extends Controller
     public function status_ubah(Request $req){
         //   return $req->value;
           $data = Poli::find($req->id);
+          if($data->kode_poli == "" || $data->kode_poli == null){
+            return response()->json([
+                'success' => false,
+                'code' => 201,
+                'message' => 'status poli gagal dirubah, silahkan isi terlebih dahulu kode poli',
+            ]);
+          }
           if($data->status == 1){
               $data->status = 0;
           }else{

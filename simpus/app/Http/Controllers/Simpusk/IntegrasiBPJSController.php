@@ -1052,39 +1052,9 @@ class IntegrasiBPJSController extends Controller
 
     }
     public function get_rujukan_bpjs($no_rujukan){
-        $uri = env('API_URL'); //url web service bpjs
-        $consID 	= env('API_CONSID'); //customer ID anda
-        $secretKey 	= env('API_SECRETKEY'); //secretKey anda
-
-        $pcareUname = env('API_PCAREUNAME'); //username pcare
-        $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
-
-        $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-
-
-        $stamp		= time();
-        $data 		= $consID.'&'.$stamp;
-
-        $signature = hash_hmac('sha256', $data, $secretKey, true);
-        $encodedSignature = base64_encode($signature);
-        $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-
-        $headers = array(
-                    "Accept: application/json",
-                    "X-cons-id:".$consID,
-                    "X-timestamp: ".$stamp,
-                    "X-signature: ".base64_encode($signature),
-                    "X-authorization: Basic " .base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi),
-                );
-        $ch = curl_init($uri.'/kunjungan/rujukan/'.$no_rujukan);
-        // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-        $data = curl_exec($ch);
-        $data = json_decode($data,true);
-        return $data;
+        $url = '/kunjungan/rujukan/'.$no_rujukan;
+        $result = APIBpjsController::get($url);
+        return $result;
     }
     function print_rujukan($enc_id)
     {
@@ -1174,11 +1144,11 @@ class IntegrasiBPJSController extends Controller
         // return $data;
         // return $data[0]->pendaftaran;
         foreach ($data as $key => $record) {
-            $enc_id = $this->safe_encode(Crypt::encryptString($record->id));
+            $enc_id = $this->safe_encode(Crypt::encryptString($record->id_pendaftaran));
             $action = "";
 
 
-            $action .= '<a href="' . route('kunjungan.detailkunjunganpasienbpjs', $enc_id) . '"  class="btn btn-success" title="Pasien BPJS">Lihat Detail</a>&nbsp;';
+            $action .= '<a href="'.route('pelayanan_poli.tindakan_dokter',$enc_id).'"  class="btn btn-success" title="Pasien BPJS">Lihat Detail</a>&nbsp;';
 
 
 

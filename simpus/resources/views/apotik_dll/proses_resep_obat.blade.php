@@ -170,4 +170,50 @@
           @endcannot
       }
 </script>
+<script>
+    $(document).ready(function(){
+        toastt();
+
+    })
+    function toastt(){
+        let file;
+        file = "{{ asset('/inspinia/musik/success.wav') }}";
+        let audio = new Audio(file);
+        setTimeout(() => {
+            toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "progressBar": true,
+            "preventDuplicates": false,
+            "positionClass": "toast-bottom-right",
+            "onclick": null,
+            "showDuration": "400",
+            "hideDuration": "1000",
+            "timeOut": "10000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+            $.ajax({
+                url:"{{ route('pengeluaran_obat.toast') }}",
+                type:"GET",
+                beforeSend: function(){
+
+                },
+                success:function (data) {
+                    for(i=0;i<data.jumlah;i++){
+                        toastr.success("Halo, ada pasien "+data.pendaftaran[i].pasien.nama_pasien+" yang perlu di proses resep, silahkan refresh halaman ini")
+                        audio.play();
+                    }
+                },
+                complete: function(){
+                    // setInterval(notif_poli(), 20000000000000000000000000000000000000);
+                },
+            });
+            toastt();
+        }, 2000);
+    }
+</script>
 @endpush

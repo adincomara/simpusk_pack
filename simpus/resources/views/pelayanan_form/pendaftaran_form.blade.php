@@ -60,7 +60,7 @@
                               <select class="custom-select" id="id_poli" name="id_poli">
                                 <option></option>
                                 @foreach($poli as $key => $result)
-                                <option value="{{$result->id}}" {{ $selectedpoli == $result->id ? 'selected=""' : '' }}>
+                                <option value="{{$result->kdpoli}}" {{ $selectedpoli == $result->id ? 'selected=""' : '' }}>
                                   {{$result->nama_poli}}</option>
                                 @endforeach
                             </select>

@@ -20,6 +20,7 @@ class CheckMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        // return "tes";
         // $user = $_SERVER['HTTP_X_USERNAME'];
         // $token = $_SERVER['HTTP_X_TOKEN'];
         // if($user != 'apiantreanbpjsjepang123' || $token != JWTAuth::parseToken()->authenticate()){
@@ -31,6 +32,7 @@ class CheckMiddleware
             'username' => 'apiantreanbpjsjepang123',
             'password' => 'antreanbpjs@2021'
         );
+
         $X_token = $_SERVER['HTTP_X_TOKEN'];
         $user = $_SERVER['HTTP_X_USERNAME'];
 
@@ -41,7 +43,7 @@ class CheckMiddleware
         try{
             $users = JWTAuth::setToken($X_token)->toUser();
             if(Auth::id() != 5){
-                abort(response()->json(['error' => 'Unauthenticated!']), 401);
+                abort(response()->json(['error' => 'Unauthenticated~']), 401);
             }else{
                 if($user != 'apiantreanbpjsjepang123'){
                     abort(response()->json(['error' => 'Unauthenticated!']), 401);

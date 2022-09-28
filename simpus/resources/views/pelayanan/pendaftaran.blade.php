@@ -13,7 +13,7 @@
                 <div class="ibox-tools">
                     <input type="date" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:300px" value="{{ date('Y-m-d') }}">
                     @can('pendaftaran.tambah')
-                        <a href="{{ route('pendaftaran.tambah') }}"><button class="btn btn-primary">Tambah Pendaftaran</button></a>
+                        {{-- <a href="{{ route('pendaftaran.tambah') }}"><button class="btn btn-primary">Tambah Pendaftaran</button></a> --}}
                     @endcan
 
                     {{-- <a class="collapse-link">

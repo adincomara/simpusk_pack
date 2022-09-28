@@ -181,6 +181,10 @@
                                         <option value="04" {{ (isset($kunjungan) && $kunjungan->code_sadar == '04')? 'selected' : '' }}>Coma</option>
                                       </select>
                                     </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Lingkar Perut <span>*</span></label>
+                                        <input type="text" class="form-control mb-1" name="lingkar_perut" id="lingkar_perut" value="{{ isset($kunjungan->lingkar_perut)? $kunjungan->lingkar_perut : '' }}">
+                                    </div>
                                   </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
@@ -533,6 +537,11 @@
                             <div class="form-row">
                               <div class="form-group col-md-12">
                                 <div class="text-right mt-3">
+                                    @if(isset($kunjungan))
+                                        @if($kunjungan->no_kunjungan != 'null' || $kunjungan->no_kunjungan != '-')
+                                            <input type="hidden" name="no_kunjungan" value="{{ $kunjungan->no_kunjungan }}">
+                                        @endif
+                                    @endif
                                   <button type="submit" class="btn btn-primary" id="submitData">Simpan</button>&nbsp;
                                   <a href="{{route('pendaftaran.index')}}" class="btn btn-default">Kembali</a>
                                 </div>
@@ -785,10 +794,10 @@
                             var link = "{{ route('report.printRujukanUmum',[null]) }}/"+data.id_pendaftaran;
                         }
                         window.open(link, "_blank");
-                        window.location.href="{{ route('pelayanan_poli.index') }}";
+                        window.location.href="{{ url()->previous() }}";
                     }else{
                         Swal.fire('info',data.message,'success');
-                        window.location.href="{{ route('pelayanan_poli.index') }}";
+                        window.location.href="{{ url()->previous() }}";
                     }
                 } else {
                    Swal.fire('Ups',data.message,'info');
@@ -976,12 +985,9 @@
               Swal.hideLoading();
             if(response.success == true){
 
-                var dokter = response.datas.response.list
+                var dokter = response.datas
                 $('#kdDokter').find('option').remove().end();
                 $('#kdDokter').append('<option value="">Pilih Tenaga medis</option>');
-                if(response.datas.metaData.message != "OK"){
-                    Swal.fire('Error','Maaf Server Sedang Bermasalah','info');
-                }else{
                     Swal.close();
                     for(var i = 0 ; i < dokter.length ; i++){
                         if(id_dokter == dokter[i].kdDokter){
@@ -994,7 +1000,7 @@
                     }
                     $('#kdDokter').select2()
 
-                }
+
             }else{
                 Swal.fire('UPS','Data Tenaga Medis Tidak Ditemukan','info');
             }
@@ -1203,11 +1209,11 @@
                 }
                 }else{
                     Swal.hideLoading();
-                    Swal.fire('UPS','Data tidak ditemukan','info');
+                    Swal.fire('UPS','Data tidak ditemukan1','info');
                 }
             }else{
                 Swal.hideLoading();
-                Swal.fire('UPS','Data tidak ditemukan','info');
+                Swal.fire('UPS','Data tidak ditemukan2','info');
             }
 
 
@@ -1728,35 +1734,35 @@ function searchRujuk(){
             }else if(response.datas.metaData.code == 200){
                 Swal.hideLoading();
                 Swal.close();
-            for(var i=0;i<table.length;i++){
-            if(table[i].kdppk == kdfaskes){
-                selected = 'checked';
+                for(var i=0;i<table.length;i++){
+                if(table[i].kdppk == kdfaskes){
+                    selected = 'checked';
 
-            }else{
-                selected = '';
-            }
-            var datatable = '<tbody>' +
-                                '<tr>' +
-                                // '<td>'++'</td>' +
-                                '<td>'+table[i].nmppk +'('+table[i].kdppk+')'+'</td>' +
-                                '<td>'+table[i].kelas+'</td>'+
-                                '<td>'+table[i].nmkc+'</td>'+
-                                '<td>'+table[i].alamatPpk+'</td>'+
-                                '<td>'+table[i].telpPpk+'</td>'+
-                                '<td>'+table[i].distance+'</td>'+
-                                '<td>'+table[i].jmlRujuk+'</td>'+
-                                '<td><input type="radio" name="provider" value="'+table[i].kdppk+'" id="'+table[i].kdppk+'"'+selected+'></td>'+
-                                '</tr>' +
-                            '</tbody>'
-                $('#table1').append(datatable);
-            }
+                }else{
+                    selected = '';
+                }
+                var datatable = '<tbody>' +
+                                    '<tr>' +
+                                    // '<td>'++'</td>' +
+                                    '<td>'+table[i].nmppk +'('+table[i].kdppk+')'+'</td>' +
+                                    '<td>'+table[i].kelas+'</td>'+
+                                    '<td>'+table[i].nmkc+'</td>'+
+                                    '<td>'+table[i].alamatPpk+'</td>'+
+                                    '<td>'+table[i].telpPpk+'</td>'+
+                                    '<td>'+table[i].distance+'</td>'+
+                                    '<td>'+table[i].jmlRujuk+'</td>'+
+                                    '<td><input type="radio" name="provider" value="'+table[i].kdppk+'" id="'+table[i].kdppk+'"'+selected+'></td>'+
+                                    '</tr>' +
+                                '</tbody>'
+                    $('#table1').append(datatable);
+                }
             }else{
                 Swal.hideLoading();
-                Swal.fire('UPS','Data tidak ditemukan','info');
+                // Swal.fire('UPS','Data tidak ditemukan3','info');
             }
         }else{
             Swal.hideLoading();
-            Swal.fire('UPS','Data tidak ditemukan','info');
+            Swal.fire('UPS','Data tidak ditemukan4','info');
         }
 
 

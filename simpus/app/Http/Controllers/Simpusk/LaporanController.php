@@ -955,45 +955,11 @@ class LaporanController extends Controller
   public function detailrujukanBPJS(Request $request)
   {
     $nokunjungan = $request->enc_id;
-    $uri = "https://dvlp.bpjs-kesehatan.go.id:9081/pcare-rest-v3.0"; //url web service bpjs
-
-    $consID   = "17432"; //customer ID anda
-    $secretKey   = "8uRC52B72D"; //secretKey anda
-
-    $pcareUname = "Dvlppkmjepang"; //username pcare
-    $pcarePWD   = "Dvlppkmjepang@123"; //password pcare anda
-
-    $kdAplikasi  = "095"; //kode aplikasi
-
-    $stamp    = time();
-    $data     = $consID . '&' . $stamp;
-
-    $signature = hash_hmac('sha256', $data, $secretKey, true);
-
-    $headers = array(
-      "Accept: application/json",
-      "X-cons-id:" . $consID,
-      "X-timestamp: " . $stamp,
-      "X-signature: " . base64_encode($signature),
-      "X-authorization: Basic " . base64_encode($pcareUname . ':' . $pcarePWD . ':' . $kdAplikasi)
-    );
-
-    $ch = curl_init($uri . '/kunjungan/rujukan/' . $nokunjungan);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-    $data = curl_exec($ch);
-    if (curl_errno($ch)) {
-      echo curl_error($ch);
-    }
-    curl_close($ch);
-
-    header("Content-Type: application/json");
+    $url = '/kunjungan/rujukan/'.$nokunjungan;
+    $result = APIBpjsController::get($url);
 
     return response()->json([
-      'data' => json_decode($data)
+      'data' => $result
     ]);
   }
 
@@ -1577,6 +1543,9 @@ class LaporanController extends Controller
   }
   public function indexdatakunjunganpasien(){
       return view('laporan/laporankunjunganpasien');
+  }
+  public function cetak10besarpenyakit(){
+    return view('laporan/cetak10besarpenyakit');
   }
 
 }

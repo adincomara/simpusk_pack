@@ -9,6 +9,7 @@ use App\Models\Simpusk\Pasien;
 use App\Models\Simpusk\Pegawai;
 use App\Models\Simpusk\AntrianBPJS;
 use App\Models\Simpusk\DokterBPJS;
+use App\Models\Simpusk\PasienBPJS;
 use App\Models\Simpusk\Pcare;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
@@ -287,7 +288,7 @@ class PendaftaranController extends Controller
         return view('errors/noaccess');
       }
     }
-    public function simpan(Request $req)
+    public function simpan_(Request $req)
     {
 
         $dokter_penanggung_jawab = explode(',',$req->dokter_penanggung_jawab);
@@ -300,7 +301,7 @@ class PendaftaranController extends Controller
                 'message' => 'Pasien sudah pernah didaftarkan'
             ]);
         }
-        $cek_kode_poli = Poli::find($req->id_poli)->kode_poli;
+        $cek_kode_poli = Poli::where('kdpoli', $req->id_poli)->first()->kode_poli;
         if(!isset($cek_kode_poli)){
             return response()->json([
                 'success' => false,
@@ -321,14 +322,16 @@ class PendaftaranController extends Controller
                         $id_poli = '50';
                         $code_poli = '021';
                     }else{
-                        $kdpoli = Poli::find($req->id_poli)->kdpoli;
+                        // return $req->all();
+                        $kdpoli = Poli::where('kdpoli',$req->id_poli)->first();
+                        // return $kdpoli;
                         $id_poli = $req->id_poli;
                         $code_poli = $kdpoli->kdpoli;
                     }
                     // return $kdpoli;
                     $kdProviderPeserta = $getBPJS["response"]["kdProviderPst"]["kdProvider"];
                     $svPCARE = $this->simpanBPJS($req->no_bpjs, $kdProviderPeserta, date('Y-m-d'), $kdpoli);
-                    // return $svPCARE;
+                    return $svPCARE;
                     // $svPCARE["metaData"]["code"] = 201;
                     // $svPCARE['response']['message'] = "A49";
                     if($svPCARE["metaData"]["code"] == 201){
@@ -423,7 +426,83 @@ class PendaftaranController extends Controller
             ]);
         }
     }
-    public function hapus(Request $req,$enc_id)
+    public function simpan(Request $req){
+        // return "tes";
+        // return $this->deleteBPJS('');
+        $dokter_penanggung_jawab = explode(',',$req->dokter_penanggung_jawab);
+        //VALIDASI
+        $cekpendaftaranpasien = Pendaftaran::where('no_rekamedis', $req->no_rekamedis)->where('no_bpjs',$req->no_bpjs)->whereDate('tanggal_daftar', Carbon::today())->first();
+        if(isset($cekpendaftaranpasien)){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien sudah pernah didaftarkan'
+            ]);
+        }
+        $poli = Poli::where('kdpoli', $req->id_poli)->first();
+        if(!isset($poli->kode_poli)){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Harap isi kode poli terlebih dahulu'
+            ]);
+        }
+        //END VALIDASI
+        try{
+            if($req->konseling == 1){
+                $poli = Poli::where('kdpoli', '021')->first();
+            }
+            // return $poli;
+            DB::beginTransaction();
+            $no_antrian_bpjs = null;
+            if($req->status_pasien == 'BPJS'){
+                $getBPJS = $this->getBPJS($req->no_bpjs);
+                // return $getBPJS;
+                $getBPJS['metaData']['code'] = 200;
+                if($getBPJS['metaData']['code'] == 200){
+                    $kdProviderPeserta = $getBPJS["response"]["kdProviderPst"]["kdProvider"];
+                    // $kdProviderPeserta = '0141U009';
+                    // return $kdProviderPeserta;
+                    $svPCARE = $this->simpanBPJS($req->no_bpjs, $kdProviderPeserta, date('Y-m-d'), $poli);
+                    // return $svPCARE;
+                    $no_antrian_bpjs = $svPCARE['response']['message'];
+                    // $no_antrian_bpjs = 'A1';
+                    // return $no_antrian_bpjs;
+                }
+            }
+            $pendaftaran = new Pendaftaran;
+            $pendaftaran->no_rawat                          = $this->generateNoRawat();
+            $pendaftaran->no_rekamedis                      = $req->no_rekamedis;
+            $pendaftaran->tanggal_daftar                    = date('Y-m-d');
+            // $pendaftaran->id_poli                           = $id_poli;
+            $pendaftaran->id_poli                           = $poli->kdpoli;
+            $pendaftaran->id_dokter                         = $dokter_penanggung_jawab[0];
+            $pendaftaran->nama_penanggung_jawab             = $dokter_penanggung_jawab[1];
+            $pendaftaran->id_poli_sub                       = $req->id_poli_sub;
+            $pendaftaran->hubungan_dengan_penanggung_jawab  = $req->hubungan_dengan_penanggung_jawab;
+            $pendaftaran->alamat_penanggung_jawab           = $req->alamat_penanggung_jawab;
+            $pendaftaran->status_pasien                     = $req->status_pasien;
+            $pendaftaran->no_bpjs                           = $req->no_bpjs;
+            $pendaftaran->save();
+            // return $pendaftaran;
+            $antrian = app('App\Http\Controllers\Simpusk\AntrianController')->updateantrian($poli, $pendaftaran, $no_antrian_bpjs);
+            // return $antrian;
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'code' => 201,
+                'message' => 'Pasien berhasil didaftarkan'
+            ]);
+        }catch(\Throwable $th){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien gagal didaftarkan'
+            ]);
+        }
+    }
+    public function hapus_(Request $req,$enc_id)
     {
         // return $enc_id;
         $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
@@ -514,6 +593,52 @@ class PendaftaranController extends Controller
           ]);
         }
     }
+    public function hapus(Request $req, $enc_id){
+        $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
+        $pendaftaran = Pendaftaran::where('id',$dec_id)->first();
+        // return $dec_id;
+        if (!isset($pendaftaran)){
+            return response()->json([
+              'success' => false,
+              'code' => 204,
+              'message'=>'Data tidak ditemukan'
+            ]);
+        }
+        try{
+            DB::beginTransaction();
+            $antrian = AntrianBPJS::where('id_pendaftaran', $pendaftaran->id)->first();
+            if($pendaftaran->status_pasien == 'BPJS'){
+                $deletebpjs = $this->deleteBPJS($antrian);
+                // return $deletebpjs;
+                if($deletebpjs['metaData']['code'] != 200){
+                    return response()->json([
+                        'success' => false,
+                        'code'   => 304,
+                        'message' => 'Gagal dihapus'
+                    ]);
+                }
+            }
+            $antrian->id_pendaftaran    = null;
+            $antrian->status    = 1;
+            $antrian->waktu_panggil    = date('Y-m-d h:i:s');
+
+            $antrian->save();
+            $pendaftaran->delete();
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'code'   => 200,
+                'message' => 'Berhasil dihapus'
+            ]);
+        }catch(\Throwable $th){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'code'   => 304,
+                'message' => 'error'
+            ]);
+        }
+    }
 
     public function pasienbpjs(Request $request){
     $nik = $request->noKartu;
@@ -543,6 +668,8 @@ class PendaftaranController extends Controller
         $key = $request->search;
         $query = Pasien::orwhere('no_rekamedis', 'LIKE', "%{$key}%");
         $query->orwhere('nama_pasien', 'LIKE', "%{$key}%");
+        $query->orwhere('no_bpjs', 'LIKE', "%{$key}%");
+        $query->orwhere('no_ktp', 'LIKE', "%{$key}%");
         $pasien = $query->get();
         return json_encode($pasien);
     }
@@ -628,205 +755,96 @@ class PendaftaranController extends Controller
         ]
       ]);
     }
+    public function notifikasi(){
+        $pendaftaran = Pendaftaran::where('tanggal_daftar', date('Y-m-d'));
+        $pendaftaran->where('flag_periksa', '!=', 1);
+        if(auth()->user()->poli != '-'){
+            $pendaftaran->where('id_poli', auth()->user()->poli);
+        }
+        $pendaftaran = $pendaftaran->get();
+        return count($pendaftaran);
+    }
 
-    public function simpanBPJS($no_bpjs, $no_provider, $tanggal_daftar, $kdpoli){
-            //   $uri = env('API_URL'); //url web service bpjs
-        //   //return $uri.'/pendaftaran';
-        //   $consID 	= env('API_CONSID'); //customer ID anda
-        //     $secretKey 	= env('API_SECRETKEY'); //secretKey anda
-
-        //     $pcareUname = env('API_PCAREUNAME'); //username pcare
-        //     $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
-
-        //     $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-        $poli = Poli::where('kdpoli', $kdpoli)->first();
-        // return $poli;
+    public function simpanBPJS($no_bpjs, $no_provider, $tanggal_daftar, $poli){
+        $pasien_bpjs = PasienBPJS::where('noKartu', $no_bpjs)
+        ->where('kdProviderPeserta', $no_provider)
+        ->where(function($q){
+            $q->whereNotNull('sistole');
+            $q->whereNotNull('diastole');
+            $q->whereNotNull('beratBadan');
+            $q->whereNotNull('tinggiBadan');
+            $q->whereNotNull('respRate');
+            $q->whereNotNull('lingkarPerut');
+            $q->whereNotNull('heartRate');
+            $q->whereNotNull('rujukBalik');
+        })->first();
         if($poli->kunjungan_sakit == 0){
             $kjsakit = false;
         }else{
             $kjsakit = true;
         }
-        // return $kjsakit;
-        $uri ='https://new-api.bpjs-kesehatan.go.id/pcare-rest-v3.0'; //url web service bpjs
-        $consID 	= '9243'; //customer ID anda
-        $secretKey 	= '3yVE45CCBC'; //secretKey anda
-
-        $pcareUname = '0159092404'; //username pcare
-        $pcarePWD 	= '0159092404*1Pkm'; //password pcare anda
-
-        $kdAplikasi	= '095'; //kode aplikasi
-
-        $stamp    = time();
-        $data     = $consID.'&'.$stamp;
-        //   return $data;
-
-        $signature = hash_hmac('sha256', $data, $secretKey, true);
-        //   $encodedSignature = base64_encode($signature);
-        //   $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-
+        $url = '/pendaftaran';
+        $post = [
+            "kdProviderPeserta"=> $no_provider,
+            "tglDaftar"=> date('d-m-Y'),
+            "noKartu"=> $no_bpjs,
+            "kdPoli"=> $poli->kdpoli,
+            "keluhan"=> null,
+            "kunjSakit"=> $kjsakit,
+            "sistole"=> 120,
+            "diastole"=> 80,
+            "beratBadan"=> 70,
+            "tinggiBadan"=> 150,
+            "respRate"=> 24,
+            "lingkarPerut" => 56,
+            "heartRate"=> 60,
+            "rujukBalik"=> 0,
+            "kdTkp"=> "10"
+        ];
+        if(isset($pasien_bpjs)){
             $post = [
                 "kdProviderPeserta"=> $no_provider,
                 "tglDaftar"=> date('d-m-Y'),
                 "noKartu"=> $no_bpjs,
-                "kdPoli"=> $kdpoli,
+                "kdPoli"=> $poli->kdpoli,
                 "keluhan"=> null,
                 "kunjSakit"=> $kjsakit,
-                "sistole"=> 0,
-                "diastole"=> 0,
-                "beratBadan"=> 0,
-                "tinggiBadan"=> 0,
-                "respRate"=> 0,
-                "heartRate"=> 0,
-                "rujukBalik"=> "0",
+                "sistole"=> (int)$pasien_bpjs['sistole'],
+                "diastole"=> (int)$pasien_bpjs['diastole'],
+                "beratBadan"=> (int)$pasien_bpjs['beratBadan'],
+                "tinggiBadan"=> (int)$pasien_bpjs['tinggiBadan'],
+                "respRate"=> (int)$pasien_bpjs['respRate'],
+                "lingkarPerut" => (int)$pasien_bpjs['lingkarPerut'],
+                "heartRate"=> (int)$pasien_bpjs['heartRate'],
+                "rujukBalik"=> (int)$pasien_bpjs['rujukBalik'],
                 "kdTkp"=> "10"
             ];
-        $post = json_encode($post);
-        $headers = array(
-            "Accept: application/json",
-            "X-cons-id:".$consID,
-            "X-timestamp: ".$stamp,
-            "X-signature: " .base64_encode($signature),
-            "X-authorization: Basic " .base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi),
-            'Content-Type:application/json',
-            'Content-Length: ' .strlen($post)
-        );
-            // return $pcarePWD;
-        //   echo "X-cons-id:".$consID;
-        //   echo "X-timestamp: ".$stamp;
-        //   echo "X-signature: ".$encodedSignature;
-        //   echo "X-authorization: Basic " .$encodedAuthorization;
-
-        $ch = curl_init($uri."/pendaftaran");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo curl_error($ch);
         }
-        curl_close($ch);
-        return json_decode($data,true);
-        /*header("Content-Type: application/json");
-        json_encode(var_dump(json_decode($data, true)["response"]),true);*/
+        $post = json_encode($post);
+        $result = APIBpjsController::post($url, $post);
+        return $result;
     }
     public function cekaktifbpjs($no_bpjs){
-        $uri = env('API_URL'); //url web service bpjs
-        $consID 	= env('API_CONSID'); //customer ID anda
-        $secretKey 	= env('API_SECRETKEY'); //secretKey anda
 
-        $pcareUname = env('API_PCAREUNAME'); //username pcare
-        $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
-
-        $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-
-
-        $stamp		= time();
-        $data 		= $consID.'&'.$stamp;
-
-        $signature = hash_hmac('sha256', $data, $secretKey, true);
-        $encodedSignature = base64_encode($signature);
-        $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-
-        $headers = array(
-                    "Accept: application/json",
-                    "X-cons-id:".$consID,
-                    "X-timestamp: ".$stamp,
-                    "X-signature: ".base64_encode($signature),
-                    "X-authorization: Basic " .base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi),
-                );
-
-        $ch = curl_init($uri.'/peserta/'.$no_bpjs);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-        $data = curl_exec($ch);
-        $data = json_decode($data,true);
-        return $data;
+        $url = 'peserta/'.$no_bpjs;
+        $result = APIBpjsController::get($url);
+        return $result;
     }
 
     public function getBPJS($no_bpjs){
-        $uri = env('API_URL');;
-
-        $consID 	= env('API_CONSID'); //customer ID anda
-        $secretKey 	= env('API_SECRETKEY'); //secretKey anda
-
-        $pcareUname = env('API_PCAREUNAME'); //username pcare
-        $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
-
-        $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-
-        $stamp    = time();
-        $data     = $consID.'&'.$stamp;
-
-        $signature = hash_hmac('sha256', $data, $secretKey, true);
-        $encodedSignature = base64_encode($signature);
-        $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-
-        $headers = array(
-                    "Accept: application/json",
-                    "X-cons-id:".$consID,
-                    "X-timestamp: ".$stamp,
-                    "X-signature: ".$encodedSignature,
-                    "X-authorization: Basic " .$encodedAuthorization
-                );
-        $ch = curl_init($uri.'/peserta/'.$no_bpjs);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo curl_error($ch);
-        }
-        curl_close($ch);
-        //return $data;
-        return json_decode($data, true);
+        $url = '/peserta/'.$no_bpjs;
+        $result = APIBpjsController::get($url);
+        return $result;
         /*header("Content-Type: application/json");
         json_encode(var_dump(json_decode($data, true)["response"]),true);*/
 
     }
     public function deleteBPJS($antrian){
-        // return $antrian;
-        $uri = env('API_URL'); //url web service bpjs
-        $consID 	= env('API_CONSID'); //customer ID anda
-        $secretKey 	= env('API_SECRETKEY'); //secretKey anda
 
-        $pcareUname = env('API_PCAREUNAME'); //username pcare
-        $pcarePWD 	= env('API_PCAREPWD'); //password pcare anda
-
-        $kdAplikasi	= env('API_KDAPLIKASI'); //kode aplikasi
-
-
-        $stamp    = time();
-        $data     = $consID.'&'.$stamp;
-
-        $signature = hash_hmac('sha256', $data, $secretKey, true);
-        $encodedSignature = base64_encode($signature);
-        $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-
-        $headers = array(
-            "Accept: application/json",
-            "X-cons-id:".$consID,
-            "X-timestamp: ".$stamp,
-            "X-signature: " .base64_encode($signature),
-            "X-authorization: Basic " .base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi),
-            'Content-Type:application/json',
-
-        );
-        $fullurl = $uri.'/pendaftaran/peserta/'.$antrian->no_kartu.'/tglDaftar/'.date('d-m-Y',strtotime($antrian->tgl_daftar)).'/noUrut/'.$antrian->no_antrian_bpjs.'/kdPoli/'.$antrian->code_poli;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        curl_setopt($ch, CURLOPT_URL, $fullurl);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $data = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo curl_error($ch);
-        }
-        curl_close($ch);
-        // return $data;
-        return json_decode($data, true);
+        $url = '/pendaftaran/peserta/'.$antrian->no_kartu.'/tglDaftar/'.date('d-m-Y',strtotime($antrian->tgl_daftar)).'/noUrut/'.$antrian->no_antrian_bpjs.'/kdPoli/'.$antrian->code_poli;
+        // $url = '/pendaftaran/peserta/0002046121615/tglDaftar/'.date('d-m-Y').'/noUrut/A1/kdPoli/001';
+        $result = APIBpjsController::delete($url);
+        return $result;
     }
 }
 

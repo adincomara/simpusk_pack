@@ -841,6 +841,16 @@ class LaboratoriumController extends Controller
 
 
   }
+    public function notifikasi(){
+
+        $pendaftaran = Pendaftaran::where('tanggal_daftar', date('Y-m-d'));
+        $pendaftaran->where(function($q){
+            $q->orwhere('flag_periksa', 2);
+            $q->orwhere('flag_periksa', 3);
+        });
+        $pendaftaran = $pendaftaran->get();
+        return count($pendaftaran);
+    }
   public function cetak_lab($req){
     // return $req;
     parse_str($req, $array);

@@ -4,439 +4,557 @@ namespace App\Http\Controllers\Simpusk;
 
 // use App\Http\Controllers\Controller;
 use App\Models\Simpusk\AntrianBPJS;
+use App\Models\Simpusk\DokterBPJS;
 use App\Models\Simpusk\Pasien;
+use App\Models\Simpusk\PasienBPJS;
+use App\Models\Simpusk\Pendaftaran;
 use App\Models\Simpusk\Poli;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AntrianController extends Controller
 {
-    public function ambil_antrian($request, $pendaftaran, $no_antrian_bpjs){
-        $poli = Poli::find($request->id_poli);
-        $data = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime(Carbon::now())))->where('no_antrian', 'LIKE', $poli->kode_poli.'%')->orderBy('id', 'DESC')->first();
-        if(!isset($data)){
-            $no_antrian = $poli->kode_poli."1";
+    public function index(){
+        $poli = Poli::where('status',1)->get();
+        $dokterbpjs = $this->getDokterBpjs();
+        $dokter = DokterBPJS::all();
+        return view('antrian/dashboard', ['poli' => $poli, 'dokter' => $dokter]);
+    }
+    public function generateNoRawat()
+    {
+      $date = date('Y-m-d');
+      $next_no = '';
+      $max_order = Pendaftaran::max('id');
+      if ($max_order) {
+          $data = Pendaftaran::find($max_order);
+          $ambil = substr($data->no_rawat, -4);
+      }
+      if ($max_order==null) {
+        $next_no = '0001';
+      }elseif (strlen($ambil)<4) {
+        $next_no = '0001';
+      }elseif ($ambil == '9999') {
+        $next_no = '0001';
+      }else {
+        $next_no = substr('0000', 0, 4-strlen($ambil+1)).($ambil+1);
+      }
+      return $date.'-'.$next_no;
+    }
+    public function petugas_panggil(Request $req){
+        $poli = Poli::where('kdpoli', $req->poli)->first();
+        $selectedPoli = $req->poli;
+        $selectedDokter = $req->dokter;
+        $dokter = DokterBPJS::where('kdDokter', $req->dokter)->first();
+        $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d'))->where('code_poli', $req->poli)->get();
+
+        $antrian_now = AntrianBPJS::where('code_poli',$req->poli)->where('status', 1)->orderBy('no_antrian', 'DESC')->where('tgl_daftar', date('Y-m-d'))->first();
+        // return $antrian_now;
+        if(isset($antrian_now)){
+            $no_antrian_now = $antrian_now->no_antrian;
         }else{
-            $no_antrian = $poli->kode_poli."".(substr($data->no_antrian,1)+1);
+            $no_antrian_now = $poli->kode_poli.'1';
         }
-        $antrian = new AntrianBPJS;
+        // $no_antrian_now = $poli->kode_poli.''.$antrian_now;
+        // return $no_antrian_now;
+        $antrian_pasien = AntrianBPJS::where('no_antrian', $no_antrian_now)->where('tgl_daftar', date('Y-m-d'))->where(function($q){
+            $q->orwhere('id_pendaftaran', '!=', NULL);
+            $q->orwhere('no_kartu', '!=', NULL);
+            $q->orwhere('no_ktp', '!=', NULL);
+        })->first();
+        // return $antrian_pasien;
+        if(isset($antrian_pasien)){
+            $pasien = Pasien::where(function($q) use($antrian_pasien){
+                if($antrian_pasien->no_ktp != '-'){
+                    $q->orwhere('no_ktp', $antrian_pasien->no_ktp);
+                }
+                if($antrian_pasien->no_kartu != '-'){
+                    $q->orwhere('no_bpjs', $antrian_pasien->no_kartu);
+                }
+            })->first();
+            // return $pasien;
+            $pendaftaran = Pendaftaran::where('no_rekamedis', $pasien->no_rekamedis)->where('tanggal_daftar', date('Y-m-d'))->first();
+            // return $pasien;
+        }else{
+            // $no_antrian_now = $poli->kode_poli.'0';
+            $pasien = null;
+            $pendaftaran = null;
+            $antrian_pasien = null;
+        }
+        // return $pendaftaran;
+        return view('antrian/kioska_panggil', [
+            'poli' => $poli,
+            'dokter' => $dokter,
+            'antrian_now' => $no_antrian_now,
+            'pasien' => $pasien,
+            'pendaftaran' => $pendaftaran,
+            'antrian' => $antrian_pasien,
+            'selectedPoli' => $selectedPoli,
+            'selectedDokter' => $selectedDokter,
+        ]);
+    }
+    public function antrian_selanjutnya($antrian){
+        $kode = substr($antrian, 0, 1);
+        $count = substr($antrian, 1);
+        $no_antrian = $kode.''.$count;
+        $antrian = AntrianBPJS::where('no_antrian',$no_antrian)->where('status', 0)->orderBy('created_at', 'ASC')->where('tgl_daftar', date('Y-m-d'))->where('waktu_panggil', NULL)->first();
+        if(isset($antrian)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Antrian belum dipanggil'
+            ]);
+        }
+        $count +=1;
+        $no_antrian = $kode.''.$count;
+        $antrian_next = AntrianBPJS::where('no_antrian', $no_antrian)->where('status', 0)->orderBy('created_at', 'ASC')->where('tgl_daftar', date('Y-m-d'))->whereNotNull('id_pendaftaran')->first();
+        // return $antrian_next;
+        if(isset($antrian_next)){
+            $antrian_next->waktu_panggil = date('Y-m-d H:i:s');
+            $antrian_next->status = 1;
+            $antrian_next->save();
+            $pasien = Pasien::orwhere('no_ktp', $antrian_next->no_ktp)->orwhere('no_bpjs', $antrian_next->no_kartu)->first();
+            $pendaftaran = Pendaftaran::where('id', $antrian_next->id_pendaftaran)->where('tanggal_daftar', date('Y-m-d'))->first();
+            return response()->json([
+                'success' => true,
+                'pasien' => $pasien,
+                'pendaftaran' => $pendaftaran,
+                'antrian' => $antrian_next
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada Antrian',
+                'pasien' => null,
+                'pendaftaran' => null
+            ]);
+        }
+    }
+    public function panggil($antrian){
+        $pasien_antrian = AntrianBPJS::where('no_antrian', $antrian)->where(function($q){
+            $q->where('id_pendaftaran', '!=', NULL);
+            $q->where('no_kartu', '!=', NULL);
+            $q->where('no_ktp', '!=', NULL);
+        })->where('tgl_daftar',date('Y-m-d'))->first();
+        if(!isset($pasien_antrian)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Belum ada pasien / Pasien telah membatalkan antrian',
+            ]);
+        }
+        $pendaftaran = Pendaftaran::where('id', $pasien_antrian->id_pendaftaran)->first();
+        $pasien = Pasien::where('no_rekamedis', $pendaftaran->no_rekamedis)->first();
+        if($pasien_antrian->waktu_panggil == null){
+            $pasien_antrian->waktu_panggil = date('Y-m-d H:i:s');
+        }
+        $pasien_antrian->status = 1;
+        if($pasien_antrian->save()){
+            return response()->json([
+                'success' => true,
+                'antrian' => $pasien_antrian,
+                'pendaftaran' => $pendaftaran,
+                'pasien' => $pasien
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'antrian gagal di simpan'
+            ]);
+
+        }
+    }
+    public function display(){
+        $poli = Poli::where('status', 1)->get();
+        // return $poli;
+        foreach($poli as $key => $value){
+            $value->no_antrian = $this->cek_antrian_now($value->kdpoli);
+        }
+        // return $poli;
+        return view('antrian/kioska_display',['poli' => $poli]);
+    }
+    public function antrian_all(){
+        $poli = Poli::where('status', 1)->get();
+        foreach($poli as $key => $value){
+            $value->no_antrian = $this->cek_antrian_now($value->kdpoli);
+            $antrian = AntrianBPJS::where('no_antrian', $value->no_antrian)->where('tgl_daftar', date('Y-m-d'))->where(function($q){
+                $q->orwhere('id_pendaftaran', '!=', NULL);
+                $q->orwhere('no_kartu', '!=', NULL);
+                $q->orwhere('no_ktp', '!=', NULL);
+            })->first();
+            if(isset($antrian)){
+                $pendaftaran = Pendaftaran::where('id', $antrian->id_pendaftaran)->first();
+                $pasien = Pasien::where('no_rekamedis', $pendaftaran->no_rekamedis)->first()->nama_pasien;
+            }else{
+                $pasien = '-';
+            }
+            $value->pasien = $pasien;
+        }
+        return response()->json([
+            'success' => true,
+            'poli' => $poli,
+            // 'pendaftaran' => $pendaftaran
+        ]);
+    }
+    public function cek_antrian_now($poli){
+        $poli = Poli::where('kdpoli', $poli)->first();
+        $antrian_now = AntrianBPJS::where('code_poli',$poli->kdpoli)->where('status', 1)->orderBy('no_antrian', 'DESC')->where('tgl_daftar', date('Y-m-d'))->first();
+        if(isset($antrian_now)){
+            $no_antrian_now = $antrian_now->no_antrian;
+        }else{
+            $no_antrian_now = $poli->kode_poli.'0';
+        }
+        return $no_antrian_now;
+    }
+    public function pendaftaran_bpjs(){
+        $poli = Poli::where('status',1)->get();
+        $dokter = DokterBPJS::all();
+        return view('antrian/pendaftaran_bpjs', ['poli' => $poli, 'dokter' => $dokter]);
+    }
+    public function pendaftaran_umum(){
+        $poli = Poli::where('status',1)->get();
+        $dokter = DokterBPJS::all();
+        return view('antrian/pendaftaran_umum', ['poli' => $poli, 'dokter' => $dokter]);
+    }
+    public function simpan_pendaftaran_bpjs(Request $req){
+        $no_kartu = $req->no_kartu;
+        $poli = Poli::where('kdpoli', $req->poli)->first();
+        $dokter = DokterBPJS::where('kdDokter', $req->dokter)->first();
+        $pasien = Pasien::orwhere('no_ktp', $no_kartu)->orwhere('no_bpjs',$no_kartu)->orwhere('no_rekamedis', $no_kartu)->first();
+        if(!isset($pasien)){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien belum terdaftar pada sistem Puskesmas'
+            ]);
+        }
+        $getbpjs = $this->getBPJS($no_kartu);
+        if($getbpjs['response']['ketAktif'] != 'AKTIF'){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Status BPJS Pasien tidak aktif'
+            ]);
+        }
+        $cekpendaftaranpasien = Pendaftaran::whereDate('tanggal_daftar', Carbon::today())->where(function($q) use ($pasien){
+            $q->orwhere('no_rekamedis', $pasien->no_rekamedis);
+            $q->orwhere('no_bpjs',$pasien->no_bpjs);
+        })->first();
+        if(isset($cekpendaftaranpasien)){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien sudah pernah didaftarkan'
+            ]);
+        }
+        try{
+            DB::beginTransaction();
+            $kdProviderPeserta = $getbpjs["response"]["kdProviderPst"]["kdProvider"];
+            $noKartu = $getbpjs['response']['noKartu'];
+            $pasien_bpjs = PasienBPJS::where('noKartu', $noKartu)
+            ->where('kdProviderPeserta', $kdProviderPeserta)
+            ->where(function($q){
+                $q->whereNotNull('sistole');
+                $q->whereNotNull('diastole');
+                $q->whereNotNull('beratBadan');
+                $q->whereNotNull('tinggiBadan');
+                $q->whereNotNull('respRate');
+                $q->whereNotNull('lingkarPerut');
+                $q->whereNotNull('heartRate');
+                $q->whereNotNull('rujukBalik');
+            })->first();
+            if($poli->kunjungan_sakit == 0){
+                $kjsakit = false;
+            }else{
+                $kjsakit = true;
+            }
+            $url = '/pendaftaran';
+            $post = [
+                "kdProviderPeserta"=> $kdProviderPeserta,
+                "tglDaftar"=> date('d-m-Y'),
+                "noKartu"=> $noKartu,
+                "kdPoli"=> $poli->kdpoli,
+                "keluhan"=> null,
+                "kunjSakit"=> $kjsakit,
+                "sistole"=> 120,
+                "diastole"=> 80,
+                "beratBadan"=> 70,
+                "tinggiBadan"=> 150,
+                "respRate"=> 24,
+                "lingkarPerut" => 56,
+                "heartRate"=> 60,
+                "rujukBalik"=> 0,
+                "kdTkp"=> "10"
+            ];
+            if(isset($pasien_bpjs)){
+                $post = [
+                    "kdProviderPeserta"=> $kdProviderPeserta,
+                    "tglDaftar"=> date('d-m-Y'),
+                    "noKartu"=> $noKartu,
+                    "kdPoli"=> $poli->kdpoli,
+                    "keluhan"=> null,
+                    "kunjSakit"=> $kjsakit,
+                    "sistole"=> (int)$pasien_bpjs['sistole'],
+                    "diastole"=> (int)$pasien_bpjs['diastole'],
+                    "beratBadan"=> (int)$pasien_bpjs['beratBadan'],
+                    "tinggiBadan"=> (int)$pasien_bpjs['tinggiBadan'],
+                    "respRate"=> (int)$pasien_bpjs['respRate'],
+                    "lingkarPerut" => (int)$pasien_bpjs['lingkarPerut'],
+                    "heartRate"=> (int)$pasien_bpjs['heartRate'],
+                    "rujukBalik"=> (int)$pasien_bpjs['rujukBalik'],
+                    "kdTkp"=> "10"
+                ];
+            }
+            $post = json_encode($post);
+            $result = APIBpjsController::post($url, $post);
+            // return $result;
+            $no_antrian_bpjs = $result['response']['message'];
+            $pendaftaran = new Pendaftaran;
+            $pendaftaran->no_rawat                          = $this->generateNoRawat();
+            $pendaftaran->no_rekamedis                      = $pasien->no_rekamedis;
+            $pendaftaran->tanggal_daftar                    = date('Y-m-d');
+            $pendaftaran->id_poli                           = $poli->kdpoli;
+            $pendaftaran->id_dokter                         = $dokter['kdDokter'];
+            $pendaftaran->nama_penanggung_jawab             = $dokter['nmDokter'];
+            $pendaftaran->id_poli_sub                       = null;
+            $pendaftaran->hubungan_dengan_penanggung_jawab  = '-';
+            $pendaftaran->alamat_penanggung_jawab           = '-';
+            $pendaftaran->status_pasien                     = 'BPJS';
+            $pendaftaran->no_bpjs                           = $noKartu;
+            $pendaftaran->sumber_pendaftaran                = 0;
+            $pendaftaran->save();
+            $antrian = $this->updateantrian($poli, $pendaftaran, $no_antrian_bpjs);
+            $array = array(
+                'poli' => $poli->nama_poli,
+                'no_antrian' => $antrian->no_antrian
+            );
+            DB::commit();
+            return response()->json([
+                'antrian' => $array,
+                'success' => true,
+                'code' => 201,
+                'message' => 'Pasien berhasil didaftarkan'
+            ]);
+        }catch(\Throwable $th){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien gagal didaftarkan '.$th->getMessage()
+            ]);
+
+        }
+    }
+
+    public function simpan_pendaftaran_umum(Request $req){
+        $no_kartu = $req->no_kartu;
+        $poli = Poli::where('kdpoli', $req->poli)->first();
+        $dokter = DokterBPJS::where('kdDokter', $req->dokter)->first();
+        $pasien = Pasien::orwhere('no_ktp', $no_kartu)->orwhere('no_bpjs',$no_kartu)->orwhere('no_rekamedis', $no_kartu)->first();
+        // return $pasien;
+        if(!isset($pasien)){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien belum terdaftar pada sistem Puskesmas'
+            ]);
+        }
+        $cekpendaftaranpasien = Pendaftaran::whereDate('tanggal_daftar', Carbon::today())->where(function($q) use ($pasien){
+            $q->orwhere('no_rekamedis', $pasien->no_rekamedis);
+            $q->orwhere('no_bpjs',$pasien->no_bpjs);
+        })->first();
+        if(isset($cekpendaftaranpasien)){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien sudah pernah didaftarkan'
+            ]);
+        }
+        try{
+            DB::beginTransaction();
+            $pendaftaran = new Pendaftaran;
+            $pendaftaran->no_rawat                          = $this->generateNoRawat();
+            $pendaftaran->no_rekamedis                      = $pasien->no_rekamedis;
+            $pendaftaran->tanggal_daftar                    = date('Y-m-d');
+            $pendaftaran->id_poli                           = $poli->kdpoli;
+            $pendaftaran->id_dokter                         = $dokter['kdDokter'];
+            $pendaftaran->nama_penanggung_jawab             = $dokter['nmDokter'];
+            $pendaftaran->id_poli_sub                       = null;
+            $pendaftaran->hubungan_dengan_penanggung_jawab  = '-';
+            $pendaftaran->alamat_penanggung_jawab           = '-';
+            $pendaftaran->status_pasien                     = 'Umum';
+            $pendaftaran->no_bpjs                           = '-';
+            $pendaftaran->sumber_pendaftaran                = 0;
+            $pendaftaran->save();
+            $antrian = $this->updateantrian($poli, $pendaftaran, null);
+            // return $antrian;
+            $array = array(
+                'poli' => $poli->nama_poli,
+                'no_antrian' => $antrian->no_antrian
+            );
+            DB::commit();
+            return response()->json([
+                'antrian' => $array,
+                'success' => true,
+                'code' => 201,
+                'message' => 'Pasien berhasil didaftarkan'
+            ]);
+        }catch(\Throwable $th){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => 'Pasien gagal didaftarkan '.$th->getMessage()
+            ]);
+
+        }
+    }
+
+    public function updateantrian($poli, $pendaftaran, $no_antrian_bpjs){
+        // $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime($pendaftaran->tanggal_daftar)))
+        // ->where('no_antrian', 'LIKE', $poli->kode_poli.'%')
+        // ->where('status', 0)
+        // ->where('status_daftar', 0)
+        // ->orderBy('id', 'ASC')
+        // ->first();
+        // if(!isset($antrian)){
+
+        // }
+        $antrian_now = AntrianBPJS::where('tgl_daftar', date('Y-m-d'))->where('code_poli', $poli->kdpoli)->get();
+        $no_antrian = $poli->kode_poli.''.(count($antrian_now)+1);
+        $antrian = new AntrianBPJS();
         $antrian->id_pendaftaran = $pendaftaran->id;
         $antrian->no_kartu  = $pendaftaran->no_bpjs;
-        $antrian->no_ktp    = Pasien::where('no_rekamedis', $pendaftaran->no_rekamedis)->first()->no_ktp;
-        $antrian->code_poli = Poli::find($pendaftaran->id_poli)->kdpoli;
+        $antrian->no_ktp    = $pendaftaran->pasien->no_ktp;
+        $antrian->code_poli = $poli->kdpoli;
         $antrian->no_antrian = $no_antrian;
         $antrian->no_antrian_bpjs = $no_antrian_bpjs;
-        $antrian->tgl_daftar = date('Y-m-d', strtotime($pendaftaran->tanggal_daftar));
-        if($antrian->save()){
-
-            $cetak_antrian = collect([
-                'poli' => $poli->nama_poli,
-                'no_antrian' => $antrian->no_antrian,
-            ]);
-            return response()->json([
-                "success"         => TRUE,
-                'antrian'      => $cetak_antrian,
-                "code"            => 201,
-                "message"         => "Pasien berhasil didaftarkan"
-            ]);
-        }else{
-            return response()->json([
-                'success' => false,
-                'code' => 401,
-                'message' => 'Pendaftaran antrian gagal disimpan di database SIMPUSK',
-            ]);
-
-        }
-    }
-    public function postantrian(Request $req){
-        $poli = Poli::where('kdpoli', $req->kdpoli)->first();
-        $data = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime(Carbon::now())))->where('no_antrian', 'LIKE', $poli->kode_poli.'%')->orderBy('id', 'DESC')->first();
-        if(!isset($data)){
-            $no_antrian = $poli->kode_poli."1";
-        }else{
-            $no_antrian = $poli->kode_poli."".(substr($data->no_antrian,1)+1);
-        }
-        $antrian = new AntrianBPJS;
-        $antrian->tgl_daftar = date('Y-m-d' );
-        $antrian->no_antrian = $no_antrian;
-        $antrian->code_poli = $req->kdpoli;
+        $antrian->tgl_daftar = $pendaftaran->tanggal_daftar;
+        $antrian->status_daftar = 1;
         $antrian->save();
-        $antrian->poli = $antrian->poli;
         return $antrian;
-        // return $no_antrian;
     }
-
-    public static function updateantrian($kdpoli, $pendaftaran, $no_antrian_bpjs){
-        $poli = $kdpoli;
-        $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime($pendaftaran->tanggal_daftar)))
-        ->where('no_antrian', 'LIKE', $poli->kode_poli.'%')
-        ->where('status', 0)
-        ->where('status_daftar', 0)
-        ->orderBy('id', 'ASC')
-        ->where('id_pendaftaran', '=', NULL)
-        ->first();
-        if(isset($antrian)){
-            if($pendaftaran->save()){
-                $antrian->id_pendaftaran = $pendaftaran->id;
-                $antrian->no_kartu  = $pendaftaran->no_bpjs;
-                $antrian->no_ktp    = $pendaftaran->pasien->no_ktp;
-                $antrian->code_poli = $poli->kdpoli;
-                $antrian->no_antrian_bpjs = $no_antrian_bpjs;
-                $antrian->status_daftar = 1;
-                $antrian->status = 1;
-                if($antrian->save()){
-                    $cetak_antrian = collect([
-                        'poli' => $poli->nama_poli,
-                        'no_antrian' => $antrian->no_antrian,
-                    ]);
-                    return response()->json([
-                        "success"         => TRUE,
-                        'antrian'      => $cetak_antrian,
-                        "code"            => 201,
-                        "message"         => "Pasien berhasil didaftarkan"
-                    ]);
-                }
-            }else{
-                return response()->json([
-                    'success' => false,
-                    'code' => 401,
-                    'message' => 'Pendaftaran antrian gagal disimpan di database SIMPUSK',
-                ]);
-            }
+    public function getBPJS($no_bpjs){
+        $cek = substr($no_bpjs,0,1);
+        if($cek == '0'){
+            $url = '/peserta/'.$no_bpjs;
         }else{
-            if($pendaftaran->save()){
-                $antrian_now = AntrianBPJS::where('tgl_daftar', date('Y-m-d'))->where('code_poli', $poli->kdpoli)->get();
-                // return count($antrian_now);
-                $no_antrian = $poli->kode_poli.''.(count($antrian_now)+1);
-                $antrian = new AntrianBPJS();
-                $antrian->id_pendaftaran = $pendaftaran->id;
-                $antrian->no_kartu  = $pendaftaran->no_bpjs;
-                $antrian->no_ktp    = $pendaftaran->pasien->no_ktp;
-                $antrian->code_poli = $poli->kdpoli;
-                $antrian->no_antrian = $no_antrian;
-                $antrian->no_antrian_bpjs = $no_antrian_bpjs;
-                $antrian->status_daftar = 1;
-                $antrian->status = 1;
-                if($antrian->save()){
-                    $cetak_antrian = collect([
-                        'poli' => $poli->nama_poli,
-                        'no_antrian' => $antrian->no_antrian,
-                    ]);
-                    return response()->json([
-                        "success"         => TRUE,
-                        'antrian'      => $cetak_antrian,
-                        "code"            => 201,
-                        "message"         => "Pasien berhasil didaftarkan"
-                    ]);
+            $url = '/peserta/nik/'.$no_bpjs;
+        }
+        $result = APIBpjsController::get($url);
+        return $result;
+    }
+    public function getDokterBpjs(){
+        $url = '/dokter/0/100';
+        $data = APIBpjsController::get($url);
+        if($data['metaData']['code'] == 200){
+            foreach($data['response']['list'] as $dokter){
+                $dkt = DokterBPJS::where('kdDokter', $dokter['kdDokter'])->first();
+                if(!isset($dkt)){
+                    $dkt = new DokterBPJS();
+                    $dkt->nmDokter = $dokter['nmDokter'];
+                    $dkt->kdDokter = $dokter['kdDokter'];
+                    $dkt->save();
                 }
             }
-
-            // return response()->json([
-            //     'success' => false,
-            //     'code' => 401,
-            //     'message' => 'Belum mengambil Antrian',
-            // ]);
         }
-    }
-    // untuk antrian
-    // public static function updateantrian($kdpoli, $pendaftaran, $no_antrian_bpjs){
-    //     $poli = $kdpoli;
-    //     $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime($pendaftaran->tanggal_daftar)))
-    //     ->where('no_antrian', 'LIKE', $poli->kode_poli.'%')
-    //     ->where('status', 0)
-    //     ->where('status_daftar', 0)
-    //     ->orderBy('id', 'ASC')
-    //     ->where('id_pendaftaran', '=', NULL)
-    //     ->first();
-    //     if(isset($antrian)){
-    //         if($pendaftaran->save()){
-    //             $antrian->id_pendaftaran = $pendaftaran->id;
-    //             $antrian->no_kartu  = $pendaftaran->no_bpjs;
-    //             $antrian->no_ktp    = $pendaftaran->pasien->no_ktp;
-    //             $antrian->code_poli = $poli->kdpoli;
-    //             $antrian->no_antrian_bpjs = $no_antrian_bpjs;
-    //             $antrian->status_daftar = 1;
-    //             $antrian->status = 1;
-    //             if($antrian->save()){
-    //                 $cetak_antrian = collect([
-    //                     'poli' => $poli->nama_poli,
-    //                     'no_antrian' => $antrian->no_antrian,
-    //                 ]);
-    //                 return response()->json([
-    //                     "success"         => TRUE,
-    //                     'antrian'      => $cetak_antrian,
-    //                     "code"            => 201,
-    //                     "message"         => "Pasien berhasil didaftarkan"
-    //                 ]);
-    //         }
-    //         }else{
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'code' => 401,
-    //                 'message' => 'Pendaftaran antrian gagal disimpan di database SIMPUSK',
-    //             ]);
-    //         }
-    //     }else{
-    //         return response()->json([
-    //             'success' => false,
-    //             'code' => 401,
-    //             'message' => 'Belum mengambil Antrian',
-    //         ]);
-    //     }
-    // }
-    public function index(){
-        return view('antrian.antrian');
-    }
-    public function getData(Request $request){
-        $limit = $request->length;
-        $start = $request->start;
-        $page  = $start +1;
-        $search = $request->search['value'];
-        $search_tgl = $request->search_tgl;
-        $records = AntrianBPJS::where('tgl_daftar', date('Y-m-d', strtotime(Carbon::now())));
-        $datacol = $records->get();
-        $datacollect = collect([]);
-        foreach($datacol as $d){
-            $datacollect->push($d);
-        }
-        $datagroup = $datacollect->groupBy('code_poli');
-        if($search) {
-            $records->where(function ($query) use ($search) {
-                    $query->orWhere('no_rawat','LIKE',"%{$search}%");
-                    $query->orWhere('tbl_pendaftaran.no_rekamedis','LIKE',"%{$search}%");
-                    $query->orWhere('nama_pasien','LIKE',"%{$search}%");
-                    $query->orWhere('tbl_pendaftaran.status_pasien','LIKE',"%{$search}%");
-                    $query->orWhere('tbl_poli.nama_poli','LIKE',"%{$search}%");
-            });
-        }
-        $totalData = $datagroup->count();
-
-        $totalFiltered = $datagroup->count();
-        $data = $datagroup;
-        $no = 0;
-        $datates = collect([]);
-        foreach ($data as $key => $record)
-        {
-            $enc_id = $key;
-            $antrian_saat_ini = 1;
-            foreach($record as $r){
-                if($r->status == 1){
-                    $antrian_saat_ini++;
-                }else{
-                    continue;
-                }
-            }
-            $pol = Poli::where('kdpoli', $key)->first();
-            $recordcollect['no'] = $no + $page;
-            $recordcollect['nama_poli'] = $pol->nama_poli;
-            $recordcollect['total_antrian'] = count($record);
-            $recordcollect['antrian_saat_ini'] = $pol->kode_poli."".$antrian_saat_ini;
-            $recordcollect['sisa_antrian'] = (count($record) - $antrian_saat_ini);
-
-            $action = "";
-            $action.='<a href="#" onclick="panggil(this,\''.$recordcollect['antrian_saat_ini'].'\')" class="panggil btn btn-success btn-xs icon-btn md-btn-flat product-tooltip" style="min-width:60px;" id="panggil'.$key.'" title="Hapus"><i class="fa fa-bullhorn"></i> Panggil</a>&nbsp;';
-            if($recordcollect['sisa_antrian'] > 0){
-                $action.='<a href="#" onclick="selesai(\''.$recordcollect['antrian_saat_ini'].'\')" class="btn btn-primary btn-xs icon-btn md-btn-flat product-tooltip" style="min-width:60px" title="Hapus"><i class="fa fa-forward"></i> Lanjut</a>&nbsp;';
-
-            }elseif($recordcollect['sisa_antrian'] == 0 ){
-                // $action.='<a href="#" onclick="panggil(this,\''.$recordcollect['antrian_saat_ini'].'\')" class="btn btn-success btn-xs icon-btn md-btn-flat product-tooltip" style="min-width:60px" title="Hapus"><i class="fa fa-bullhorn"></i> Panggil</a>&nbsp;';
-                $action.='<a href="#" onclick="selesai(\''.$recordcollect['antrian_saat_ini'].'\')" class="btn btn-primary btn-xs icon-btn md-btn-flat product-tooltip" style="min-width:60px" title="Hapus"><i class="fa fa-forward"></i> Selesai</a>&nbsp;';
-            }
-
-            if($recordcollect['sisa_antrian'] == -1){
-                $recordcollect['sisa_antrian'] = "Tidak Ada antrian";
-                $recordcollect['antrian_saat_ini'] = "Tidak Ada antrian";
-            }
-            $recordcollect['action'] = $action;
-            $datates->push($recordcollect);
-            $no++;
-
-        }
-        if ($request->user()->can('pendaftaran.index')) {
-            $json_data = array(
-                    "draw"            => intval($request->input('draw')),
-                    "recordsTotal"    => intval($totalData),
-                    "recordsFiltered" => intval($totalFiltered),
-                    "data"            => $datates
-                    );
-        }else{
-            $json_data = array(
-                    "draw"            => intval($request->input('draw')),
-                    "recordsTotal"    => 0,
-                    "recordsFiltered" => 0,
-                    "data"            => []
-                    );
-        }
-        return json_encode($json_data);
-    }
-    public function antriannow(){
-        $antrian = AntrianBPJS::where('status', 0)->where('status_daftar', 0)->where('tgl_daftar', date('Y-m-d', strtotime(Carbon::now())))->orderBy('id', 'ASC')->first();
-        $kosong = array(
-            'no_antrian' => 0
-        );
-        return (isset($antrian))? $antrian : $kosong;
-    }
-    public function antrianselesai(Request $request){
-        $data = AntrianBPJS::where('no_antrian', $request->nomor)->where('tgl_daftar', date('Y-m-d', strtotime(Carbon::now())))->where('status', 0)->first();
-        if(isset($data)){
-            $data->status = 1;
-            if($data->save()){
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Nomor Antrian Berhasil Diupdate',
-                    'code' => 201
-                ]);
-            }
-        }else{
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tidak ditemukan',
-                'code' => 401,
-            ]);
-        }
-    }
+        return $data;
+  }
     public function antriancetak($antrian){
+        // return $antrian;
         return view('antrian.cetak', ['antrian' => json_decode($antrian,true)]);
     }
-    public function audio_panggil(Request $request){
-        // return $request->all();
-        $pecah = str_split($request->antrian);
-        $all_audio = collect([
-            collect([
-                'file' => asset('/inspinia/musik/in.wav')
-            ]),
-            collect([
-                'file' =>  asset('/inspinia/musik/antrian.wav')
-            ])
-        ]);
-        $jumlahkata = count($pecah);
-        foreach($pecah as $i => $audio){
-            if($i > 0){
-                if($jumlahkata == 2){
-                    $tampung = collect([
-                        'file' => asset('/inspinia/musik/'.$audio.'.wav')
-                    ]);
-                }elseif($jumlahkata == 3){
-                    if($audio == 1){
-                        $tampung = collect([
-                            'file' => asset('/inspinia/musik/'.$audio.''.$pecah[$i+1].'.wav')
-                        ]);
-                        $all_audio->push($tampung);
-                        break;
-                    }else{
-                        if($i == 1){
-                            $tampung = collect([
-                                'file' => asset('/inspinia/musik/'.$audio.'0.wav')
-                            ]);
-                        }else{
-                            $tampung = collect([
-                                'file' => asset('/inspinia/musik/'.$audio.'.wav')
-                            ]);
-                        }
-                    }
-
-                }elseif($jumlahkata == 4){
-                    if($i == 1){
-                        $tampung = collect([
-                            'file' => asset('/inspinia/musik/'.$audio.'00.wav')
-                        ]);
-                    }elseif($i == 2){
-                        $tampung = collect([
-                            'file' => asset('/inspinia/musik/'.$audio.'0.wav')
-                        ]);
-                    }else{
-                        $tampung = collect([
-                            'file' => asset('/inspinia/musik/'.$audio.'.wav')
-                        ]);
-                    }
-                }
-            }else{
-                $tampung = collect([
-                    'file' => asset('/inspinia/musik/'.strtolower($audio).'.wav')
-                ]);
-            }
-
-            $all_audio->push($tampung);
+    public function cek_pendaftaran($key){
+        $pasien = Pasien::where(function($q) use ($key){
+            $q->orwhere('no_rekamedis', 'LIKE', $key.'%');
+            $q->orwhere('no_ktp', 'LIKE', $key.'%');
+            $q->orwhere('no_bpjs', 'LIKE', $key.'%');
+        })->first();
+        $antrian = AntrianBPJS::where(function($q) use ($key){
+            $q->orwhere('no_antrian', $key);
+        })->where('tgl_daftar', date('Y-m-d'))->first();
+        if(isset($pasien) || isset($antrian)){
+            $pendaftaran = Pendaftaran::where(function($q) use ($pasien, $antrian){
+                $q->orwhere('no_rekamedis', $pasien['no_rekamedis']);
+                $q->orwhere('id', $antrian['id_pendaftaran']);
+            })->where('tanggal_daftar', date('Y-m-d'))->first();
         }
-        return $all_audio;
-
-        // return count($pecah);
-    }
-    public function getDataAntrian(){
-        $poli = Poli::where('status', 1)->whereNotIn('kdpoli', ['021'])->get();
-        $alldata = collect([]);
-        foreach($poli as $detailpoli){
-            $antrian = AntrianBPJS::where('code_poli', $detailpoli->kdpoli)->where('tgl_daftar', date('Y-m-d'))->orderBy('id', 'DESC')->first();
-            // return $antrian;
-            if(isset($antrian)){
-                $data = collect([
-                    'kdpoli' => $detailpoli->kdpoli,
-                    'no_antrian' => $antrian->no_antrian,
-                ]);
-            }else{
-                $data = collect([
-                    'kdpoli' => $detailpoli->kdpoli,
-                    'no_antrian' => '0',
-                ]);
-            }
-            $alldata->push($data);
-
+        if(isset($pendaftaran)){
+            $pasien = Pasien::where('no_rekamedis', $pendaftaran->no_rekamedis)->first();
+            $antrian = AntrianBPJS::where('id_pendaftaran', $pendaftaran->id)->where('tgl_daftar', date('Y-m-d'))->first();
+            $poli = Poli::where('kdpoli', $antrian->code_poli)->first();
+            $array = array(
+                'poli' => $poli->nama_poli,
+                'no_antrian' => $antrian->no_antrian
+            );
+            return response()->json([
+                'success' => true,
+                'pasien' => $pasien,
+                'antrian' => $antrian,
+                'cetak_antrian' => $array,
+                'flag_periksa' => $pendaftaran->flag_periksa
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'pasien' => null,
+                'antrian' => null,
+                'message' => 'Data tidak ditemukan'
+            ]);
         }
-        return $alldata;
     }
-    public function getDataOperator(){
-        $antrian = AntrianBPJS::where('tgl_daftar', date('Y-m-d'))->where('status',1)->get();
-        $poli = Poli::where('status', 1)->whereNotIn('kdpoli', ['021'])->get();
-        $alldata = collect([]);
-
-        foreach($poli as $detailpoli){
-            // $jumlahantrian = 0;
-            // return $detailpoli;
-            $antrian = AntrianBPJS::where('code_poli', $detailpoli->kdpoli)->where('tgl_daftar', date('Y-m-d'))->where('status', 1)->orderBy('id_pendaftaran', 'DESC')->first();
-            if(isset($antrian)){
-                $antriselanjutnya = substr($antrian->no_antrian,0,1).''.(substr($antrian->no_antrian,1)+1);
-                $cekantriselanjutnya = AntrianBPJS::where('no_antrian', $antriselanjutnya)->where('tgl_daftar', date('Y-m-d'))->first();
-                if(isset($cekantriselanjutnya)){
-                    $data = collect([
-                        'poli' => $detailpoli,
-                        'antrian' => substr($antrian->no_antrian,0,1).''.(substr($antrian->no_antrian,1)+1),
-                    ]);
-                }else{
-                    $data = collect([
-                        'poli' => $detailpoli,
-                        'antrian' => substr($antrian->no_antrian,0,1).''.substr($antrian->no_antrian,1),
-                        // 'antrian' => 0,
-                    ]);
-                }
-
-            }else{
-                $cek_antrian = AntrianBPJS::where('code_poli', $detailpoli->kdpoli)->where('tgl_daftar', date('Y-m-d'))->first();
-
-                if(isset($cek_antrian)){
-                    // return $cek_antrian;
-                    $data = collect([
-                        'poli' => $detailpoli,
-                        'antrian' => substr($cek_antrian->no_antrian,0,1).'1',
-                        // 'antrian' => 0,
-                    ]);
-                }else{
-                    $data = collect([
-                        'poli' => $detailpoli,
-                        // 'antrian' => substr($antrian->no_antrian,0,1).'1',
-                        'antrian' => 0,
+    public function hapus($antrian){
+        // return $antrian;
+        $antrian = AntrianBPJS::where('id',$antrian)->first();
+        $pendaftaran = Pendaftaran::where('id',$antrian->id_pendaftaran)->first();
+        if($pendaftaran->flag_periksa != 0){
+            return response()->json([
+                'success' => false,
+                'code'   => 204,
+                'message' => 'Gagal dihapus, Pasien sudah dilayani'
+            ]);
+        }
+        try{
+            DB::beginTransaction();
+            if($pendaftaran->status_pasien == "BPJS"){
+                $deletebpjs = $this->deleteBPJS($antrian);
+                if($deletebpjs['metaData']['code'] != 200){
+                    return response()->json([
+                        'success' => false,
+                        'code'   => 304,
+                        'message' => 'Gagal dihapus'
                     ]);
                 }
             }
-
-            $alldata->push($data);
-                // return $detailpoli;
-
-
+            $antrian->id_pendaftaran    = null;
+            $antrian->status    = 1;
+            $antrian->waktu_panggil = date('Y-m-d h:i:s');
+            // $antrian->no_kartu          = null;
+            // $antrian->no_ktp            = null;
+            // $antrian->code_poli         = null;
+            // $antrian->no_antrian_bpjs   = null;
+            $antrian->save();
+            $pendaftaran->delete();
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'code'   => 200,
+                'message' => 'Berhasil dihapus'
+            ]);
+        }catch(\Throwable $th){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Gagal dihapus, '.$th->getMessage()
+            ]);
         }
-        return $alldata;
+
+        return $pendaftaran;
+
     }
-    public function getallpoli(){
-        $poli = Poli::where('status', 1)->whereNotIn('kdpoli', ['021'])->get();
-        return $poli;
+    public function deleteBPJS($antrian){
+
+        $url = '/pendaftaran/peserta/'.$antrian->no_kartu.'/tglDaftar/'.date('d-m-Y',strtotime($antrian->tgl_daftar)).'/noUrut/'.$antrian->no_antrian_bpjs.'/kdPoli/'.$antrian->code_poli;
+        // $url = '/pendaftaran/peserta/0002046121615/tglDaftar/'.date('d-m-Y').'/noUrut/A1/kdPoli/001';
+        $result = APIBpjsController::delete($url);
+        return $result;
     }
 }

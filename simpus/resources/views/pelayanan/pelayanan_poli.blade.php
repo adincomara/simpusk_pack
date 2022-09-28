@@ -4,10 +4,7 @@
 @section('menu1', 'Master')
 @section('menu2', 'Data Pelayanan Poli')
 @section('table')
-<audio id="myAudio">
-    {{-- <source src="horse.ogg" type="audio/ogg"> --}}
-    <source src="{{ asset('assets/musik/success.mp3') }}" type="audio/mpeg">
-</audio>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
@@ -244,9 +241,12 @@ function text(){
 
     })
     function toastt(){
+        let file;
+        file = "{{ asset('/inspinia/musik/success.wav') }}";
+        let audio = new Audio(file);
         setTimeout(() => {
             toastr.options = {
-            "closeButton": true,
+            "closeButton": false,
             "debug": false,
             "progressBar": true,
             "preventDuplicates": false,
@@ -254,44 +254,31 @@ function text(){
             "onclick": null,
             "showDuration": "400",
             "hideDuration": "1000",
-            "timeOut": "7000",
+            "timeOut": "10000",
             "extendedTimeOut": "1000",
             "showEasing": "swing",
             "hideEasing": "linear",
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
-
-            }
-
-
+        }
             $.ajax({
                 url:"{{ route('pelayanan_poli.toast') }}",
                 type:"GET",
                 beforeSend: function(){
-                // Swal.showLoading();
+
                 },
                 success:function (data) {
-                    // Swal.hideLoading();
-                    // console.log(data.success);
-                    console.log('toast');
-                    for(i=0;i<data;i++){
-                        toastr.success("Halo, ada pasien yang perlu di periksa, silahkan klik tombol refresh")
-                        // var audio = new Audio("{{ asset('assets/musik/success.mp3') }}");
-                        // audio.play();
-                        var file = "{{ asset('assets/musik/success.mp3') }}";
-                        var audio = new Audio(file);
+                    for(i=0;i<data.jumlah;i++){
+                        toastr.success("Halo, ada pasien "+data.pendaftaran[i].pasien.nama_pasien+" yang perlu di periksa, silahkan klik tombol refresh")
                         audio.play();
-                        // audio.play();
                     }
-                    // setTimeout(notif_poli(), 3000)
                 },
                 complete: function(){
-                    // setTimeout(notif_poli(), 2000);
                     // setInterval(notif_poli(), 20000000000000000000000000000000000000);
                 },
             });
             toastt();
-        }, 1500);
+        }, 2000);
     }
 </script>
 @endpush

@@ -30,7 +30,7 @@ Route::group(['middleware' => 'api', 'namespace' => 'App\Http\Controllers'], fun
         Route::post('/', [AntrianController::class, 'create_antrean']);
         Route::get('status/{kdpoli}/{tglperiksa}', [AntrianController::class, 'status_antrean']);
         Route::get('sisapeserta/{nokartu}/{kdpoli}/{tgl_periksa}', [AntrianController::class, 'sisa_antrean']);
-        Route::post('batal', [AntrianController::class, 'batal_antrean']);
+        Route::put('batal', [AntrianController::class, 'batal_antrean']);
     });
     Route::group(['prefix' => 'peserta'], function(){
         Route::post('/', [AntrianController::class, 'create_pasien']);

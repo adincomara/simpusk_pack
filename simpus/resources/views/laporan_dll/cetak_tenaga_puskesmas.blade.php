@@ -32,7 +32,7 @@
 <htmlpageheader name="MyHeader1">
     <br/>
     <div class="text-right">Hal. [{PAGENO}/{nb}]</div>
-<h2 style="margin-bottom: 0;text-align: center;"> DATA PEGAWAI</h2>
+<h2 style="margin-bottom: 0;text-align: center;"> DATA TENAGA KESEHATAN</h2>
 </htmlpageheader>
 <sethtmlpageheader name="MyHeader1" value="on" show-this-page="1"/>
 <div>
@@ -41,7 +41,7 @@
     <thead>
         <tr>
             <th width="6%" style="border-bottom: 1px solid #000;">No</th>
-            <th width="10%" style="text-align: left; border-bottom: 1px solid #000;">NIP</th>
+            <th width="15%" style="text-align: left; border-bottom: 1px solid #000;">NIP</th>
             <th width="13%" style="text-align: left; border-bottom: 1px solid #000;">Nama Pegawai</th>
             <th width="30%" style="text-align: left;border-bottom: 1px solid #000;">NIK</th>
             <th width="20%" style="text-align: left;border-bottom: 1px solid #000;">Jenis Kelamin</th>

@@ -303,7 +303,14 @@ function text(){
             data: 'id='+id,
             headers: {'X-CSRF-TOKEN': token},
             beforeSend: function(){
-                Swal.showLoading();
+                swal.fire({
+                    html: '<h5>Loading...</h5>',
+                    showConfirmButton: false,
+                    onRender: function() {
+                        // there will only ever be one sweet alert open.
+                        $('.swal2-content').prepend(sweet_loader);
+                    }
+                });
             },
             success: function(data){
               Swal.hideLoading();

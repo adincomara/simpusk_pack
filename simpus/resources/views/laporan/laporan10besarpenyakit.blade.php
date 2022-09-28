@@ -12,7 +12,7 @@
                 <h3>Laporan 10 Besar Penyakit</h3>
                 <div class="ibox-tools">
                     <input type="month" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:300px" value="{{ date('Y-m') }}">
-                    {{-- <a href="{{ route('report.cetakTindakanPasien')}}" target="_blank"><button class="btn btn-primary"><i class="fa fa-file-pdf"></i></button></a> --}}
+                    <a href="{{ route('report.cetak10besarpenyakit')}}" target="_blank"><button class="btn btn-primary"><i class="fa fa-file-pdf"></i></button></a>
                     {{-- <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
