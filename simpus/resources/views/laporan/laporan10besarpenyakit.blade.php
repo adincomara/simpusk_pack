@@ -11,12 +11,11 @@
             <div class="ibox-title">
                 <h3>Laporan 10 Besar Penyakit</h3>
                 <div class="ibox-tools">
+                    <form action="{{ route('report.cetak10besarpenyakit')}}" method="post">
+                        {{ csrf_field() }}
                     <input type="month" name="tgl_search" id="tgl_search" class="date" style="min-height: 35px; margin-right:300px" value="{{ date('Y-m') }}">
-<<<<<<< HEAD
-                    <a href="{{ route('report.cetak10besarpenyakit')}}" target="_blank"><button class="btn btn-primary"><i class="fa fa-file-pdf"></i></button></a>
-=======
-                    {{-- <a href="{{ route('report.cetakTindakanPasien')}}" target="_blank"><button class="btn btn-primary"><i class="fa fa-file-pdf"></i></button></a> --}}
->>>>>>> 6e18f551c8af3004253e92f938de123ee8739cf4
+                    <a href="#" type="submit" target="_blank"><button class="btn btn-primary"><i class="fa fa-file-pdf"></i></button></a>
+                    </form>
                     {{-- <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>

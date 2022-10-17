@@ -1544,8 +1544,54 @@ class LaporanController extends Controller
   public function indexdatakunjunganpasien(){
       return view('laporan/laporankunjunganpasien');
   }
-  public function cetak10besarpenyakit(){
-    return view('laporan/cetak10besarpenyakit');
+  public function cetak10besarpenyakit(Request $request){
+    // return ''.date('Y-m');
+    // return $request->all();
+    $records = Tindakan::select('*');
+    $records = Pelayananpoli::whereYear('created_at', date('Y', strtotime($request->tgl_search)))->whereMonth('created_at', date('m', strtotime($request->tgl_search)))->pluck('id');
+    $group = Pelayananpolidiagnosa::whereIn('pelayanan_poli_id', $records)->groupBy('diagnosa')->get();
+//   return $group;
+    $allpolidiagnosa = Pelayananpolidiagnosa::whereIn('pelayanan_poli_id', $records)->get();
+//   return $allpolidiagnosa;
+    $data_array = collect([]);
+    foreach($group as $key => $g){
+        $jml = collect($allpolidiagnosa)->where('diagnosa', $g->diagnosa);
+        $tamp = collect([
+            'nilai' => count($jml),
+            'kode_diagnosa' => $g->diagnosa,
+            'nama_diagnosa' => $g->nama_diagnosa->nama_penyakit
+        ]);
+        // $collect[$key]['nilai'] = count($jml);
+        // $collect[$key]['diagnosa'] = $g->diagnosa;
+        $data_array->push($tamp);
+    }
+    $config = [
+        'mode'                  => '',
+        'format'                => 'A4',
+        'default_font_size'     => '9',
+        'default_font'          => 'sans-serif',
+        'margin_left'           => 8,
+        'margin_right'          => 8,
+        'margin_top'            => 30,
+        'margin_bottom'         => 10,
+        'margin_header'         => 0,
+        'margin_footer'         => 0,
+        'orientation'           => 'L',
+        'title'                 => 'LAPORAN TINDAKAN PASIEN',
+        'author'                => '',
+        'watermark'             => '',
+        'show_watermark'        => true,
+        'show_watermark_image'  => true,
+        'watermark_font'        => 'sans-serif',
+        'display_mode'          => 'fullpage',
+        'watermark_text_alpha'  => 0.2,
+    ];
+    $data = $data_array->sortByDesc('nilai')->values();
+    $pdf = PDF::loadView('laporan/cetak10besarpenyakit', ['data' => $data], [], $config);
+    ob_get_clean();
+    return $pdf->download('LAPORAN 10 PENYAKIT TERBESAR_' . date('d_m_Y H_i_s') . '.pdf');
+    // return $data_array->sortByDesc('nilai')->values();
+    // return view('laporan/cetak10besarpenyakit');
   }
 
 }

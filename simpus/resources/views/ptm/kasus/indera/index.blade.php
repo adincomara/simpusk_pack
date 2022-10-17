@@ -315,34 +315,54 @@
         </div>
         @endsection
         @push('scripts')
+        <script src="{{ asset('assets/js/dataTables.keyTable.min.js')}}"></script>
+        <script src="{{ asset('assets/js/dataTables.select.min.js')}}"></script>
         <script type="text/javascript">
             var table,tabledata,table_index;
             $(document).ready(function(){
+                var diss = '';
+                $('body').click(function (e) {
+                    if($('input[type=text]').is(':focus')){
+                    }else{
+                        table1.ajax.reload(null, false);
+                        table2.ajax.reload(null, false)
+                    }
+                })
                 $(".btn-refresh").click(function() {
-                    table.ajax.reload();
+                    table1.ajax.reload(null, false);
+                    table2.ajax.reload(null, false)
                 });
                 table1 = $('#table1').DataTable({
+                    keys: true,
                     fixedColumns: {
                         left: 2
                     },
+                    // fixedHeader:true,
+                    // scrollY:        "300px",
+                    // scrollX:        true,
+                    // scrollCollapse: true,
                     "pagingType": "full_numbers",
                     pageLength: 25,
+                    paginate:false,
                     // "processing": true,
                     // "serverSide": true,
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    "select" : true,
+                    // "select" : true,
                     "ajax":{
-                             "url": "{{ route('kasus_indera.getdata_penglihatan') }}",
-                             "dataType": "json",
-                             "type": "POST",
-                             data: function ( d ) {
-                               d._token= "{{csrf_token()}}";
-                               d.kabupaten = $('#select_kab option:selected').val()
-                               d.puskesmas = $('#select_pusk option:selected').val()
-                               d.periode_start = $('#start').val()
-                               d.periode_end = $('#end').val()
-                             },
-                             "dataSrc": function(json){
+                            "url": "{{ route("kasus_indera.getdata_penglihatan") }}",
+                            "dataType": "json",
+                            "type": "POST",
+                            data: function ( d ) {
+                            d._token= "{{csrf_token()}}";
+                            d.kabupaten = $('#select_kab option:selected').val()
+                            d.puskesmas = $('#select_pusk option:selected').val()
+                            d.periode_start = $('#start').val()
+                            d.periode_end = $('#end').val()
+                            },
+                            "beforeSend": function(){
+                                // Swal.showLoading();
+                            },
+                            "dataSrc": function(json){
                                 $('#lihatumur_0_7hr_l').text(json.sum_data.umur_0_7hr_l);
                                 $('#lihatumur_0_7hr_p').text(json.sum_data.umur_0_7hr_p);
                                 $('#lihatumur_2_28hr_l').text(json.sum_data.umur_2_28hr_l);
@@ -374,7 +394,11 @@
                                 $('#lihattotal_kunjungan').text(json.sum_data.total_kunjungan);
                                 $('#lihatkasus_dirujuk').text(json.sum_data.kasus_dirujuk);
                                 return json.data
-                             }
+                            },
+                            "complete": function(){
+                                // Swal.hideLoading();
+                                // Swal.close();
+                            }
                     },
                     "createdRow": function(row, data, index){
 
@@ -423,6 +447,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -443,6 +468,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -463,6 +489,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -483,6 +510,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -503,6 +531,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -523,6 +552,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -543,6 +573,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -563,6 +594,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -583,6 +615,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -603,6 +636,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -623,6 +657,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -643,6 +678,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -663,6 +699,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -683,6 +720,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -703,6 +741,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -723,6 +762,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -743,6 +783,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -763,6 +804,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -783,6 +825,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -803,6 +846,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -823,7 +867,8 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi. ')
+                                        diss +
+                                        @can('provinsi.index')
                                         'disabled'+
                                         @endcan
                                         @can('kabupaten.index')
@@ -843,6 +888,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -878,6 +924,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -898,6 +945,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -933,6 +981,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -953,6 +1002,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -988,6 +1038,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1007,8 +1058,12 @@
                             var attr = $(this).attr('id')
                             var nilai = $(this).val();
                             // console.log('tes');
+
                             simpan_nilai(attr, nilai)
+
                         })
+
+
                     },
                     responsive: true,
                     language: {
@@ -1036,30 +1091,38 @@
                         //     className: 'btn btn-block bg-primary text-white',
                         // }
                     ]
+                }).on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
+
+                    $('input', cell.node()).focus();
+
+                } ).on("focus", "td input", function(){
+                    $(this).select();
                 });
 
                 table2 = $('#table2').DataTable({
+                    keys: true,
                     fixedColumns: {
                         left: 2
                     },
                     "pagingType": "full_numbers",
                     pageLength: 25,
+                    paginate:false,
                     // "processing": true,
                     // "serverSide": true,
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                     "select" : true,
                     "ajax":{
-                             "url": "{{ route('kasus_indera.getdata_pendengaran') }}",
-                             "dataType": "json",
-                             "type": "POST",
-                             data: function ( d ) {
-                               d._token= "{{csrf_token()}}";
-                               d.kabupaten = $('#select_kab option:selected').val()
-                               d.puskesmas = $('#select_pusk option:selected').val()
-                               d.periode_start = $('#start').val()
-                               d.periode_end = $('#end').val()
-                             },
-                             "dataSrc": function(json){
+                            "url": "{{ route("kasus_indera.getdata_pendengaran") }}",
+                            "dataType": "json",
+                            "type": "POST",
+                            data: function ( d ) {
+                            d._token= "{{csrf_token()}}";
+                            d.kabupaten = $('#select_kab option:selected').val()
+                            d.puskesmas = $('#select_pusk option:selected').val()
+                            d.periode_start = $('#start').val()
+                            d.periode_end = $('#end').val()
+                            },
+                            "dataSrc": function(json){
                                 $('#dengarumur_0_7hr_l').text(json.sum_data.umur_0_7hr_l);
                                 $('#dengarumur_0_7hr_p').text(json.sum_data.umur_0_7hr_p);
                                 $('#dengarumur_2_28hr_l').text(json.sum_data.umur_2_28hr_l);
@@ -1091,7 +1154,7 @@
                                 $('#dengartotal_kunjungan').text(json.sum_data.total_kunjungan);
                                 $('#dengarkasus_dirujuk').text(json.sum_data.kasus_dirujuk);
                                 return json.data;
-                             }
+                            }
                     },
                     "createdRow": function(row, data, index){
 
@@ -1122,10 +1185,10 @@
                                     return data;
                                 }else{
                                     if(data != 1){
-                                        var txt = '<p style="display:none">1</p>'
+                                        var txt = '<p style="display:none">3</p>'
                                         return txt;
                                     }else{
-                                        return 1;
+                                        return 2;
                                     }
                                 }
                             }
@@ -1140,12 +1203,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_0_7hr_l"' +
                                         ' name="' + row.id + '-umur_0_7hr_l">';
@@ -1160,12 +1218,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_0_7hr_p"' +
                                         ' name="' + row.id + '-umur_0_7hr_p">';
@@ -1180,12 +1233,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_2_28hr_l"' +
                                         ' name="' + row.id + '-umur_2_28hr_l">';
@@ -1200,12 +1248,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_2_28hr_p"' +
                                         ' name="' + row.id + '-umur_2_28hr_p">';
@@ -1220,12 +1263,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_1_11bln_l"' +
                                         ' name="' + row.id + '-umur_1_11bln_l">';
@@ -1240,12 +1278,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_1_11bln_p"' +
                                         ' name="' + row.id + '-umur_1_11bln_p">';
@@ -1260,12 +1293,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_1_4thn_l"' +
                                         ' name="' + row.id + '-umur_1_4thn_l">';
@@ -1280,12 +1308,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_1_4thn_p"' +
                                         ' name="' + row.id + '-umur_1_4thn_p">';
@@ -1300,12 +1323,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_5_9thn_l"' +
                                         ' name="' + row.id + '-umur_5_9thn_l">';
@@ -1320,12 +1338,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_5_9thn_p"' +
                                         ' name="' + row.id + '-umur_5_9thn_p">';
@@ -1340,12 +1353,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_10_14thn_l"' +
                                         ' name="' + row.id + '-umur_10_14thn_l">';
@@ -1360,12 +1368,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_10_14thn_p"' +
                                         ' name="' + row.id + '-umur_10_14thn_p">';
@@ -1380,12 +1383,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_15_19thn_l"' +
                                         ' name="' + row.id + '-umur_15_19thn_l">';
@@ -1400,12 +1398,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_15_19thn_p"' +
                                         ' name="' + row.id + '-umur_15_19thn_p">';
@@ -1420,12 +1413,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_20_44thn_l"' +
                                         ' name="' + row.id + '-umur_20_44thn_l">';
@@ -1440,12 +1428,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_20_44thn_p"' +
                                         ' name="' + row.id + '-umur_20_44thn_p">';
@@ -1460,12 +1443,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_45_59thn_l"' +
                                         ' name="' + row.id + '-umur_45_59thn_l">';
@@ -1480,12 +1458,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_45_59thn_p"' +
                                         ' name="' + row.id + '-umur_45_59thn_p">';
@@ -1500,12 +1473,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_lebih_59thn_l"' +
                                         ' name="' + row.id + '-umur_lebih_59thn_l">';
@@ -1520,12 +1488,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-umur_lebih_59thn_p"' +
                                         ' name="' + row.id + '-umur_lebih_59thn_p">';
@@ -1540,15 +1503,10 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
-                                        ' id="' + row.id + '-kasus_baru_p"' +
-                                        ' name="' + row.id + '-kasus_baru_p">';
+                                        ' id="' + row.id + '-kasus_baru_l"' +
+                                        ' name="' + row.id + '-kasus_baru_l">';
                                     return txt;
                                 }
                             }
@@ -1560,12 +1518,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-kasus_baru_p"' +
                                         ' name="' + row.id + '-kasus_baru_p">';
@@ -1595,12 +1548,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-kasus_lama_l"' +
                                         ' name="' + row.id + '-kasus_lama_l">';
@@ -1615,12 +1563,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-kasus_lama_p"' +
                                         ' name="' + row.id + '-kasus_lama_p">';
@@ -1650,12 +1593,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-kunjungan_l"' +
                                         ' name="' + row.id + '-kunjungan_l">';
@@ -1670,12 +1608,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-kunjungan_p"' +
                                         ' name="' + row.id + '-kunjungan_p">';
@@ -1705,12 +1638,7 @@
                                 } else {
                                     var txt =
                                         '<input type="text" class="text-datatable"' +
-                                        @can('provinsi.index')
-                                        'disabled'+
-                                        @endcan
-                                        @can('kabupaten.index')
-                                        'disabled'+
-                                        @endcan
+                                        diss +
                                         ' value="' + data + '"' +
                                         ' id="' + row.id + '-kasus_dirujuk"' +
                                         ' name="' + row.id + '-kasus_dirujuk">';
@@ -1753,6 +1681,12 @@
                         //     className: 'btn btn-block bg-primary text-white',
                         // }
                     ]
+                }).on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
+
+                    $('input', cell.node()).focus();
+
+                } ).on("focus", "td input", function(){
+                    $(this).select();
                 });
 
                 $(document).on('change','#select_pusk', function(){
@@ -1872,7 +1806,16 @@
 
 
                 $(document).on('change','#start, #end ', function(){
-                    // console.log('tes');
+                   // console.log('tes');
+                    var tgstart = $('#start').val();
+                    var tgend = $('#end').val();
+                    if(tgstart != tgend){
+                        if(diss != 'disabled'){
+                            diss = 'disabled';
+                        }
+                    }else{
+                        diss = '';
+                    }
                     table1.ajax.reload(null, false);
                     table2.ajax.reload(null, false);
                 })

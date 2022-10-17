@@ -381,7 +381,7 @@ class PelayananpoliController extends Controller
         try{
             DB::beginTransaction();
             $daftar_kunjungan = $this->daftarKunjungan($req, $pendaftaran);
-            // return $daftar_kunjungan;
+            return $daftar_kunjungan;
             if($daftar_kunjungan['success'] != true){
                 return response()->json([
                     'success' => false,
@@ -664,7 +664,7 @@ class PelayananpoliController extends Controller
                 // return $put;
                 $put = json_encode($put);
                 $result = APIBpjsController::put($url, $put);
-                    // return $result;
+                    return $result;
                 if($result['metaData']['code'] != 200){
                     return array(
                         'success' => false,

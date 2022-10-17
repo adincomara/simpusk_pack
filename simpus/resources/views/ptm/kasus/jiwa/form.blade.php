@@ -36,9 +36,7 @@
                                         <label class="col-sm-2 col-sm-2 col-form-label">Kabupaten</label>
                                         <div class="form-group col-md">
                                             <select class="select2_kab form-control" disabled>
-                                                <option value="1">Kabupaten 1</option>
-                                                <option value="2">Kabupaten 2</option>
-                                                <option value="3">Kabupaten 3</option>
+                                                <option value="1">{{ $puskesmas->kabupaten }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -46,9 +44,7 @@
                                         <label class="col-sm-2 col-sm-2 col-form-label">Puskesmas</label>
                                         <div class="form-group col-md">
                                             <select class="select2_pusk form-control" disabled>
-                                                <option value="1">Puskesmas 1</option>
-                                                <option value="2">Puskesmas 2</option>
-                                                <option value="3">Puskesmas 3</option>
+                                                <option value="1">{{ $puskesmas->name }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -602,6 +598,58 @@
                     todayHighlight: true,
                     format: "M-yyyy"
                 });
+                $('#periode').on('change', function(){
+                    update_nilai();
+                })
             });
+        </script>
+        <script>
+            function update_nilai(){
+                var periode = $('#periode').val();
+                $.ajax({
+                    type: 'GET',
+                    url : '{{route("kasus_jiwa.update_nilai", [null])}}/'+periode,
+                    headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    beforeSend: function () {
+                        Swal.fire({
+                            title: 'Mohon Tunggu !',
+                            html: 'Loading',// add html attribute if you want or remove
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading()
+                            },
+                        });
+                    },
+                    success: function(data){
+                        // console.log(data.array.length);
+                        if (data.success == true){
+                            for(let i=0; i<data.array.length; i++){
+                                $('#'+data.array[i]).val(data.data.data.array[i]);
+                            }
+                        }else{
+                            for(let i=0; i<data.array.length; i++){
+                                $('#'+data.array[i]).val(0);
+                            }
+                        }
+
+                        Swal.hideLoading();
+                        Swal.close();
+                    },
+                    complete: function () {
+                        Swal.hideLoading();
+                        $('#simpan').removeClass("disabled");
+                    },
+                    error: function(data){
+                        $('#simpan').removeClass("disabled");
+                        Swal.hideLoading();
+                        Swal.fire('Ups','Ada kesalahan pada sistem','info');
+                        console.log(data);
+                    }
+                });
+            }
         </script>
         @endpush

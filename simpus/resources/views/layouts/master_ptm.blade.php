@@ -21,7 +21,7 @@
 
     <link href="{{ asset('/inspinia/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert.css')}}">
 
     <!-- Toastr style -->
     <link href="{{ asset('/inspinia/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
@@ -323,7 +323,7 @@
     <!-- Custom and plugin javascript -->
     <script src="{{ asset('/inspinia/js/inspinia.js') }}"></script>
     <script src="{{ asset('/inspinia/js/plugins/pace/pace.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/sweetalert2.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/sweetalert.js')}}"></script>
     <script src="{{ asset('assets/js/jquery.validate.js')}}"></script>
 
     <!-- jQuery UI -->
@@ -351,7 +351,7 @@
     <script src="{{ asset('/inspinia/js/plugins/validate/jquery.validate.min.js')}}"></script>
 
     <!-- Sweet alert -->
-    <script src="{{ asset('/inspinia/js/plugins/sweetalert/sweetalert.js')}}"></script>
+    {{-- <script src="{{ asset('/inspinia/js/plugins/sweetalert/sweetalert.js')}}"></script> --}}
     <script src="{{asset('/inspinia/js/chart.min.js')}}"></script>
 
     <!-- ChartJS-->

@@ -338,13 +338,21 @@ class KasusInderaController extends Controller
         $data = explode('-', $request->id);
         $field  = $data[1];
         $master_indera = $this->getKegiatan($data[0]);
+        $check_data = Indera::where('user_id', auth()->user()->id)->where('puskesmas_id', auth()->user()->puskesmas_id)->where('kegiatan', $master_indera->kegiatan)->whereMonth('periode', date('m', strtotime('01-'.$request->tahun)))->whereYear('periode', date('Y', strtotime('01-'.$request->tahun)));
+        $duplikasi = $check_data->get();
+        if(count($duplikasi) > 1){
+            foreach($duplikasi as $key => $dup){
+                if($key > 0){
+                    $dup->delete();
+                }
+            }
+        }
         $check_data = Indera::where('user_id', auth()->user()->id)->where('puskesmas_id', auth()->user()->puskesmas_id)->where('kegiatan', $master_indera->kegiatan)->whereMonth('periode', date('m', strtotime('01-'.$request->tahun)))->whereYear('periode', date('Y', strtotime('01-'.$request->tahun)))->first();
 
-            if ($check_data){
-                $result = Indera::find($check_data->id);
-                $result->$field     = $request->nilai;
-                $result->periode    = date('Y-m-d', strtotime('01-'.$request->tahun));
-                if ($result->save()) {
+            if (isset($check_data)){
+                // $result = Indera::find($check_data->id);
+                $check_data->$field     = $request->nilai;
+                if ($check_data->save()) {
                     $json_data = array(
                         'success'   => TRUE,
                         'code'      => 201,

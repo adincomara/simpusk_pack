@@ -52,8 +52,17 @@
             <th width="20%" style="text-align: left;border-bottom: 1px solid #000;">Bidang</th> --}}
         </tr>
     </thead>
-    <tbody><tr role="row" class="odd"><td class="reorder sorting_1">A19.0</td><td>Acute miliary tuberculosis of a single specified site</td><td>50</td></tr><tr role="row" class="even"><td class="reorder sorting_1">A19.8</td><td>Other miliary tuberculosis</td><td>40</td></tr><tr role="row" class="even"><td class="reorder sorting_1">A20.8</td><td>Other forms of plague</td><td>
-        38</td></tr><tr role="row" class="even"><td class="reorder sorting_1">A20.3</td><td>Plague meningitis</td><td>35</td></tr><tr role="row" class="even"><td class="reorder sorting_1">A21.0</td><td>Ulceroglandular tularaemia</td><td>31</td></tr><tr role="row" class="even"><td class="reorder sorting_1">B15.9</td><td>Hepatitis A without hepatic coma</td><td>30</td></tr><tr role="row" class="even"><td class="reorder sorting_1">B08.2</td><td>Exanthema subitum [sixth disease]</td><td>28</td></tr><tr role="row" class="even"><td class="reorder sorting_1">C04.0</td><td>Malignant neoplasm of anterior floor of mouth</td><td>25</td></tr><tr role="row" class="even"><td class="reorder sorting_1">B83.4</td><td>Internal hirudiniasis</td><td>10</td></tr><tr role="row" class="even"><td class="reorder sorting_1">B71.0</td><td>Hymenolepiasis</td><td>2</td></tr></tbody>
+    <tbody>
+        @foreach($data as $key => $value)
+            <tr role="row" class="odd">
+                <td class="reorder sorting_1">{{ $value['kode_diagnosa'] }}</td>
+                <td>{{ $value['nama_diagnosa'] }}</td>
+                <td>{{ $value['nilai'] }}</td>
+            </tr>
+
+        @endforeach
+
+    </tbody>
     {{-- <tbody>
         <tr>
             <td width="6%" style="text-align:center">A19.0</td>

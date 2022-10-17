@@ -224,9 +224,12 @@
     </div>
     @endsection
     @push('scripts')
+    <script src="{{ asset('assets/js/dataTables.keyTable.min.js')}}"></script>
+    <script src="{{ asset('assets/js/dataTables.select.min.js')}}"></script>
     <script type="text/javascript">
         var table,tabledata,table_index;
             $(document).ready(function(){
+                var diss = '';
                 // getsumdata();
                 $(".btn-refresh").click(function() {
                     table.ajax.reload();
@@ -236,6 +239,7 @@
                 });
 
                 table = $('#table1').DataTable({
+                    keys: true,
                     fixedColumns: {
                         left: 2
                     },
@@ -311,7 +315,7 @@
                                 $('#ppok_l').text(json.sum_data.ppok_l);
                                 $('#ppok_p').text(json.sum_data.ppok_p);
                                 $('#ppok_total').text(json.sum_data.ppok_total);
-                                $('#asma_bronkhiale_l').text(json.sum_data.asmabronkhiale_l);
+                                $('#asmabronkhiale_l').text(json.sum_data.asmabronkhiale_l);
                                 $('#asmabronkhiale_p').text(json.sum_data.asmabronkhiale_p);
                                 $('#asmabronkhiale_total').text(json.sum_data.asmabronkhiale_total);
                                 $('#gagalginjalkronik_l').text(json.sum_data.gagalginjalkronik_l);
@@ -335,7 +339,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -355,7 +360,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -375,7 +381,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -395,7 +402,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -415,7 +423,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -435,7 +444,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -455,7 +465,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -475,7 +486,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -495,7 +507,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -515,7 +528,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -535,7 +549,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -555,7 +570,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -575,7 +591,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -595,7 +612,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -615,7 +633,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -635,7 +654,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -655,7 +675,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -675,7 +696,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -695,7 +717,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -715,7 +738,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -735,7 +759,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -755,7 +780,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -775,7 +801,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -795,7 +822,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -815,7 +843,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -835,7 +864,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -855,7 +885,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -875,7 +906,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -895,7 +927,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -915,7 +948,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -935,7 +969,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -955,7 +990,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -975,7 +1011,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -995,7 +1032,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1015,7 +1053,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1035,7 +1074,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1055,7 +1095,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1075,7 +1116,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1095,7 +1137,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1115,7 +1158,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1135,7 +1179,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1155,7 +1200,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1175,7 +1221,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1195,7 +1242,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1215,7 +1263,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1235,7 +1284,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1255,7 +1305,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1275,7 +1326,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1295,7 +1347,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1315,7 +1368,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1335,7 +1389,8 @@
                                     return data;
                                 } else {
                                     var txt =
-                                        '<input type="text" class="text-datatable"' +
+                                        '<input type="text" class="text-datatable b-r-sm"' +
+                                        diss +
                                         @can('provinsi.index')
                                         'disabled'+
                                         @endcan
@@ -1365,10 +1420,17 @@
                         $('.text-datatable').blur(function(e){
                             var attr = $(this).attr('id')
                             var nilai = $(this).val();
-
                             simpan_nilai(attr, nilai)
+
+                            // table.ajax.reload(null, false);
                         })
                     },
+                }).on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
+
+                    $('input', cell.node()).focus();
+
+                } ).on("focus", "td input", function(){
+                    $(this).select();
                 });
 
                 $(document).on('change','#select_kab', function(){
@@ -1381,6 +1443,15 @@
                     table.ajax.reload(null, false);
                 })
                 $('.periode').on('change', function(){
+                    var tgstart = $('#start').val();
+                    var tgend = $('#end').val();
+                    if(tgstart != tgend){
+                        if(diss != 'disabled'){
+                            diss = 'disabled';
+                        }
+                    }else{
+                        diss = '';
+                    }
                     table.ajax.reload(null, false);
                 });
 

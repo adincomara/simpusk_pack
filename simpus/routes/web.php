@@ -489,7 +489,7 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
 
         Route::get('laporan/penyakitterbesar', [LaporanController::class, 'penyakitterbesar'])->name('report.penyakitterbesar');
         Route::post('laporan/getpenyakitterbesar', [LaporanController::class, 'getdatapenyakitterbesar'])->name('report.getdatapenyakitterbesar');
-        Route::get('laporan/penyakitterbesarcetak', [LaporanController::class, 'cetak10besarpenyakit'])->name('report.cetak10besarpenyakit');
+        Route::post('laporan/penyakitterbesarcetak', [LaporanController::class, 'cetak10besarpenyakit'])->name('report.cetak10besarpenyakit');
         Route::get('laporan/tindakanPasienindex', [LaporanController::class, 'tindakanpasien_index'])->name('report.tindakanpasien_index');
         Route::get('laporan/tindakanPasien_detail/{id}', [LaporanController::class, 'tindakanPasien_detail'])->name('report.tindakanPasien_detail');
         Route::get('laporan/cetakDiagnosa/{id?}', [LaporanController::class, 'cetakDiagnosa'])->name('report.cetakDiagnosa');
@@ -561,6 +561,8 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
             Route::post('/simpan', [KasusJiwaController::class, 'simpan'])->name('simpan');
             Route::delete('/delete/{id?}', [KasusJiwaController::class, 'hapus'])->name('hapus');
             Route::post('/cetak_pdf', [KasusJiwaController::class, 'cetak_pdf'])->name('cetak_pdf');
+            Route::get('/update_nilai/{periode?}', [KasusJiwaController::class, 'update_nilai'])->name('update_nilai');
+
         });
         //Deteksi Dini Faktro Risiko PTM KESWA
         Route::group(['prefix' => 'dd_fr_ptm_keswa', 'as' => 'dd_fr_ptm_keswa.'], function () {

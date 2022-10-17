@@ -62,7 +62,7 @@
                 <div class="container">
                     <div class="d-flex">
                         <div class="p-0 my-auto pr-3">
-                            <img src="img/logo-puskesmas.png" alt="" width="90px">
+                            <img src="{{ asset('assets/img/logo-puskesmas.png') }}" alt="" width="90px">
                         </div>
                         <div class="p-0">
                             <h1 class="text-bold text-navy" style="font-size: 40px;">DASHBOARD</h1>
@@ -80,7 +80,7 @@
                                     <div class="col-4">
                                         <i class="fa fa-ticket fa-5x"></i>
                                     </div>
-                                    <div class="col-8 text-right">
+                                    <div class="col-8 text-right" style="height: 80px">
                                         <h3 class="font-bold mb-2">PENDAFTARAN</h3>
                                         <a type="button" href="{{ route('antrian.ambil_antrian') }}" class="btn btn-white b-r-xl"
                                             style="padding: 5px 45px 5px 45px ; color: #395B64;">
@@ -97,7 +97,7 @@
                                     <div class="col-4">
                                         <i class="fa fa-bullhorn fa-5x"></i>
                                     </div>
-                                    <div class="col-8 text-right">
+                                    <div class="col-8 text-right" style="height: 80px">
                                         <h3 class="font-bold mb-2">PETUGAS PANGGIL</h3>
                                         <button type="button" class="btn btn-outline" id="bt_panggil">
                                             <i class="fa fa-caret-down fa-2x"></i>
@@ -138,7 +138,7 @@
                                     <div class="col-4">
                                         <i class="fa fa-desktop fa-5x"></i>
                                     </div>
-                                    <div class="col-8 text-right">
+                                    <div class="col-8 text-right" style="height: 80px">
                                         <h3 class="font-bold mb-2">DISPLAY</h3>
                                         <a type="button" href="{{ route('antrian.display') }}" class="btn btn-white b-r-xl"
                                             style="padding: 5px 45px 5px 45px ; color: #395B64;">

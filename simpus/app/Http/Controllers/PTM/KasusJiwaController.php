@@ -61,7 +61,105 @@ class KasusJiwaController extends Controller
         return $dataquery;
     }
 
+    public function update_nilai($periode){
 
+        $periode = date('Y-m-d', strtotime('01-'.$periode));
+        $jiwa = Rekap_gangguan_jiwa::where('periode', $periode)->where('puskesmas_id', auth()->user()->puskesmas_id)->first();
+        if(isset($jiwa)){
+            return response()->json([
+                'success' => true,
+                'data' => $jiwa,
+                'array' => $this->array_db()
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'array' => $this->array_db(),
+            ]);
+        }
+        // return response()->json($jiwa);
+        // return $periode;
+    }
+    private function array_db(){
+        return array(
+            'demensia_l',
+            'demensia_p',
+            'g_ansietas_0_14_l',
+            'g_ansietas_0_14_p',
+            'g_ansietas_15_59_l',
+            'g_ansietas_15_59_p',
+            'g_ansietas_60_l',
+            'g_ansietas_60_p',
+            'g_ansietas_depresi_0_14_l',
+            'g_ansietas_depresi_0_14_p',
+            'g_ansietas_depresi_15_59_l',
+            'g_ansietas_depresi_15_59_p',
+            'g_ansietas_depresi_60_l',
+            'g_ansietas_depresi_60_p',
+            'g_depresi_0_14_l',
+            'g_depresi_0_14_p',
+            'g_depresi_15_59_l',
+            'g_depresi_15_59_p',
+            'g_depresi_60_l',
+            'g_depresi_60_p',
+            'g_penyalahgunaan_napza_0_14_l',
+            'g_penyalahgunaan_napza_0_14_p',
+            'g_penyalahgunaan_napza_15_59_l',
+            'g_penyalahgunaan_napza_15_59_p',
+            'g_penyalahgunaan_napza_60_l',
+            'g_penyalahgunaan_napza_60_p',
+            'g_anak_remaja_0_14_l',
+            'g_anak_remaja_0_14_p',
+            'g_anak_remaja_15_59_l',
+            'g_anak_remaja_15_59_p',
+            'g_anak_remaja_60_l',
+            'g_anak_remaja_60_p',
+            'g_psikotik_akut_0_14_l',
+            'g_psikotik_akut_0_14_p',
+            'g_psikotik_akut_15_59_l',
+            'g_psikotik_akut_15_59_p',
+            'g_psikotik_akut_60_l',
+            'g_psikotik_akut_60_p',
+            'skizofrenia_0_14_l',
+            'skizofrenia_0_14_p',
+            'skizofrenia_15_59_l',
+            'skizofrenia_15_59_p',
+            'skizofrenia_60_l',
+            'skizofrenia_60_p',
+            'g_somatoform_0_14_l',
+            'g_somatoform_0_14_p',
+            'g_somatoform_15_59_l',
+            'g_somatoform_15_59_p',
+            'g_somatoform_60_l',
+            'g_somatoform_60_p',
+            'insomnia_0_14_l',
+            'insomnia_0_14_p',
+            'insomnia_15_59_l',
+            'insomnia_15_59_p',
+            'insomnia_60_l',
+            'insomnia_60_p',
+            'percobaan_bunuh_diri_0_14_l',
+            'percobaan_bunuh_diri_0_14_p',
+            'percobaan_bunuh_diri_15_59_l',
+            'percobaan_bunuh_diri_15_59_p',
+            'percobaan_bunuh_diri_60_l',
+            'percobaan_bunuh_diri_60_p',
+            'redartasi_mental_0_14_l',
+            'redartasi_mental_0_14_p',
+            'redartasi_mental_15_59_l',
+            'redartasi_mental_15_59_p',
+            'redartasi_mental_60_l',
+            'redartasi_mental_60_p',
+            'g_kepribadian_perilaku_0_14_l',
+            'g_kepribadian_perilaku_0_14_p',
+            'g_kepribadian_perilaku_15_59_l',
+            'g_kepribadian_perilaku_15_59_p',
+            'g_kepribadian_perilaku_60_l',
+            'g_kepribadian_perilaku_60_p',
+            'jumlah_kasus',
+        );
+    }
     public function getData(Request $request)
     {
         $limit = $request->length;
@@ -285,6 +383,7 @@ class KasusJiwaController extends Controller
 
     public function tambah()
     {
+        // return 'tes';
         $query = Puskesmas::select('ptm_puskesmas.*');
         $query->where('ptm_puskesmas.id', auth()->user()->puskesmas_id);
         $puskesmas = $query->first();
