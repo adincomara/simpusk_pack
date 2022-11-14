@@ -142,6 +142,7 @@ class DokterController extends Controller
                 $q->orwhere('kdDokter', 'LIKE', $req->search.'%');
             });
         }
+        $dokter->limit(10);
         return response()->json($dokter->get());
     }
 }

@@ -78,143 +78,82 @@ class PoliController extends Controller
         }
         $record->dokter = $list_dokter;         
         $record->action         = $action;
-        if($record->status == '1'){
-            $record->status = "<label class='switch'>
-            <input type='checkbox' value='".$record->id."' id='data_".$record->id."' checked>
-            <span class='slider round'></span>
-          </label>
-          <script>
-          $('#data_".$record->id."').click(function(){
-            var id = this.value;
-            var cek = $('#data_".$record->id."').prop('checked');
-            console.log(cek);
-            if(cek == true){
-                var val = 1;
-            }
-            else{
-                var val = 0;
-            }
-            console.log(val);
+        // $status = "<label class='switch'>";
+        // if($record->status == 1){
+        //     $status .="<input type='checkbox' value='".$record->id."' id='data_".$record->id."' checked>";
+        // }else{
+        //     $status .="<input type='checkbox' value='".$record->id."' id='data_".$record->id."'>";
+        // }
+        // $status .="<span class='slider round'></span>
+        // </label>";
+        // $status .= " <script>
+        // $('#data_".$record->id."').click(function(){
+        //   var id = this.value;
+        //   var cek = $('#data_".$record->id."').prop('checked');
+        //   console.log(cek);
+        //   if(cek == true){
+        //       var val = 0;
+        //   }
+        //   else{
+        //       var val = 1;
+        //   }
+        //   console.log(val);
+        //     Swal.fire({
+        //       title: 'Apakah Anda yakin?',
+        //       text: 'Status poli akan diubah!',
 
-              Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Status poli akan diubah!',
+        //       icon: 'warning',
+        //       showCancelButton: true,
+        //       confirmButtonClass: 'btn-danger',
+        //       confirmButtonText: 'Ya',
+        //       cancelButtonText:'Batal',
+        //       confirmButtonColor: '#ec6c62',
+        //       closeOnConfirm: false
+        //     }).then(function(result){
+        //         if(result.value){
+        //           $.ajax({
+        //               type: 'POST',
+        //               url: '".route('poli.status_ubah')."',
+        //               headers: {'X-CSRF-TOKEN': $('[name=\"_token\"]').val()},
+        //               data: {id : id, value: cek},
+        //               success: function(data){
+        //                   if(data.success == true){
+        //                       Swal.fire('Yes',data.message,'success');
+        //                       table.ajax.reload(null, true);
 
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonClass: 'btn-danger',
-                confirmButtonText: 'Ya',
-                cancelButtonText:'Batal',
-                confirmButtonColor: '#ec6c62',
-                closeOnConfirm: false
-              }).then(function(result){
-                  if(result.value){
-                    $.ajax({
-                        type: 'POST',
-                        url: '".route('poli.status_ubah')."',
-                        headers: {'X-CSRF-TOKEN': $('[name=\"_token\"]').val()},
-                        data: {id : id, value: cek},
-                        success: function(data){
-                            if(data.success == true){
-                                Swal.fire('Yes',data.message,'success');
-                                table.ajax.reload(null, true);
+        //                   }
+        //                   else{
+        //                       Swal.fire('Peringatan',data.message,'info');
+        //                       var check = $('#data_".$record->id."');
+        //                       if(check.prop('checked') == false){
+        //                           check.prop('checked', true);
+        //                       }
+        //                       else{
+        //                           check.prop('checked', false);
+        //                       }
 
-                            }
-                            else{
-                                Swal.fire('Peringatan',data.message,'info');
-                                var check = $('#data_".$record->id."');
-                                if(check.prop('checked') == false){
-                                    check.prop('checked', true);
-                                }
-                                else{
-                                    check.prop('checked', false);
-                                }
+        //                   }
+        //               }
+        //           });
+        //         }else{
+        //           var check = $('#data_".$record->id."');
+        //           if(check.prop('checked') == false){
+        //               check.prop('checked', true);
+        //           }
+        //           else{
+        //               check.prop('checked', false);
+        //           }
 
-                            }
-                        }
-                    });
-                  }else{
-                    var check = $('#data_".$record->id."');
-                    if(check.prop('checked') == false){
-                        check.prop('checked', true);
-                    }
-                    else{
-                        check.prop('checked', false);
-                    }
-
-                  }
-              });
-          });
-          </script>";
+        //         }
+        //     });
+        // });
+        // </script>";
+        if($record->status == 1){
+          $status = '<span class="badge badge-primary">Aktif</span>';
+        }else{
+          $status = '<span class="badge badge-danger">Tidak Aktif</span>';
         }
-        else{
-            $record->status = "<label class='switch'>
-            <input type='checkbox' value='".$record->id."' id='data_".$record->id."'>
-            <span class='slider round'></span>
-          </label>
-          <script>
-          $('#data_".$record->id."').click(function(){
-            var id = this.value;
-            var cek = $('#data_".$record->id."').prop('checked');
-            console.log(cek);
-            if(cek == true){
-                var val = 0;
-            }
-            else{
-                var val = 1;
-            }
-            console.log(val);
-              Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Status poli akan diubah!',
-
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonClass: 'btn-danger',
-                confirmButtonText: 'Ya',
-                cancelButtonText:'Batal',
-                confirmButtonColor: '#ec6c62',
-                closeOnConfirm: false
-              }).then(function(result){
-                  if(result.value){
-                    $.ajax({
-                        type: 'POST',
-                        url: '".route('poli.status_ubah')."',
-                        headers: {'X-CSRF-TOKEN': $('[name=\"_token\"]').val()},
-                        data: {id : id, value: cek},
-                        success: function(data){
-                            if(data.success == true){
-                                Swal.fire('Yes',data.message,'success');
-                                table.ajax.reload(null, true);
-
-                            }
-                            else{
-                                Swal.fire('Peringatan',data.message,'info');
-                                var check = $('#data_".$record->id."');
-                                if(check.prop('checked') == false){
-                                    check.prop('checked', true);
-                                }
-                                else{
-                                    check.prop('checked', false);
-                                }
-
-                            }
-                        }
-                    });
-                  }else{
-                    var check = $('#data_".$record->id."');
-                    if(check.prop('checked') == false){
-                        check.prop('checked', true);
-                    }
-                    else{
-                        check.prop('checked', false);
-                    }
-
-                  }
-              });
-          });
-          </script>";
-        }
+        $record->status = $status;
       }
       if ($request->user()->can('poli.index')) {
         $json_data = array(
@@ -245,7 +184,9 @@ class PoliController extends Controller
   {
       $induk = Poli::where('parent',null)->get();
       $selectedinduk = "";
-      return view('master_form/poli_form',compact('induk','selectedinduk'));
+      $selectedkunjungan = "";
+      $selectedstatus = "";
+      return view('master_form/poli_form',compact('induk','selectedinduk', 'selectedkunjungan', 'selectedstatus'));
   }
   public function tambah_(){
     $url = '/poli/fktp/1/100';
@@ -260,8 +201,19 @@ class PoliController extends Controller
         $poli  = Poli::find($dec_id);
         $induk = Poli::where('parent',null)->get();
         $selectedinduk = $poli->parent;
+        $selectedkunjungan = $poli->kunjungan_sakit;
+        $selectedstatus = $poli->status;
+        $dokter = collect([]);
+        if(count(json_decode($poli->dokter)) > 0){
+          foreach(json_decode($poli->dokter) as $key => $dkr){
+            $cek_dokter = Dokter::where('kdDokter', $dkr)->first();
+            $tamp['kdDokter'] = $cek_dokter->kdDokter;
+            $tamp['nmDokter'] = $cek_dokter->nmDokter;
+            $dokter->push($tamp);
+          }
+        }
 
-        return view('master_form/poli_form',compact('enc_id','poli','induk','selectedinduk'));
+        return view('master_form/poli_form',compact('enc_id','poli','induk','selectedinduk', 'selectedkunjungan', 'selectedstatus', 'dokter'));
       } else {
         return view('errors/noaccess');
       }
@@ -299,17 +251,19 @@ class PoliController extends Controller
     }
     public function simpan(Request $req){
       //VALIDASI
-      $cek_poli = Poli::where(function($q) use($req){
-        $q->orwhere('nama_poli', 'LIKE','%'. $req->nama_poli .'%');
-        $q->orwhere('ruang_poli', 'LIKE','%'. $req->nama_poli .'%');
-        $q->orwhere('kdpoli', $req->kdpoli);
-        $q->orwhere('kode_poli', $req->kode_poli);
-      })->first();
-      if(isset($cek_poli)){
-        return response()->json([
-          'success' => false,
-          'message' => 'Data gagal disimpan, terdapat kesamaan data dengan database'
-        ]);
+      if($req->enc_id == '' || $req->enc_id == null){
+        $cek_poli = Poli::where(function($q) use($req){
+          $q->orwhere('nama_poli', 'LIKE','%'. $req->nama_poli .'%');
+          $q->orwhere('ruang_poli', 'LIKE','%'. $req->nama_poli .'%');
+          $q->orwhere('kdpoli', $req->kdpoli);
+          $q->orwhere('kode_poli', $req->kode_poli);
+        })->first();
+        if(isset($cek_poli)){
+          return response()->json([
+            'success' => false,
+            'message' => 'Data gagal disimpan, terdapat kesamaan data dengan database'
+          ]);
+        }
       }
       //END VALIDASI
       try{

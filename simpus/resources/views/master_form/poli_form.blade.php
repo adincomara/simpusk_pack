@@ -59,8 +59,8 @@
                             <div class="form-group col-md-12">
                               <label class="form-label">Poli Kunjungan Sakit <span>*</span></label>
                               <select name="kunjungan_sakit" class="form-control" id="">
-                                <option value="1">Ya</option>
-                                <option value="0">Tidak</option>
+                                <option value="1" {{ ($selectedkunjungan == '1')? 'selected' : '' }}>Ya</option>
+                                <option value="0" {{ ($selectedkunjungan == '0')? 'selected' : '' }}>Tidak</option>
                               </select>
                             </div>
                           </div>
@@ -69,8 +69,8 @@
                             <div class="form-group col-md-12">
                               <label class="form-label">Status <span>*</span></label>
                               <select name="status" class="form-control" id="">
-                                <option value="1">Aktif</option>
-                                <option value="0">Tidak Aktif</option>
+                                <option value="1" {{ ($selectedstatus == '1')? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ ($selectedstatus == '0')? 'selected' : '' }}>Tidak Aktif</option>
                               </select>
                             </div>
                           </div>
@@ -79,11 +79,14 @@
                             <div class="form-group col-md-12">
                               <label class="form-label">Dokter Penanggung Jawab <span>*</span> <a href="#!" class="btn btn-primary ml-5" id="tambah_dokter">Tambah Dokter</a></label> 
                               <select name="dokter[]" class="form-control dokter">
-                                
+                                @if(isset($poli) && count($dokter) > 0)
+                                  <option value="{{ $dokter[0]['kdDokter'] }}">{{ $dokter[0]['nmDokter'] }}</option>
+                                @endif
                               </select>
                               <table id="dokter_penanggung">
                                 
                               </table>
+                             
                             </div>
                           </div>
 
@@ -253,6 +256,26 @@
     index++;
 
   })
+</script>
+//SCRIPT UBAH POLI
+<script>
+  let html ='';
+  @if(isset($poli) && count($dokter) > 1)
+    @foreach ($dokter as $key => $dkr)
+        @if($key > 0)
+          html = '<tr id="dokter_'+index+'">'
+            +'<td><select name="dokter[]" class="form-control mt-3 dokter" style="width: 100%">'
+              +'<option value="{{ $dkr['kdDokter'] }}">{{ $dkr['nmDokter'] }}</option>'
+              +'</select><a href="#!" class="btn btn-danger mt-1" id="delete_dokter" onclick="delete_dokter('+index+')">Delete</a></td>'
+          +'</tr>';
+      
+          $('#dokter_penanggung').append(html);
+          html = ''
+          select_dokter();
+          index++;
+        @endif
+    @endforeach
+  @endif
 </script>
 //SCRIPT DELETE DOKTER
 <script>

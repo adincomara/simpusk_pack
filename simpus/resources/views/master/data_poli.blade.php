@@ -4,7 +4,7 @@
 @section('menu1', 'Master')
 @section('menu2', 'Data Poli')
 @push('stylesheets')
-<style>
+{{--  <style>
     .switch {
       position: relative;
       display: inline-block;
@@ -64,7 +64,7 @@
     .slider.round:before {
       border-radius: 50%;
     }
-</style>
+</style>  --}}
 @endpush
 @section('table')
 <div class="wrapper wrapper-content animated fadeInRight">
