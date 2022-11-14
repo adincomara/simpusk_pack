@@ -381,7 +381,8 @@ class PelayananpoliController extends Controller
         try{
             DB::beginTransaction();
             $daftar_kunjungan = $this->daftarKunjungan($req, $pendaftaran);
-            return $daftar_kunjungan;
+            
+            // return $daftar_kunjungan;
             if($daftar_kunjungan['success'] != true){
                 return response()->json([
                     'success' => false,
@@ -389,10 +390,13 @@ class PelayananpoliController extends Controller
                     'message' => 'Gagal mengambil data dari BPJS'
                 ]);
             }
+            // return $daftar_kunjungan['result'];
             $post = $daftar_kunjungan['post'];
             $result = $daftar_kunjungan['result'];
+            // return $result;
             if($req->no_kunjungan != '-' && $req->no_kunjungan != null && $req->no_kunjungan != ''){
                 $noKunjungan = $result;
+                // return $noKunjungan;
             }else{
                 if(empty($result['response'][0]['message'])){
                     return $result;
@@ -401,7 +405,9 @@ class PelayananpoliController extends Controller
             }
             // return $noKunjungan;
             $simpan_data_bpjs = $this->simpan_data_bpjs($post, $noKunjungan, $pendaftaran);
+            // return $simpan_data_bpjs;
             $pelayananpoli = $this->simpanPelayananPoli($req);
+            // $pelayananpoli;
             if($req->status_pulang == '4'){
                 // return $simpan_data_bpjs;
                 $rujuklanjut = $this->simpan_rujukan_bpjs($post, $simpan_data_bpjs);
@@ -664,7 +670,6 @@ class PelayananpoliController extends Controller
                 // return $put;
                 $put = json_encode($put);
                 $result = APIBpjsController::put($url, $put);
-                    return $result;
                 if($result['metaData']['code'] != 200){
                     return array(
                         'success' => false,
@@ -672,6 +677,11 @@ class PelayananpoliController extends Controller
                         'result' => '-'
                     );
                 }else{
+                    // return 'tes';
+                    // return array('tes' => 'tes');
+                    // return array(
+                    //     'success' => 'true',
+                    // );
                     return array(
                         'success' => true,
                         'post' => $data,

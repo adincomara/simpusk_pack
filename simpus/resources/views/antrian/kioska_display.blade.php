@@ -139,7 +139,7 @@ $color[4] = '#1ab394';
 
                     <div class="mx-auto text-center row">
                         <img src="img/logo-puskesmas.png" class="py-2" alt="" width="70px">
-                        <h3 class="pt-2 my-auto pl-2 font-bold">SISTEM INFORMASI UPTD PUSKESMAS JEPANG</h3>
+                        <h3 class="pt-2 my-auto pl-2 font-bold">SISTEM INFORMASI UPTD PUSKESMAS PEKALONGAN</h3>
                     </div>
                 </nav>
             </div>

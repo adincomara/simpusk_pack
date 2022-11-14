@@ -145,6 +145,9 @@
                             @can('pasien.index')
                             <li class=""><a href="{{ route('pasien.index') }}">Data Pasien</a></li>
                             @endcan
+                            @can('dokter.index')
+                            <li class=""><a href="{{ route('dokter.index') }}">Data Dokter </a></li>
+                            @endcan
                             @can('poli.index')
                             <li class=""><a href="{{ route('poli.index') }}">Data Poli </a></li>
                             @endcan
@@ -220,8 +223,7 @@
                     @endcan
                     <li class="">
                         <a href="#"><i class="fa fa-sticky-note" style="font-size:16px"></i> <span
-                                class="nav-label">Laporan</span>
-                            <span class="fa arrow"></span></a>
+                                class="nav-label">Laporan</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li class="">
                                 <a href="{{route('report.penyakitterbesar')}}">Laporan 10 Besar Penyakit</a>

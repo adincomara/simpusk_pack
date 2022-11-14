@@ -32,6 +32,7 @@ use App\Http\Controllers\Simpusk\BidangController;
 use App\Http\Controllers\Simpusk\PegawaiController;
 use App\Http\Controllers\Simpusk\PendaftaranController;
 use App\Http\Controllers\Simpusk\DiagnosaPenyakitController;
+use App\Http\Controllers\Simpusk\DokterController;
 use App\Http\Controllers\Simpusk\IntegrasiBPJSController;
 use App\Http\Controllers\Simpusk\KkController;
 use App\Http\Controllers\Simpusk\ObatController;
@@ -82,6 +83,7 @@ Route::get('/antrian/panggil/{id?}', [AntrianController::class, 'panggil'])->nam
 //     return view('antrian/pendaftaran_bpjs');
 // })->name('antrian.pendaftaran_bpjs');
 Route::get('/antrian/pendaftaran_bpjs', [AntrianController::class, 'pendaftaran_bpjs'])->name('antrian.pendaftaran_bpjs');
+Route::get('/antrian/search_no_kartu', [AntrianController::class, 'search_no_kartu'])->name('antrian.search_no_kartu');
 Route::post('/antrian/pendaftaran_bpjs/simpan', [AntrianController::class, 'simpan_pendaftaran_bpjs'])->name('antrian.pendaftaran_bpjs_simpan');
 Route::post('/antrian/pendaftaran_umum/simpan', [AntrianController::class, 'simpan_pendaftaran_umum'])->name('antrian.pendaftaran_umum_simpan');
 Route::get('/antrian/pendaftaran_umum', [AntrianController::class, 'pendaftaran_umum'])->name('antrian.pendaftaran_umum');
@@ -232,6 +234,15 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::delete('poli/hapus/{id?}', [PoliController::class, 'hapus'])->name('poli.hapus');
         Route::post('poli/simpan', [PoliController::class, 'simpan'])->name('poli.simpan');
         Route::post('poli/status_ubah', [PoliController::class, 'status_ubah'])->name('poli.status_ubah');
+        
+        //DOKTER
+        Route::get('dokter', [DokterController::class, 'index'])->name('dokter.index');
+        Route::get('dokter/tambah', [DokterController::class, 'tambah'])->name('dokter.tambah');
+        Route::post('dokter/getdata', [DokterController::class, 'getData'])->name('dokter.getdata');
+        Route::get('dokter/ubah/{id}', [DokterController::class, 'ubah'])->name('dokter.ubah');
+        Route::post('dokter/simpan', [DokterController::class, 'simpan'])->name('dokter.simpan');
+        Route::delete('dokter/hapus/{id?}', [DokterController::class, 'hapus'])->name('dokter.hapus');
+        Route::get('dokter/search_dokter', [DokterController::class, 'search_dokter'])->name('dokter.search_dokter');
 
 
         //SUPPLIER

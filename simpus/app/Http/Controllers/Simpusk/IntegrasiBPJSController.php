@@ -1148,7 +1148,7 @@ class IntegrasiBPJSController extends Controller
             $action = "";
 
 
-            $action .= '<a href="'.route('pelayanan_poli.tindakan_dokter',$enc_id).'"  class="btn btn-success" title="Pasien BPJS">Lihat Detail</a>&nbsp;';
+            $action .= '<a href="'.route('pelayanan_poli.tindakan_dokter',$enc_id).'"  class="btn btn-success" title="Pasien BPJS">Edit Kunjungan</a>&nbsp;';
 
 
 

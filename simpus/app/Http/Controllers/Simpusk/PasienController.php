@@ -189,43 +189,10 @@ class PasienController extends Controller
   }
   function riwayat_kunjungan(Request $req){
     $no_kartu = $req->no_kartu;
-    $uri = env('API_URL');
-    // return $uri;
-    $consID 	= env('API_CONSID', '9243'); //customer ID anda
-    $secretKey 	= env('API_SECRETKEY', '3yVE45CCBC'); //secretKey anda
+    $url = '/kunjungan/peserta/'.$no_kartu;
+    $result = APIBpjsController::get($url);
 
-    $pcareUname = env('API_PCAREUNAME', '0159092404'); //username pcare
-    $pcarePWD 	= env('API_PCAREPWD', '0159092404$2Pkm'); //password pcare anda
-
-    $kdAplikasi	= env('API_KDAPLIKASI', '095'); //kode aplikasi
-
-    $stamp    = time();
-    $data     = $consID.'&'.$stamp;
-
-    $signature = hash_hmac('sha256', $data, $secretKey, true);
-    $encodedSignature = base64_encode($signature);
-    $encodedAuthorization = base64_encode($pcareUname.':'.$pcarePWD.':'.$kdAplikasi);
-    // return $uri;
-    $headers = array(
-                "Accept: application/json",
-                "X-cons-id:".$consID,
-                "X-timestamp: ".$stamp,
-                "X-signature: ".$encodedSignature,
-                "X-authorization: Basic " .$encodedAuthorization,
-                "Content-Type: application/json"
-            );
-    $ch = curl_init($uri.'/kunjungan/peserta/'.$no_kartu);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
-    $data = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo curl_error($ch);
-    }
-    curl_close($ch);
-
-    $result = json_decode($data, true);
-
+    // return $result['metaData']['code'];
     if($result['metaData']['code'] == 200){
         // return $result['response']['list'];
         $data ="";

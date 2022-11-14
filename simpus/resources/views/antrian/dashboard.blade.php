@@ -66,7 +66,7 @@
                         </div>
                         <div class="p-0">
                             <h1 class="text-bold text-navy" style="font-size: 40px;">DASHBOARD</h1>
-                            <h2 style="color: #E7F6F2;">Selamat datang di UPTD Puskesmas Jepang</h2>
+                            <h2 style="color: #E7F6F2;">Selamat datang di UPTD Puskesmas Pekalongan</h2>
                         </div>
                         <!-- <div class="p-0 ml-auto my-auto">
                             <img src="img/logo-kudus.png" alt="" width="80px">

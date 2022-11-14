@@ -1,10 +1,10 @@
 @extends('layouts.table')
-@section('title', 'Data Poli')
-@section('judultable', 'Data Poli')
+@section('title', 'Data Dokter')
+@section('judultable', 'Data Dokter')
 @section('menu1', 'Master')
-@section('menu2', 'Data Poli')
+@section('menu2', 'Data Dokter')
 @push('stylesheets')
-{{--  <style>
+<style>
     .switch {
       position: relative;
       display: inline-block;
@@ -64,7 +64,7 @@
     .slider.round:before {
       border-radius: 50%;
     }
-</style>  --}}
+</style>
 @endpush
 @section('table')
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -72,11 +72,9 @@
         <div class="col-lg-12">
         <div class="ibox ">
             <div class="ibox-title">
-                <h3>Data Poli</h3>
+                <h3>Data Dokter</h3>
                 <div class="ibox-tools">
-                    @can('poli.tambah')
-                        <a href="{{ route('poli.tambah') }}"><button class="btn btn-primary">Tambah Poli</button></a>
-                    @endcan
+                    <a href="{{ route('dokter.tambah') }}"><button class="btn btn-primary">Tambah Dokter</button></a>
                     {{ csrf_field() }}
                     {{-- <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
@@ -127,16 +125,13 @@
                 <div class="table-responsive">
 
 
-            <table class="table table-striped table-bordered table-hover dataTables-example coba" id="table_poli" >
+            <table class="table table-striped table-bordered table-hover dataTables-example coba" id="table_dokter" >
             <thead>
 
             <tr>
                 <th>No</th>
-                <th>Nama</th>
-                <th>Kode Poli</th>
-                <th>Kode Antrean Poli</th>
-                <th>Kunjungan Sakit</th>
-                <th>Dokter Penanggung Jawab</th>
+                <th>Kode Dokter</th>
+                <th>Nama Dokter</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -173,7 +168,7 @@ function text(){
         $.ajaxSetup({
               headers: { "X-CSRF-Token" : $("meta[name=csrf-token]").attr("content") }
           });
-          table= $('#table_poli').DataTable({
+          table= $('#table_dokter').DataTable({
           "processing": true,
           "serverSide": true,
           "stateSave"  : true,
@@ -181,7 +176,7 @@ function text(){
           "pageLength": 10,
           "select" : true,
           "ajax":{
-                   "url": "{{ route("poli.getdata") }}",
+                   "url": "{{ route("dokter.getdata") }}",
                    "dataType": "json",
                    "type": "POST",
                    data: function ( d ) {
@@ -196,11 +191,8 @@ function text(){
             "width":"5%",
             "targets"   : 0
             },
-            { "data": "name" },
-            { "data": "kdpoli",},
-            { "data": "kode_poli",},
-            { "data": "kunjungan_sakit",},
-            { "data": "dokter",},
+            { "data": "kdDokter" },
+            { "data": "nmDokter",},
             { "data": "status",},
             { "data" : "action",
             "orderable" : false,
@@ -242,9 +234,7 @@ function text(){
 
        });
        function deleteData(e,enc_id){
-          @cannot('poli.hapus')
-              Swal.fire('Ups!', "Anda tidak memiliki HAK AKSES! Hubungi ADMIN Anda.",'error'); return false;
-          @else
+      
           var token = '{{ csrf_token() }}';
           Swal.fire({
             title: "Apakah Anda yakin?",
@@ -264,10 +254,10 @@ function text(){
             });
              $.ajax({
               type: 'DELETE',
-              url: '{{route("poli.hapus",[null])}}/' + enc_id,
+              url: '{{route("dokter.hapus",[null])}}/' + enc_id,
               headers: {'X-CSRF-TOKEN': token},
               success: function(data){
-                if (data.status=='success') {
+                if (data.success == true) {
                     Swal.fire('Yes',data.message,'success');
                     table.ajax.reload(null, true);
                  }else{
@@ -285,7 +275,7 @@ function text(){
 
           }
          });
-          @endcannot
+        
       }
 </script>
 @endpush
