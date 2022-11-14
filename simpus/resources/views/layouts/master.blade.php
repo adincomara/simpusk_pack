@@ -1,10 +1,3 @@
-<!--
-*
-*  INSPINIA - Responsive Admin Theme
-*  version 2.8
-*
--->
-
 <!DOCTYPE html>
 <html>
 
@@ -834,43 +827,16 @@
     <!-- Mainly scripts -->
     <script src="{{ asset('/inspinia/js/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('/inspinia/js/popper.min.js') }}"></script>
-    <script src="{{ asset('/inspinia/js') }}/bootstrap.js"></script>
+    <script src="{{ asset('/inspinia/js') }}/bootstrap.js"></script> 
     <script src="{{ asset('/inspinia/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
     <script src="{{ asset('/inspinia/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2.full.min.js')}}"></script>
-
+    
     {{-- DataTables --}}
     <script src="{{ asset('/inspinia/js/plugins/dataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('/inspinia/js/plugins/dataTables/dataTables.bootstrap4.min.js') }}"></script>
-    <script>
-        $(document).ready(function(){
-            $('.dataTables-examplee').DataTable({
-                pageLength: 25,
-                responsive: true,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy'},
-                    {extend: 'csv'},
-                    {extend: 'excel', title: 'ExampleFile'},
-                    {extend: 'pdf', title: 'ExampleFile'},
 
-                    {extend: 'print',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
-
-            });
-
-        });
-
-    </script>
+   
 
     <!-- Flot -->
     <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.js') }}"></script>
@@ -878,6 +844,9 @@
     <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.spline.js') }}"></script>
     <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.resize.js') }}"></script>
     <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.pie.js') }}"></script>
+    <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.symbol.js') }}"></script>
+    <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.time.js') }}"></script>
+
 
     <!-- Peity -->
     <script src="{{ asset('/inspinia/js/plugins/peity/jquery.peity.min.js') }}"></script>
