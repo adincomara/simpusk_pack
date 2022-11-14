@@ -10,103 +10,63 @@
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900"
-        rel="stylesheet">
+    <link href="{{ asset('inspinia/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('inspinia/font-awesome/css/font-awesome.css')}}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/ionicons.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/linearicons.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/open-iconic.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/pe-icon-7-stroke.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/custom.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/colors.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/ui.css')}}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/logo/logo.png')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/perfect-scrollbar.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/login.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/modifikasi.css')}}">
-    <script src="{{ asset('assets/js/material-ripple.js')}}"></script>
-    <script src="{{ asset('assets/js/layout-helpers.js')}}"></script>
-    <script src="{{ asset('assets/js/theme.js')}}"></script>
-    <script src="{{ asset('assets/js/pace.js')}}"></script>
-    <script src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <link href="{{ asset('inspinia/css/animate.css')}}" rel="stylesheet">
+    <link href="{{ asset('inspinia/css/style.css')}}" rel="stylesheet">
 </head>
 
-<body style="background-color: #f9f9f9">
-    <div class="page-loader">
-        <div class="bg-background"></div>
+<body style="background: url('{{ asset('assets/img/bg13.png') }}') no-repeat; background-size:100%;">
+    <div class="container">
+        {{-- <img src="{{ asset('assets/img/logo_kudus.png') }}" alt="" style="width: 8%;"> --}}
     </div>
-    <div class="authentication-wrapper authentication-3">
-        <div class="authentication-inner justify-content-center">
-            <div class="d-none d-lg-flex col-lg-7 mt-5 ui-bg-cover ui-bg-overlay-container p-5"
-                style="background: url('{{ asset('assets/bg/bg-antri.svg') }}') no-repeat; background-position:bottom; background-size:85%;"
-                alt=''>
-                {{-- <div class="ui-bg-overlay bg-dark opacity-50"></div> --}}
-                <div class="w-100 text-white px-5">
-                    <h1 class="display-2 text-gray font-weight-bolder mb-4">SIMPUSKU</h1>
-                    <div class="text-large text-gray font-weight-light">
-                        Sistem Aplikasi Puskesmas
-                    </div>
-                </div>
+    <div class="loginColumns animated fadeInDown" style="margin-top: -4rem">
+        <div class="bg-danger d-flex justify-content-start mt-0">
+        </div>
+        <div class="d-flex justify-content-center text-left mb-5">
+            <img src="{{ asset('assets/img/logo_kudus.png') }}" alt="" style="width: 10%" class="text-center">
+            <div class="my-auto">
+                <h3 class="text-left text-primary my-auto font-weight-light pl-4">Dinas Kesehatan</h3>
+                <h2 class="text-left text-primary my-auto font-weight-bold pl-4">Kabupaten Kudus</h2>
             </div>
-            <div class="d-flex bg-white col-4 align-items-center p-5">
-                <div class="px-3 flex-fill">
-                    <div class="w-100">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="ui-w-60">
-                                <div class="w-100 position-relative" style="padding-bottom: 54%">
-
-                                </div>
-                            </div>
-                        </div>
-                        <h4 class="text-center text-primary font-weight-normal mt-5 mb-0">Login System</h4>
-                        <br />
-                        @if(session('message'))
-                        <div class="alert alert-{{session('message')['status']}}">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                            {{ session('message')['desc'] }}
-                        </div>
-                        @endif
-                        <form class="my-5" action="{{route('manage.checklogin')}}" method="post">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <label class="form-label">Username</label>
-                                <input type="text" class="form-control" name="email" required="" value="">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label d-flex justify-content-between align-items-end">
-                                    <div>Password</div>
-                                </label>
-                                <input type="password" class="form-control" name="password" required="">
-                            </div>
-                            <label class="form-label d-flex justify-content-between align-items-end">
-                                <div></div>
-                                <a href="javascript:void(0)" class="d-block small text-link">Lupa Password?</a>
-                            </label>
-                            <div class="d-flex justify-content-between align-items-center m-0">
-                                <button type="submit" class="btn btn-block btn-simpan">Sign In</button>
-                            </div>
-                        </form>
+        </div>
+        {{-- <h1 class="text-center text-primary font-weight-bold my-4 ">Kabupaten Kudus</h1> --}}
+        <div class="d-flex justify-content-center">
+            <div class="col-md-6">
+                <div class="ibox-content b-r-xl">
+                    <div class="d-flex justify-content-center">
+                        <img src="{{ asset('assets/img/logo-puskesmas.png') }}" alt="" style="width: 25%"
+                            class="text-center">
                     </div>
+                    <h3 class="text-center text-primary font-weight-light my-4 mb-0">Login Sistem Puskesmas</h3>
+                    @if(session('message'))
+                    <div class="alert alert-{{session('message')['status']}}">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        {{ session('message')['desc'] }}
+                    </div>
+                    @endif
+                    <form class="m-t" action="{{route('manage.checklogin')}}" method="post">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control b-r-xl" name="email" required="" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label d-flex justify-content-between align-items-end">
+                                <div>Password</div>
+                            </label>
+                            <input type="password" class="form-control b-r-xl" name="password" required="">
+                        </div>
+                        <button type="submit"
+                            class="btn btn-primary block full-width m-b b-r-xl btn-simpan">Login</button>
+                        <hr class="my-auto col-sm-1 d-block" style="background:#1ab394;">
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="{{ asset('assets/js/popper.js')}}"></script>
-    <script src="{{ asset('assets/js/bootstrap.js')}}"></script>
-    <script src="{{ asset('assets/js/sidenav.js')}}"></script>
-    <script src="{{ asset('assets/js/perfect-scrollbar.js')}}"></script>
-    <script src="{{ asset('assets/js/custom.js')}}"></script>
-    <script src="{{ asset('assets/js/sweetalert.min.js')}}"></script>
-    <script src="{{ asset('assets/js/datatables.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/sweetalert2.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/moment.js')}}"></script>
-    <script src="{{ asset('assets/js/jquery.validate.js')}}"></script>
-    <script src="{{ asset('assets/js/additional-methods.js')}}"></script>
 
 </body>
 
