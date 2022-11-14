@@ -68,7 +68,7 @@
                         <h1 class="text-bold" style="font-size: 40px; color: #2C3333; font-weight: 500">SELAMAT DATANG
                         </h1>
                         <h4 class="text-navy text-uppercase">Sistem Pendaftaran Pasien BPJS UPTD
-                            Puskesmas Jepang</h4>
+                            Puskesmas Pekalongan</h4>
                     </div>
                     <img src="{{ asset('/kiosk/img/logo-kudus') }}.png" class="my-auto" alt="" width="75px" height="100px">
                 </div>
@@ -79,7 +79,11 @@
                     <form id="submitData">
                         {{ csrf_field() }}
                         <div class="form-group input-group">
-                            <input type="text" class="form-control" name="no_kartu" placeholder="NIK/NO KARTU BPJS" id="no_kartu" required="">
+                            <input list="kartu" class="form-control" name="no_kartu" placeholder="NIK/NO KARTU BPJS" id="no_kartu" required="" autocomplete="off">
+                            <datalist id="kartu">
+
+                            </datalist>
+
                             <span class="input-group-append">
                                 <button type="button" class="btn btn-primary" id="key"><i class="fa fa-keyboard-o"></i>
                                 </button>
@@ -271,6 +275,7 @@
         $('.keyboard').on('click', function(){
             let value = $('#no_kartu').val();
             $('#no_kartu').val(value+this.value)
+
         });
         $('#hapus_text').on('click', function(){
             let value = $('#no_kartu').val();
@@ -352,6 +357,46 @@
                 }
             });
         }
+    </script>
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: '{{route("antrian.search_no_kartu")}}',
+                type: "GET",
+                data:{
+                    search: this.value,
+                    status: 'BPJS'
+                },
+                dataType: "json",
+                success:function(data) {
+                    let html = '';
+                    for(let i = 0; i<data.length; i++){
+                        html +='<option value="'+data[i].no_bpjs+'">Nama = '+data[i].nama_pasien+' | No KTP = '+data[i].no_ktp+'</option>';
+                    }
+                    $('#kartu').html(html);
+
+                }
+            });
+        });
+        $('#no_kartu').on('keyup', function(){
+            $.ajax({
+                url: '{{route("antrian.search_no_kartu")}}',
+                type: "GET",
+                data:{
+                    search: this.value,
+                    status: 'BPJS'
+                },
+                dataType: "json",
+                success:function(data) {
+                    let html = '';
+                    for(let i = 0; i<data.length; i++){
+                        html +='<option value="'+data[i].no_bpjs+'">Nama = '+data[i].nama_pasien+' | No KTP = '+data[i].no_ktp+'</option>';
+                    }
+                    $('#kartu').html(html);
+
+                }
+            });
+        })
     </script>
 
 </body>

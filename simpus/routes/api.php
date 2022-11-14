@@ -21,10 +21,10 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::put('/testis', function(){return "tes";});
+Route::get('/testis', function(){return "tes";});
 Route::group(['middleware' => 'api', 'namespace' => 'App\Http\Controllers'], function(){
     Route::group(['prefix' => 'auth'], function(){
-        Route::post('/', [AuthController::class, 'login']);
+        Route::get('/', [AuthController::class, 'login']);
     });
     Route::group(['prefix' => 'antrean'], function(){
         Route::post('/', [AntrianController::class, 'create_antrean']);

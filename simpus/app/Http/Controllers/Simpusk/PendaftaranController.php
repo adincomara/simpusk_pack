@@ -430,7 +430,7 @@ class PendaftaranController extends Controller
         // return $this->deleteBPJS('');
         $dokter_penanggung_jawab = explode(',',$req->dokter_penanggung_jawab);
         //VALIDASI
-        $cekpendaftaranpasien = Pendaftaran::where('no_rekamedis', $req->no_rekamedis)->where('no_bpjs',$req->no_bpjs)->whereDate('tanggal_daftar', Carbon::today())->first();
+        $cekpendaftaranpasien = Pendaftaran::where('no_rekamedis', $req->no_rekamedis)->where('no_bpjs',$req->no_bpjs)->where('flag_antrian', 0)->whereDate('tanggal_daftar', Carbon::today())->first();
         if(isset($cekpendaftaranpasien)){
             return response()->json([
                 'success' => false,
@@ -469,7 +469,10 @@ class PendaftaranController extends Controller
                     // return $no_antrian_bpjs;
                 }
             }
-            $pendaftaran = new Pendaftaran;
+            $pendaftaran = Pendaftaran::where('no_rekamedis', $req->no_rekamedis)->where('no_bpjs',$req->no_bpjs)->where('flag_antrian', 1)->whereDate('tanggal_daftar', Carbon::today())->where('id_poli', $poli->kdpoli)->first();
+            if(!isset($pendaftaran)){
+                $pendaftaran = new Pendaftaran;
+            }
             $pendaftaran->no_rawat                          = $this->generateNoRawat();
             $pendaftaran->no_rekamedis                      = $req->no_rekamedis;
             $pendaftaran->tanggal_daftar                    = date('Y-m-d');
@@ -482,6 +485,7 @@ class PendaftaranController extends Controller
             $pendaftaran->alamat_penanggung_jawab           = $req->alamat_penanggung_jawab;
             $pendaftaran->status_pasien                     = $req->status_pasien;
             $pendaftaran->no_bpjs                           = $req->no_bpjs;
+            $pendaftaran->flag_antrian                      = 0;
             $pendaftaran->save();
             // return $pendaftaran;
             $antrian = app('App\Http\Controllers\Simpusk\AntrianController')->updateantrian($poli, $pendaftaran, $no_antrian_bpjs);
@@ -594,7 +598,8 @@ class PendaftaranController extends Controller
     }
     public function hapus(Request $req, $enc_id){
         $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
-        $pendaftaran = Pendaftaran::where('id',$dec_id)->first();
+        $pendaftaran = Pendaftaran::where('id',$dec_id)->where('flag_antrian', 0)->first();
+        $pendaftaran->flag_antrian = 1;
         // return $dec_id;
         if (!isset($pendaftaran)){
             return response()->json([
@@ -622,7 +627,7 @@ class PendaftaranController extends Controller
             $antrian->waktu_panggil    = date('Y-m-d h:i:s');
 
             $antrian->save();
-            $pendaftaran->delete();
+            $pendaftaran->save();
             DB::commit();
             return response()->json([
                 'success' => true,

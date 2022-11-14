@@ -631,7 +631,7 @@
         // }
         console.log('kunjungan');
         @if(isset($kunjungan))
-            @if($kunjungan['rujuk_lanjut'] != 'null')
+            @if($kunjungan['rujuk_lanjut'] != 'null' && isset($kunjungan['rujuk_lanjut']))
                 rujukform();
                 pilihPenunjang();
                 @if($kunjungan['rujuk_lanjut']['spesialis'] != 'null')
@@ -1597,7 +1597,9 @@ function spesialis(){
     // console.log(subspesialis);
     $('#subspesialis').find('option').remove().end();
     $('#subspesialis').append('<option value="">Pilih SubSpesialis</option>');
+    @if(isset($kunjungan['rujuk_lanjut']['spesialis']))
     var id_spesialis = "{{ $kunjungan['rujuk_lanjut']['spesialis'] }}";
+    @endif
     console.log(id_spesialis);
     $.ajax({
         type: 'POST',
@@ -1683,8 +1685,13 @@ function khusus(){
 function searchRujuk(){
     $('#table1').find('tbody').remove().end();
     var nokartu = $('#no_bpjs').val();
+    @if(isset($kunjungan['rujuk_lanjut']['spesialis']))
+
     var spesialis = "{{ $kunjungan['rujuk_lanjut']['spesialis'] }}";
+    @endif
+    @if(isset($kunjungan['rujuk_lanjut']['spesialis']))
     var kdsubspesialis = "{{ $kunjungan['rujuk_lanjut']['subspesialis'] }}";
+    @endif
     var kdsarana = $('#sarana').val();
     var kdkhusus = $('#khusus').val();
     var kdsubkhusus = $('#subkhusus').val();

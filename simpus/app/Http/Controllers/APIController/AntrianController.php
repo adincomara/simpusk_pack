@@ -152,7 +152,7 @@ class AntrianController extends Controller
         $cekpendaftaranpasien = Pendaftaran::whereDate('tanggal_daftar', Carbon::today())->where(function($q) use ($pasien){
             $q->orwhere('no_rekamedis', $pasien->no_rekamedis);
             $q->orwhere('no_bpjs',$pasien->no_bpjs);
-        })->where('id_poli', $req->kodepoli)->first();
+        })->where('id_poli', $req->kodepoli)->where('flag_antrian', 0)->first();
         // return $cekpendaftaranpasien;
         if(isset($cekpendaftaranpasien)){
             if($cekpendaftaranpasien->flag_periksa == 1){
@@ -179,7 +179,10 @@ class AntrianController extends Controller
                 //     $result = APIBpjsController::delete($url);
                 // }
                 $no_antrian_bpjs = $result['response']['message'];
-                $pendaftaran = new Pendaftaran;
+                $pendaftaran = Pendaftaran::where('no_rekamedis', $req->no_rekamedis)->where('no_bpjs',$req->no_bpjs)->where('flag_antrian', 1)->whereDate('tanggal_daftar', Carbon::today())->where('id_poli', $poli->kdpoli)->first();
+                if(!isset($pendaftaran)){
+                    $pendaftaran = new Pendaftaran;
+                }
                 $pendaftaran->no_rawat                          = $this->generateNoRawat();
                 $pendaftaran->no_rekamedis                      = $pasien->no_rekamedis;
                 $pendaftaran->tanggal_daftar                    = date('Y-m-d');
@@ -192,6 +195,7 @@ class AntrianController extends Controller
                 $pendaftaran->status_pasien                     = 'BPJS';
                 $pendaftaran->no_bpjs                           = $getbpjs['response']['noKartu'];
                 $pendaftaran->sumber_pendaftaran                = 1;
+                $pendaftaran->flag_antrian                      = 0;
                 $pendaftaran->save();
                 $antrian = $this->updateantrian($poli, $pendaftaran, $no_antrian_bpjs);
 
@@ -599,7 +603,8 @@ class AntrianController extends Controller
                 )
             ]);
         }
-        $pendaftaran = Pendaftaran::where('id',$antrian->id_pendaftaran)->first();
+        $pendaftaran = Pendaftaran::where('id',$antrian->id_pendaftaran)->where('flag_antrian', 0)->first();
+        $pendaftaran->flag_antrian = 1;
         if($pendaftaran->flag_periksa != 0){
             return response()->json([
                 'metadata'  => array(
@@ -628,7 +633,7 @@ class AntrianController extends Controller
             // $antrian->code_poli         = null;
             // $antrian->no_antrian_bpjs   = null;
             $antrian->save();
-            $pendaftaran->delete();
+            $pendaftaran->save();
             DB::commit();
             return response()->json([
                 'metadata' => array(

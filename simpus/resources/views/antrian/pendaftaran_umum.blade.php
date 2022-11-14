@@ -67,7 +67,7 @@
                         <h1 class="text-bold" style="font-size: 40px; color: #2C3333; font-weight: 500">SELAMAT DATANG
                         </h1>
                         <h4 class="text-uppercase text-warning">Sistem Pendaftaran Pasien UMUM UPTD
-                            Puskesmas Jepang</h4>
+                            Puskesmas Pekalongan</h4>
                     </div>
                     <img src="{{ asset('/kiosk/img/logo-kudus') }}.png" class="my-auto" alt="" width="75px" height="100px">
                 </div>
@@ -87,7 +87,10 @@
                             </div>
                         </div>
                         <div class="form-group input-group">
-                            <input type="text" class="form-control" placeholder="NIK / NO REKAMEDIS" name="no_kartu" id="no_kartu">
+                            <input list="kartu" class="form-control" placeholder="NIK / NO REKAMEDIS" name="no_kartu" id="no_kartu" autocomplete="off">
+                            <datalist id="kartu">
+
+                            </datalist>
                             <span class="input-group-append">
                                 <button type="button" class="btn btn-warning" id="key"><i class="fa fa-keyboard-o"></i>
                                 </button>
@@ -365,6 +368,46 @@
                 }
             });
         }
+    </script>
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: '{{route("antrian.search_no_kartu")}}',
+                type: "GET",
+                data:{
+                    search: this.value,
+                    status: 'UMUM'
+                },
+                dataType: "json",
+                success:function(data) {
+                    let html = '';
+                    for(let i = 0; i<data.length; i++){
+                        html +='<option value="'+data[i].no_ktp+'">Nama = '+data[i].nama_pasien+' | No Rekam = '+data[i].no_rekamedis+'</option>';
+                    }
+                    $('#kartu').html(html);
+
+                }
+            });
+        });
+        $('#no_kartu').on('keyup', function(){
+            $.ajax({
+                url: '{{route("antrian.search_no_kartu")}}',
+                type: "GET",
+                data:{
+                    search: this.value,
+                    status: 'UMUM'
+                },
+                dataType: "json",
+                success:function(data) {
+                    let html = '';
+                    for(let i = 0; i<data.length; i++){
+                        html +='<option value="'+data[i].no_bpjs+'">Nama = '+data[i].nama_pasien+' | No KTP = '+data[i].no_ktp+'</option>';
+                    }
+                    $('#kartu').html(html);
+
+                }
+            });
+        })
     </script>
 
 </body>

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Simpusk;
 
+use App\Models\Simpusk\Dokter;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\Poli;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use DB;
 class PoliController extends Controller
 {
    protected $original_column = array(
@@ -68,6 +69,14 @@ class PoliController extends Controller
         $record->id             = $record->id;
         $record->name           = $record->parent==null?$record->nama_poli:'--'.$record->nama_poli.' ('.$indukpoli.')';
         $record->ruang          = $record->ruang_poli;
+        $record->kdpoli         = $record->kdpoli;
+        $record->kode_poli      = $record->kode_poli;
+        $list_dokter                 = '';
+        foreach(json_decode($record->dokter) as $dokter){
+          $cari_dokter = Dokter::where('kdDokter', $dokter)->first();
+          $list_dokter .= '<p>'.$cari_dokter['nmDokter'].'</p><br>';
+        }
+        $record->dokter = $list_dokter;         
         $record->action         = $action;
         if($record->status == '1'){
             $record->status = "<label class='switch'>
@@ -288,63 +297,59 @@ class PoliController extends Controller
             ]);
           }
     }
-    public function simpan(Request $req)
-    {
-        // return $req->all();
-      $enc_id     = $req->enc_id;
-
-
-
-      if ($enc_id != null) {
-        $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
-      }else{
-        $dec_id = null;
+    public function simpan(Request $req){
+      //VALIDASI
+      $cek_poli = Poli::where(function($q) use($req){
+        $q->orwhere('nama_poli', 'LIKE','%'. $req->nama_poli .'%');
+        $q->orwhere('ruang_poli', 'LIKE','%'. $req->nama_poli .'%');
+        $q->orwhere('kdpoli', $req->kdpoli);
+        $q->orwhere('kode_poli', $req->kode_poli);
+      })->first();
+      if(isset($cek_poli)){
+        return response()->json([
+          'success' => false,
+          'message' => 'Data gagal disimpan, terdapat kesamaan data dengan database'
+        ]);
       }
-
-      if($enc_id){
-
-        $poli = Poli::find($dec_id);
-
-        $poli->nama_poli      = $req->nama_poli;
-        $poli->ruang_poli     = $req->ruang_poli;
-        $poli->parent         = $req->parent;
-        $poli->kdpoli         = $req->kdpoli;
-        $poli->save();
-        if ($poli) {
-          $json_data = array(
-                "success"         => TRUE,
-                "message"         => 'Data berhasil diperbarui.'
-             );
-        }else{
-           $json_data = array(
-                "success"         => FALSE,
-                "message"         => 'Data gagal diperbarui.'
-             );
+      //END VALIDASI
+      try{
+        DB::beginTransaction();
+        $enc_id = $req->enc_id;
+        $dokter_penanggung = $req->dokter;
+        $dec_id = '';
+        if($enc_id != '' || $enc_id != null || isset($enc_id)){
+          $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
         }
-      }else{
-
-        $poli = new Poli;
-
-        $poli->nama_poli      = $req->nama_poli;
-        $poli->ruang_poli     = $req->ruang_poli;
-        $poli->parent         = $req->parent;
-        $poli->kdpoli         = $req->kdpoli;
-        $poli->save();
-
-        if($poli) {
-          $json_data = array(
-                "success"         => TRUE,
-                "message"         => 'Data berhasil ditambahkan.'
-          );
+        if(!isset($dec_id) || $dec_id == '' || $dec_id == null){
+          $poli = new Poli();
         }else{
-          $json_data = array(
-                "success"         => FALSE,
-                "message"         => 'Data gagal ditambahkan.'
-          );
+          $poli = Poli::find($dec_id);
         }
-
+        $poli->nama_poli        = $req->nama_poli;
+        $poli->ruang_poli       = $req->nama_poli;
+        $poli->kdpoli           = $req->kdpoli;
+        $poli->kode_poli        = $req->kode_poli;
+        $poli->status           = $req->status;
+        $poli->kunjungan_sakit  = $req->kunjungan_sakit;
+        $array_dokter = collect();
+        foreach($dokter_penanggung as $key => $dokter){
+          $array_dokter->push($dokter);
+        }
+        $poli->dokter = json_encode($array_dokter);
+        $poli->save();
+        DB::commit();
+        return response()->json([
+          'success' => true,
+          'message' => 'Data berhasil disimpan'
+        ]);
+        
+      }catch(\Throwable $th){
+        DB::rollBack();
+        return response()->json([
+          'success' => false,
+          'message' => 'Data gagal disimpan, '.$th->getMessage()
+        ]);
       }
-      return json_encode($json_data);
     }
     public function hapus(Request $req,$enc_id)
     {

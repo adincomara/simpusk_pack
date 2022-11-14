@@ -209,6 +209,21 @@ class AntrianController extends Controller
         $dokter = DokterBPJS::all();
         return view('antrian/pendaftaran_bpjs', ['poli' => $poli, 'dokter' => $dokter]);
     }
+    public function search_no_kartu(Request $request){
+        $search = $request->search;
+        $status = $request->status;
+        $pasien = Pasien::where('status_pasien', $status);
+        if($search != ''){
+            $pasien->where(function($query) use ($search){
+                $query->orwhere('nama_pasien', 'LIKE', $search.'%');
+                $query->orwhere('no_bpjs', 'LIKE', $search.'%');
+                $query->orwhere('no_rekamedis', 'LIKE', $search.'%');
+                $query->orwhere('no_ktp', 'LIKE', $search.'%');
+            });
+        }
+        $pasien = $pasien->limit(10)->get();
+        return $pasien;
+    }
     public function pendaftaran_umum(){
         $poli = Poli::where('status',1)->get();
         $dokter = DokterBPJS::all();
@@ -468,13 +483,18 @@ class AntrianController extends Controller
             $q->orwhere('no_ktp', 'LIKE', $key.'%');
             $q->orwhere('no_bpjs', 'LIKE', $key.'%');
         })->first();
+        // return $pasien;
         $antrian = AntrianBPJS::where(function($q) use ($key){
             $q->orwhere('no_antrian', $key);
         })->where('tgl_daftar', date('Y-m-d'))->first();
         if(isset($pasien) || isset($antrian)){
+            // return $pasien;
             $pendaftaran = Pendaftaran::where(function($q) use ($pasien, $antrian){
-                $q->orwhere('no_rekamedis', $pasien['no_rekamedis']);
-                $q->orwhere('id', $antrian['id_pendaftaran']);
+                if(isset($pasien)){
+                    $q->orwhere('no_rekamedis', $pasien['no_rekamedis']);
+                }elseif(isset($antrian)){
+                    $q->orwhere('id', $antrian['id_pendaftaran']);
+                }
             })->where('tanggal_daftar', date('Y-m-d'))->first();
         }
         if(isset($pendaftaran)){

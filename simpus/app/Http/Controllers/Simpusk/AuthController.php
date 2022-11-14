@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Simpusk;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 // use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -23,10 +24,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
+        
         auth()->logout();
-        $credentials = request(['username', 'password']);
+        $credentials['username'] = $request->header('x-username');
+        $credentials['password'] = $request->header('x-password');
+
+        // $credentials = request(['username', 'password']);
         if($credentials['username'] != 'apiantreanbpjsjepang123' && $credentials['password'] != 'antreanbpjs@2021'){
             return response()->json(['error' => 'Unauthorized'], 401);
         }

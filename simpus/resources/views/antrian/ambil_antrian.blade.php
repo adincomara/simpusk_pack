@@ -70,7 +70,7 @@
                             </div>
                             <h1 class="text-bold" style="font-size: 50px; color: #E7F6F2; font-weight: 500">PENDAFTARAN
                             </h1>
-                            <h2 class="" style="color: #E7F6F2;">Selamat datang di UPTD Puskesmas Jepang</h2>
+                            <h2 class="" style="color: #E7F6F2;">Selamat datang di UPTD Puskesmas Pekalongan</h2>
                         </div>
                     </div>
                     <hr style="background-color:#E7F6F2;">
