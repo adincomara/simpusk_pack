@@ -44,6 +44,7 @@ use App\Http\Controllers\Simpusk\LaboratoriumController;
 use App\Http\Controllers\Simpusk\LaporanController;
 use App\Http\Controllers\Simpusk\PcareController;
 use App\Http\Controllers\Simpusk\RujukanController;
+use App\Http\Controllers\Simpusk\SinkronasiBPJSController;
 use App\Models\Simpusk\AntrianBPJS;
 use App\Models\Simpusk\StokObat;
 
@@ -468,6 +469,9 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('kunjungan/print_rujukan/{id?}', [IntegrasiBPJSController::class, 'print_rujukan'])->name('report.printRujukan');
         Route::get('kunjungan/print_rujukanumum/{id?}', [IntegrasiBPJSController::class, 'print_rujukanumum'])->name('report.printRujukanUmum');
         Route::post('kunjungan/edit', [IntegrasiBPJSController::class, 'kunjungan_simpan'])->name('kunjungan.simpan');
+
+        //INTEGRASI
+        Route::get('integrasi/bpjs',[SinkronasiBPJSController::class, 'index'])->name('integrasi.bpjs');
 
         //LABORATORIUM
         Route::get('laboratorium/master', [LaboratoriumController::class, 'master'])->name('laboratorium.master');

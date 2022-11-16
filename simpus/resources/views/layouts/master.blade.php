@@ -262,11 +262,17 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-ambulance" style="font-size:16px"></i> <span class="nav-label">Integrasi
-                            BPJS</span> <span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-address-book" style="font-size:16px"></i> <span class="nav-label">Kunjungan
+                            Pasien</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li class=""><a href="{{route('kunjungan.pasienBPJS')}}">Kunjungan Pasien</a></li>
-                                <li class=""><a href="{{route('report.rujukanBPJS')}}">Rujukan Pasien BPJS (PCARE)</a></li>
+                        <li class=""><a href="{{route('kunjungan.pasienBPJS')}}">Report Pasien</a></li>
+                        <li class=""><a href="{{route('report.rujukanBPJS')}}">Rujukan Pasien BPJS (PCARE)</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-chain" style="font-size:16px"></i> <span class="nav-label">Integrasi</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li class=""><a href="{{ route('integrasi.bpjs') }}"><i class="fa fa-ambulance"></i> BPJS</a></li>
                     </ul>
                 </li>
                 @can('pengguna.index')
