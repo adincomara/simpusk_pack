@@ -80,9 +80,9 @@
                         <!-- <div>
                             <img src="img/icon1.svg" alt="" width="300px">
                         </div> -->
-                        <!-- <h4 class="text-uppercase text-left">*Masukan NIK/No BPJS/No Rekamedis</h4> -->
                         <form class="m-t" id="submitData">
                             {{ csrf_field() }}
+                            {{-- <p>Masukan Nomer BPJS/NIK</p> --}}
                             <div class="form-group input-group">
                                 <input list="kartu" class="form-control" name="no_kartu" placeholder="NIK/NO KARTU BPJS"
                                     id="no_kartu" required="" autocomplete="off">
@@ -160,6 +160,7 @@
                                 </table>
                             </div>
                             <div class="form-group">
+                                {{-- <p>Pilih Poli</p> --}}
                                 <select class="select2_poli form-control" name="poli">
                                     <option value=""></option>
                                     @foreach($poli as $key => $value)
@@ -168,6 +169,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                {{-- <p>Pilih Dokter</p> --}}
                                 <select class="select2_dokter form-control" name="dokter">
                                     <option value=""></option>
                                     @foreach($dokter as $key => $value)
@@ -176,87 +178,133 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <div class="checkbox checkbox-success">
+                                    <input id="checkbox3" type="checkbox">
+                                    <label for="checkbox3">
+                                        Cek Kesehatan Awal
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="display: block">
+                                <div class="form-group">
+                                    {{-- <p>Keluhan</p> --}}
+                                    <textarea name="" id="" cols="30" rows="5" class="form-control"
+                                        placeholder="Masukan keluhan"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan sistol" required=""
+                                        autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan diastol" required=""
+                                        autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan berat badan"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan tinggi badan"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan resp Rate"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan lingkar perut"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan heart Rate"
+                                        required="" autocomplete="off">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
                                 <button type="submit" id="btn_simpan" class="btn btn-primary block full-width m-b"><i
                                         class="fa fa-paper-plane" aria-hidden="true"></i> Kirim</button>
                             </div>
-                        </form>
-                        {{--
-                        <p class="text-muted text-center"><small>Tidak terdaftar di BPJS ?</small>
-                            <a href="{{ route('antrian.ambil_antrian') }}">
-                                <small>kembali</small></a>
-                        </p> --}}
                     </div>
-                    <div class="mt-5 loginscreen animated fadeInDown col-sm-6" id="form-bpjs" style="display:   block">
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header bg-primary text-white">DATA BPJS</div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0">Nomor Kartu :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="no_kartu_bpjs"></h4>
-                                            </div>
+
+                    </form>
+                    {{--
+                    <p class="text-muted text-center"><small>Tidak terdaftar di BPJS ?</small>
+                        <a href="{{ route('antrian.ambil_antrian') }}">
+                            <small>kembali</small></a>
+                    </p> --}}
+                </div>
+                <div class="mt-5 loginscreen animated fadeInDown col-sm-6" id="form-bpjs" style="display: none">
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">DATA PASIEN</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Nomor NIK/BPJS :</h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0"> Nama :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="nama_bpjs"></h4>
-                                            </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="no_kartu_bpjs"></h4>
                                         </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0">Kode Provider :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="kode_provider_bpjs" val=""></h4>
-                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Nama :</h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0">Nama Provider :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="nama_provider_bpjs"></h4>
-                                            </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="nama_bpjs"></h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0">Jenis Kelamin :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="jenis_kelamin_bpjs"></h4>
-                                            </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Kode Provider :</h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0"> Jenis Peserta :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="jenis_peserta_bpjs"></h4>
-                                            </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="kode_provider_bpjs" val=""></h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0"> No.HP :</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="no_hp_bpjs"></h4>
-                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Nama Provider :</h4>
                                         </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <h4 class="mb-0"> Status</h4>
-                                            </div>
-                                            <div class="col-sm-7 text-secondary">
-                                                <h4 id="status_bpjs"></h4>
-                                            </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="nama_provider_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Jenis Kelamin :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="jenis_kelamin_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Jenis Peserta :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="jenis_peserta_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> No.HP :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="no_hp_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Status</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="status_bpjs"></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -266,6 +314,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Mainly scripts -->
