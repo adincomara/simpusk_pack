@@ -32,8 +32,7 @@
     <link href="{{ asset('/kiosk/css/plugins/ionRangeSlider/ion.rangeSlider.css') }}" rel="stylesheet">
     <link href="{{ asset('/kiosk/css/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('/kiosk/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}"
-        rel="stylesheet">
+    <link href="{{ asset('/kiosk/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
 
     <link href="{{ asset('/kiosk/css/plugins/clockpicker/clockpicker.css') }}" rel="stylesheet">
 
@@ -52,34 +51,36 @@
 </head>
 
 <style>
+    h3 {
+        color: #E7F6F2;
+    }
 </style>
 
-<body class="top-navigation"
-    style="background: url('{{ asset('assets/img/bg13.png') }}') no-repeat; background-size:100%;">
+<body class="top-navigation">
 
     <div id="wrapper">
-        <div id="page-wrapper">
+        <div id="page-wrapper" style="background-color: #2C3333;">
             <div class="wrapper wrapper-content">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="text-right">
-                                <!-- <a href="kioska_dashboard.html" style=""> <i
+                                <!-- <a href="kioska_dashboard.html" style="color: #E7F6F2;"> <i
                                         class="fa fa-angle-double-left" aria-hidden="true"></i> Kembali</a> -->
                             </div>
-                            <h1 class="text-bold" style="font-size: 50px; font-weight: 600">PENDAFTARAN
+                            <h1 class="text-bold" style="font-size: 50px; color: #E7F6F2; font-weight: 500">PENDAFTARAN
                             </h1>
-                            <h2 class="" style="">Selamat datang di UPTD Puskesmas Kudus</h2>
+                            <h2 class="" style="color: #E7F6F2;">Selamat datang di UPTD Puskesmas Pekalongan</h2>
                         </div>
                     </div>
-                    <hr>
+                    <hr style="background-color:#E7F6F2;">
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-4">
                             <div class="widget style1 bg-white">
                                 <div class="row">
                                     <div class="col-md-12 d-flex">
-                                        <i class="fa fa-drivers-license fa-3x text-navy pr-2 my-auto fa-5x"></i>
-                                        <h2 class="font-bold mb-2 text-primary my-auto">Ambil Antrian</h2>
+                                        <i class="fa fa-drivers-license fa-3x text-navy pr-2 my-auto"></i>
+                                        <h2 class="font-bold mb-2 text-primary ">BPJS</h2>
                                         <a type="button" href="{{ route('antrian.pendaftaran_bpjs') }}"
                                             class="ml-auto my-auto btn btn-primary b-r-xl">
                                             Klik disini ! </a>
@@ -87,7 +88,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-lg-4">
+                        <div class="col-lg-4">
                             <div class="widget style1 bg-white">
                                 <div class="row">
                                     <div class="col-md-12 d-flex">
@@ -99,22 +100,20 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
-                    {{ csrf_field() }}
+{{ csrf_field() }}
                     <hr style="background-color:#E7F6F2;">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h2 class="" style="">Cek Pendaftaran</h2>
-                            <div class=" input-group"><input type="text" class="form-control"
-                                    placeholder="NIK/NO BPJS/NO REKAM MEDIS/NO ANTRIAN" id="key"> <span
-                                    class="input-group-append">
-                                    <button type="button" class="btn btn-primary" onclick="cek_pendaftaran()"><i
-                                            class="fa fa-search" aria-hidden="true"></i>
+                            <h2 class="" style="color: #E7F6F2;">Cek Pendaftaran</h2>
+                            <div class="input-group"><input type="text" class="form-control"
+                                    placeholder="NIK/NO BPJS/NO REKAM MEDIS/NO ANTRIAN" id="key"> <span class="input-group-append">
+                                    <button type="button" class="btn btn-primary" onclick="cek_pendaftaran()"><i class="fa fa-search"
+                                            aria-hidden="true"></i>
                                     </button> </span>
                             </div>
-                            <h2 class="text-center" id="tdk_ditemukan" style="display:none">Data Tidak
-                                Ditemukan</h2>
+                            <h2 class="text-center" id="tdk_ditemukan"  style="color: #E7F6F2; display:none">Data Tidak Ditemukan</h2>
                             <div class="table-responsive mt-4" id="table_data" style="display: none;">
                                 <table id="table1" class="table p-0 text-center table-bordered">
                                     <thead class="">
@@ -134,8 +133,7 @@
                                                 <button class="btn btn-danger"><i class="fa fa-trash"
                                                         aria-hidden="true"></i>&nbsp; Hapus Antrian</button>
                                                 <button class="btn btn-success"><i class="fa fa-ticket"
-                                                        aria-hidden="true"></i>&nbsp; Cetak Nomor
-                                                    Antrian</button>
+                                                        aria-hidden="true"></i>&nbsp; Cetak Nomor Antrian</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -145,7 +143,7 @@
                     </div>
                 </div>
             </div>
-            {{-- <div class="footer" style=" background-color: #A5C9CA;">
+            <div class="footer" style=" background-color: #A5C9CA;">
                 <div class="float-right">
 
                 </div>
@@ -156,7 +154,7 @@
                         Nasional </span> &copy;
                     2022
                 </div>
-            </div> --}}
+            </div>
 
         </div>
     </div>

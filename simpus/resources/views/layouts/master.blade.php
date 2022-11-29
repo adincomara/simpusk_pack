@@ -4,36 +4,36 @@
     *  version 2.8
     *
     -->
-    
+
     <!DOCTYPE html>
     <html>
-    
+
     <head>
-    
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
+
         <title>SIMPUS | @yield('title')</title>
         <link href="{{ asset('/inspinia/css/all.css') }}" rel="stylesheet">
         <link href="{{ asset('/inspinia/css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('/inspinia/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
-    
+
         <link href="{{ asset('/inspinia/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
-    
+
         <link rel="stylesheet" href="{{ asset('assets/css/sweetalert.css')}}">
         <link href="{{ asset('assets/css/toasty.css')}}" rel="stylesheet" />
-    
+
         <!-- Toasty style -->
         <link href="{{ asset('inspinia/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
-    
+
         <!-- Gritter -->
         <link href="{{ asset('/inspinia/js/plugins/gritter/jquery.gritter.css') }}" rel="stylesheet">
         <link href="{{ asset('/inspinia/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    
+
         <link href="{{ asset('/inspinia/css/animate.css') }}" rel="stylesheet">
         <link href="{{ asset('/inspinia/css/style.css') }}" rel="stylesheet">
-    
+
         {{-- <style>
             body{
                 font-family: "open sans", "Helvetica Neue", Arial, Helvetica, sans-serif;
@@ -56,7 +56,7 @@
             ul.pagination {
                 display: inline-flex;
             }
-    
+
             .select2-selection {
                 height: 34px !important;
                 border-color: #ced4da !important;
@@ -67,12 +67,12 @@
                 color: inherit;
                 color: #a7b1c2;
             }
-    
+
             .redirect:hover {
                 background-color: #293846;
                 color: #ffff;
             }
-    
+
             .redirect.active {
                 background-color: #19aa8d;
                 color: #ffff;
@@ -80,7 +80,7 @@
         </style>
         @stack('stylesheets')
     </head>
-    
+
     <body>
         <div id="wrapper">
             <nav class="navbar-default navbar-static-side" role="navigation">
@@ -107,7 +107,7 @@
                 <div class="logo-element">
                     RTI
                 </div>
-    
+
                 </li>
                 <div style="padding:3px">
                     <li>
@@ -116,7 +116,7 @@
                         <a class="btn redirect" href="{{route('manage.beranda.kia')}}">KIA</a>
                     </li>
                 </div>
-    
+
                 <li class="{{  request()->routeIs('manage.beranda') ? 'active' : '' }}">
                     <a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:16px" aria-hidden="true"></i> <span
                             class="nav-label">Beranda</span></a>
@@ -324,7 +324,7 @@
                         <li class=""><a
                                 href="{{ route('pcare.index') }}">PCare</a></li>
                         @endcan
-    
+
                     </ul>
                 </li>
                 @endcan
@@ -351,37 +351,37 @@
                 </li>
                 @endcan
                 </ul>
-    
+
         </div>
         </nav>
-    
+
         <div id="page-wrapper" class="gray-bg dashbard-1">
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
                         </a>
-    
+
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
-    
-    
-    
+
+
+
                         <li>
                             <a href="{{ route('manage.logout') }}">
                                 <i class="fa fa-sign-out"></i> Log out
                             </a>
                         </li>
-    
+
                     </ul>
-    
+
                 </nav>
             </div>
-    
+
             {{-- Content --}}
-    
+
             @yield('konten')
-    
+
             <div class="footer">
                 <div>
                     <strong>2020</strong>© SIMPUS Support By <a href="#" style="color: red">Rapier</a>
@@ -389,16 +389,16 @@
             </div>
         </div>
         <div class="small-chat-box fadeInRight animated">
-    
+
             <div class="heading" draggable="true">
                 <small class="chat-date float-right">
                     02.19.2015
                 </small>
                 Small chat
             </div>
-    
+
             <div class="content">
-    
+
                 <div class="left">
                     <div class="author-name">
                         Monica Jackson <small class="chat-date">
@@ -408,7 +408,7 @@
                     <div class="chat-message active">
                         Lorem Ipsum is simply dummy text input.
                     </div>
-    
+
                 </div>
                 <div class="right">
                     <div class="author-name">
@@ -454,8 +454,8 @@
                         I belive that. Lorem Ipsum is simply dummy text.
                     </div>
                 </div>
-    
-    
+
+
             </div>
             <div class="form-chat">
                 <div class="input-group input-group-sm">
@@ -463,19 +463,19 @@
                     <span class="input-group-btn"> <button class="btn btn-primary" type="button">Send
                         </button> </span></div>
             </div>
-    
+
         </div>
         {{-- <div id="small-chat">
-    
+
                 <span class="badge badge-warning float-right">5</span>
                 <a class="open-small-chat" href="">
                     <i class="fa fa-comments"></i>
-    
+
                 </a>
             </div> --}}
         <div id="right-sidebar" class="animated">
             <div class="sidebar-container">
-    
+
                 <ul class="nav nav-tabs navs-3">
                     <li>
                         <a class="nav-link active" data-toggle="tab" href="#tab-1"> Notes </a>
@@ -487,32 +487,32 @@
                         <a class="nav-link" data-toggle="tab" href="#tab-3"> <i class="fa fa-gear"></i> </a>
                     </li>
                 </ul>
-    
+
                 <div class="tab-content">
-    
-    
+
+
                     <div id="tab-1" class="tab-pane active">
-    
+
                         <div class="sidebar-title">
                             <h3> <i class="fa fa-comments-o"></i> Latest Notes</h3>
                             <small><i class="fa fa-tim"></i> You have 10 new message.</small>
                         </div>
-    
+
                         <div>
-    
+
                             <div class="sidebar-message">
                                 <a href="#">
                                     <div class="float-left text-center">
                                         <img alt="image" class="rounded-circle message-avatar"
                                             src="{{ asset('/inspinia/img/a1.jp') }}g">
-    
+
                                         <div class="m-t-xs">
                                             <i class="fa fa-star text-warning"></i>
                                             <i class="fa fa-star text-warning"></i>
                                         </div>
                                     </div>
                                     <div class="media-body">
-    
+
                                         There are many variations of passages of Lorem Ipsum available.
                                         <br>
                                         <small class="text-muted">Today 4:21 pm</small>
@@ -537,7 +537,7 @@
                                     <div class="float-left text-center">
                                         <img alt="image" class="rounded-circle message-avatar"
                                             src="{{ asset('/inspinia/img/a3.jp') }}g">
-    
+
                                         <div class="m-t-xs">
                                             <i class="fa fa-star text-warning"></i>
                                             <i class="fa fa-star text-warning"></i>
@@ -558,7 +558,7 @@
                                         <img alt="image" class="rounded-circle message-avatar"
                                             src="{{ asset('/inspinia/img/a4.jp') }}g">
                                     </div>
-    
+
                                     <div class="media-body">
                                         Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the
                                         <br>
@@ -573,7 +573,7 @@
                                             src="{{ asset('/inspinia/img/a8.jp') }}g">
                                     </div>
                                     <div class="media-body">
-    
+
                                         All the Lorem Ipsum generators on the Internet tend to repeat.
                                         <br>
                                         <small class="text-muted">Today 4:21 pm</small>
@@ -599,7 +599,7 @@
                                     <div class="float-left text-center">
                                         <img alt="image" class="rounded-circle message-avatar"
                                             src="{{ asset('/inspinia/img/a3.jp') }}g">
-    
+
                                         <div class="m-t-xs">
                                             <i class="fa fa-star text-warning"></i>
                                             <i class="fa fa-star text-warning"></i>
@@ -627,23 +627,23 @@
                                 </a>
                             </div>
                         </div>
-    
+
                     </div>
-    
+
                     <div id="tab-2" class="tab-pane">
-    
+
                         <div class="sidebar-title">
                             <h3> <i class="fa fa-cube"></i> Latest projects</h3>
                             <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
                         </div>
-    
+
                         <ul class="sidebar-list">
                             <li>
                                 <a href="#">
                                     <div class="small float-right m-t-xs">9 hours ago</div>
                                     <h4>Business valuation</h4>
                                     It is a long established fact that a reader will be distracted.
-    
+
                                     <div class="small">Completion with: 22%</div>
                                     <div class="progress progress-mini">
                                         <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
@@ -656,7 +656,7 @@
                                     <div class="small float-right m-t-xs">9 hours ago</div>
                                     <h4>Contract with Company </h4>
                                     Many desktop publishing packages and web page editors.
-    
+
                                     <div class="small">Completion with: 48%</div>
                                     <div class="progress progress-mini">
                                         <div style="width: 48%;" class="progress-bar"></div>
@@ -668,7 +668,7 @@
                                     <div class="small float-right m-t-xs">9 hours ago</div>
                                     <h4>Meeting</h4>
                                     By the readable content of a page when looking at its layout.
-    
+
                                     <div class="small">Completion with: 14%</div>
                                     <div class="progress progress-mini">
                                         <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
@@ -689,7 +689,7 @@
                                     <div class="small float-right m-t-xs">9 hours ago</div>
                                     <h4>Business valuation</h4>
                                     It is a long established fact that a reader will be distracted.
-    
+
                                     <div class="small">Completion with: 22%</div>
                                     <div class="progress progress-mini">
                                         <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
@@ -702,7 +702,7 @@
                                     <div class="small float-right m-t-xs">9 hours ago</div>
                                     <h4>Contract with Company </h4>
                                     Many desktop publishing packages and web page editors.
-    
+
                                     <div class="small">Completion with: 48%</div>
                                     <div class="progress progress-mini">
                                         <div style="width: 48%;" class="progress-bar"></div>
@@ -714,7 +714,7 @@
                                     <div class="small float-right m-t-xs">9 hours ago</div>
                                     <h4>Meeting</h4>
                                     By the readable content of a page when looking at its layout.
-    
+
                                     <div class="small">Completion with: 14%</div>
                                     <div class="progress progress-mini">
                                         <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
@@ -731,18 +731,18 @@
                                     <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
                                 </a>
                             </li>
-    
+
                         </ul>
-    
+
                     </div>
-    
+
                     <div id="tab-3" class="tab-pane">
-    
+
                         <div class="sidebar-title">
                             <h3><i class="fa fa-gears"></i> Settings</h3>
                             <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
                         </div>
-    
+
                         <div class="setings-item">
                             <span>
                                 Show notifications
@@ -844,7 +844,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <div class="sidebar-content">
                             <h4>Settings</h4>
                             <div class="small">
@@ -854,13 +854,13 @@
                                 Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
                             </div>
                         </div>
-    
+
                     </div>
                 </div>
             </div>
         </div>
         </div>
-    
+
         <!-- Mainly scripts -->
         <script src="{{ asset('/inspinia/js/jquery-3.1.1.min.js') }}"></script>
         <script src="{{ asset('/inspinia/js/popper.min.js') }}"></script>
@@ -868,7 +868,7 @@
         <script src="{{ asset('/inspinia/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
         <script src="{{ asset('assets/js/select2.full.min.js')}}"></script>
-    
+
         {{-- DataTables --}}
         <script src="{{ asset('/inspinia/js/plugins/dataTables/datatables.min.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/dataTables/dataTables.bootstrap4.min.js') }}"></script>
@@ -883,72 +883,72 @@
                         {extend: 'csv'},
                         {extend: 'excel', title: 'ExampleFile'},
                         {extend: 'pdf', title: 'ExampleFile'},
-    
+
                         {extend: 'print',
                          customize: function (win){
                                 $(win.document.body).addClass('white-bg');
                                 $(win.document.body).css('font-size', '10px');
-    
+
                                 $(win.document.body).find('table')
                                         .addClass('compact')
                                         .css('font-size', 'inherit');
                         }
                         }
                     ]
-    
+
                 });
-    
+
             });
-    
+
         </script>
-    
+
         <!-- Flot -->
         <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.spline.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.resize.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/flot/jquery.flot.pie.js') }}"></script>
-    
+
         <!-- Peity -->
         <script src="{{ asset('/inspinia/js/plugins/peity/jquery.peity.min.js') }}"></script>
         <script src="{{ asset('/inspinia/js/demo/peity-demo.js') }}"></script>
-    
+
         <!-- Custom and plugin javascript -->
         <script src="{{ asset('/inspinia/js/inspinia.js') }}"></script>
         <script src="{{ asset('/inspinia/js/plugins/pace/pace.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/sweetalert.js')}}"></script>
         <script src="{{ asset('assets/js/jquery.validate.js')}}"></script>
-    
+
         <!-- TOASTY -->
-    
+
         {{-- <script src="{{ asset('assets/js/toasty.js')}}"></script> --}}
-    
+
         <!-- jQuery UI -->
         <script src="{{ asset('/inspinia/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
-    
+
         <!-- GITTER -->
         <script src="{{ asset('/inspinia/js/plugins/gritter/jquery.gritter.min.js') }}"></script>
-    
+
         <!-- Sparkline -->
         <script src="{{ asset('/inspinia/js/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
-    
+
         <!-- Sparkline demo data  -->
         <script src="{{ asset('/inspinia/js/demo/sparkline-demo.js') }}"></script>
-    
+
         <!-- ChartJS-->
         <script src="{{ asset('/inspinia/js/plugins/chartJs/Chart.min.js') }}"></script>
-    
+
         <!-- Toastr -->
         <script src="{{ asset('/inspinia/js/plugins/toastr/toastr.min.js') }}"></script>
-    
-    
-    
-    
+
+
+
+
         @stack('scripts')
         <script>
             var CURRENT_URL = window.location.href.split('#')[0].split('?')[0],
             $SIDEBAR_MENU = $('#side-menu');
-    
+
             // Sidebar
             $(document).ready(function() {
                 // TODO: This is some kind of easy fix, maybe we can improve this
@@ -957,13 +957,13 @@
                 // console.log(segments[]);
                 var iniurl = window.location.origin;
                 var tamp = ''+iniurl;
-    
+
                 for(var i=0; i<segments.length; i++){
                     if(i>=3){
                         tamp += '/'+segments[i];
                     }
-    
-    
+
+
                 }
                 // console.log(tamp);
                 // var potongurl= iniurl+'/'+segments[3]+'/'+segments[4]+'/'+segments[5]+'/'+segments[6];
@@ -980,13 +980,13 @@
         </script>
         <script>
             $(document).ready(function(){
-    
+
                 notif_poli();
                 notif_pendaftaran();
                 notif_lab();
                 notif_out_obat();
-    
-    
+
+
             })
             function notif_poli(){
                 setTimeout(() => {
@@ -1083,5 +1083,5 @@
             }
         </script>
     </body>
-    
+
     </html>

@@ -32,7 +32,8 @@
     <link href="{{ asset('/kiosk/css/plugins/ionRangeSlider/ion.rangeSlider.css') }}" rel="stylesheet">
     <link href="{{ asset('/kiosk/css/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('/kiosk/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('/kiosk/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}"
+        rel="stylesheet">
 
     <link href="{{ asset('/kiosk/css/plugins/clockpicker/clockpicker.css') }}" rel="stylesheet">
 
@@ -54,10 +55,11 @@
     }
 </style>
 
-<body class="top-navigation">
+<body class="top-navigation"
+    style="background: url('{{ asset('assets/img/bg13.png') }}') no-repeat; background-size:100%;">
 
     <div id="wrapper">
-        <div id="page-wrapper" style="background-color: #2C3333;">
+        <div id="page-wrapper">
             <div class="wrapper wrapper-content">
                 <div class="container">
                     <div class="d-flex">
@@ -66,7 +68,7 @@
                         </div>
                         <div class="p-0">
                             <h1 class="text-bold text-navy" style="font-size: 40px;">DASHBOARD</h1>
-                            <h2 style="color: #E7F6F2;">Selamat datang di UPTD Puskesmas Pekalongan</h2>
+                            <h2>Selamat datang di UPTD Puskesmas Kudus</h2>
                         </div>
                         <!-- <div class="p-0 ml-auto my-auto">
                             <img src="img/logo-kudus.png" alt="" width="80px">
@@ -82,7 +84,8 @@
                                     </div>
                                     <div class="col-8 text-right" style="height: 80px">
                                         <h3 class="font-bold mb-2">PENDAFTARAN</h3>
-                                        <a type="button" href="{{ route('antrian.ambil_antrian') }}" class="btn btn-white b-r-xl"
+                                        <a type="button" href="{{ route('antrian.ambil_antrian') }}"
+                                            class="btn btn-white b-r-xl"
                                             style="padding: 5px 45px 5px 45px ; color: #395B64;">
                                             Klik disini ! </a>
                                     </div>
@@ -92,45 +95,49 @@
                         <div class="col-lg-4">
                             <form action="{{ route('antrian.petugas_panggil') }}" method="POST">
                                 {{ csrf_field() }}
-                            <div class="widget style1 yellow-bg">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <i class="fa fa-bullhorn fa-5x"></i>
-                                    </div>
-                                    <div class="col-8 text-right" style="height: 80px">
-                                        <h3 class="font-bold mb-2">PETUGAS PANGGIL</h3>
-                                        <button type="button" class="btn btn-outline" id="bt_panggil">
-                                            <i class="fa fa-caret-down fa-2x"></i>
-                                        </button>
-                                    </div>
+                                <div class="widget style1 yellow-bg">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <i class="fa fa-bullhorn fa-5x"></i>
+                                        </div>
+                                        <div class="col-8 text-right" style="height: 80px">
+                                            <h3 class="font-bold mb-2">PETUGAS PANGGIL</h3>
+                                            <button type="button" class="btn btn-outline" id="bt_panggil">
+                                                <i class="fa fa-caret-down fa-2x"></i>
+                                            </button>
+                                        </div>
 
-                                    <div class="col-lg-12  row mx-auto" id="div_panggil" style="display:none">
-                                        <div class="col-lg-12 pt-3">
-                                            <select class="select2_poli form-control" id="panggil_poli" name="poli" style="width: 100%">
-                                                <option value=""></option>
-                                                @foreach($poli as $key => $value)
-                                                    <option value="{{ $value['kdpoli'] }}">{{ $value['nama_poli'] }}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="col-lg-12  row mx-auto" id="div_panggil" style="display:none">
+                                            <div class="col-lg-12 pt-3">
+                                                <select class="select2_poli form-control" id="panggil_poli" name="poli"
+                                                    style="width: 100%">
+                                                    <option value=""></option>
+                                                    @foreach($poli as $key => $value)
+                                                    <option value="{{ $value['kdpoli'] }}">{{ $value['nama_poli'] }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-12 pt-3">
+                                                <select class="select2_dokter form-control" id="panggil_dokter"
+                                                    name="dokter" style="width: 100%">
+                                                    <option value=""></option>
+                                                    @foreach($dokter as $key => $value)
+                                                    <option value="{{ $value['kdDokter'] }}">{{ $value['nmDokter'] }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-12 text-center pt-3">
+                                                <button type="submit" class="btn btn-white b-r-xl"
+                                                    style="color: #395B64;">
+                                                    Klik disini ! </button>
+                                            </div>
                                         </div>
-                                        <div class="col-lg-12 pt-3">
-                                            <select class="select2_dokter form-control" id="panggil_dokter" name="dokter" style="width: 100%">
-                                                <option value=""></option>
-                                                @foreach($dokter as $key => $value)
-                                                    <option value="{{ $value['kdDokter'] }}">{{ $value['nmDokter'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-12 text-center pt-3">
-                                            <button type="submit" class="btn btn-white b-r-xl"
-                                                style="color: #395B64;">
-                                                Klik disini ! </button>
-                                        </div>
-                                    </div>
 
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
                         </div>
                         <div class="col-lg-4">
                             <div class="widget style1 bg-danger">
@@ -140,7 +147,8 @@
                                     </div>
                                     <div class="col-8 text-right" style="height: 80px">
                                         <h3 class="font-bold mb-2">DISPLAY</h3>
-                                        <a type="button" href="{{ route('antrian.display') }}" class="btn btn-white b-r-xl"
+                                        <a type="button" href="{{ route('antrian.display') }}"
+                                            class="btn btn-white b-r-xl"
                                             style="padding: 5px 45px 5px 45px ; color: #395B64;">
                                             Klik disini ! </a>
                                         {{-- <button class="btn btn-outline" id="bt_display">
@@ -149,24 +157,28 @@
                                     </div>
                                     <div class="col-lg-12  row mx-auto" id="div_display" style="display:none;">
                                         <div class="col-lg-12 pt-3">
-                                            <select class="select2_poli form-control" id="display_poli" style="width: 100%">
+                                            <select class="select2_poli form-control" id="display_poli"
+                                                style="width: 100%">
                                                 <option></option>
                                                 @foreach($poli as $key => $value)
-                                                    <option value="{{ $value['kdpoli'] }}">{{ $value['nama_poli'] }}</option>
+                                                <option value="{{ $value['kdpoli'] }}">{{ $value['nama_poli'] }}
+                                                </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-lg-12 pt-3">
-                                            <select class="select2_dokter form-control" id="display_dokter" style="width: 100%">
+                                            <select class="select2_dokter form-control" id="display_dokter"
+                                                style="width: 100%">
                                                 <option></option>
                                                 @foreach($dokter as $key => $value)
-                                                    <option value="{{ $value['kdDokter'] }}">{{ $value['nmDokter'] }}</option>
+                                                <option value="{{ $value['kdDokter'] }}">{{ $value['nmDokter'] }}
+                                                </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-lg-12 text-center pt-3">
-                                            <a type="button" href="{{ route('antrian.display') }}" class="btn btn-white b-r-xl"
-                                                style="color: #395B64;">
+                                            <a type="button" href="{{ route('antrian.display') }}"
+                                                class="btn btn-white b-r-xl" style="color: #395B64;">
                                                 Klik disini ! </a>
                                         </div>
 
@@ -177,7 +189,7 @@
                     </div>
                 </div>
             </div>
-            <div class="footer" style=" background-color: #E7F6F2;">
+            {{-- <div class="footer" style=" background-color: #E7F6F2;">
                 <div class="float-right">
 
                 </div>
@@ -187,7 +199,7 @@
                         Nasional </span> &copy;
                     2022
                 </div>
-            </div>
+            </div> --}}
 
         </div>
     </div>

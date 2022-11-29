@@ -32,7 +32,8 @@
     <link href="{{ asset('/kiosk/css/plugins/ionRangeSlider/ion.rangeSlider.css') }}" rel="stylesheet">
     <link href="{{ asset('/kiosk/css/plugins/ionRangeSlider/ion.rangeSlider.skinFlat.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('/kiosk/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
+    <link href="{{ asset('/kiosk/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}"
+        rel="stylesheet">
 
     <link href="{{ asset('/kiosk/css/plugins/clockpicker/clockpicker.css') }}" rel="stylesheet">
 
@@ -57,121 +58,263 @@
     </style>
 </head>
 
-<body class="gray-bg top-navigation">
-
+<body class="gray-bg top-navigation"
+    style="background: url('{{ asset('assets/img/bg13.png') }}') no-repeat; background-size:100%;">
     <div id="wrapper">
         <div id="page-wrapper">
             <div class="container">
                 <div class="d-flex justify-content-between">
-                    <img src="{{ asset('/kiosk/img/logo-puskesmas') }}.png" class="my-auto" alt="" width="90px" height="100px">
+                    <img src="{{ asset('/kiosk/img/logo-puskesmas') }}.png" class="my-auto" alt="" width="90px"
+                        height="100px">
                     <div class="text-center">
-                        <h1 class="text-bold" style="font-size: 40px; color: #2C3333; font-weight: 500">SELAMAT DATANG
+                        <h1 class="text-bold" style="font-size: 50px; font-weight: 600">SELAMAT DATANG
                         </h1>
-                        <h4 class="text-navy text-uppercase">Sistem Pendaftaran Pasien BPJS UPTD
-                            Puskesmas Pekalongan</h4>
+                        <h4 class="text-navy text-uppercase">Sistem Pendaftaran BPJS UPTD
+                            Puskesmas Kudus</h4>
                     </div>
-                    <img src="{{ asset('/kiosk/img/logo-kudus') }}.png" class="my-auto" alt="" width="75px" height="100px">
+                    <img src="{{ asset('/kiosk/img/logo-kudus') }}.png" class="my-auto" alt="" width="75px"
+                        height="100px">
                 </div>
-                <div class="middle-box text-center loginscreen animated fadeInDown">
-                    <div>
-                        <img src="{{ asset('/kiosk/img/icon1.svg') }}" alt="" width="300px">
-                    </div>
-                    <form id="submitData">
-                        {{ csrf_field() }}
-                        <div class="form-group input-group">
-                            <input list="kartu" class="form-control" name="no_kartu" placeholder="NIK/NO KARTU BPJS" id="no_kartu" required="" autocomplete="off">
-                            <datalist id="kartu">
-
-                            </datalist>
-
-                            <span class="input-group-append">
-                                <button type="button" class="btn btn-primary" id="key"><i class="fa fa-keyboard-o"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <div id="table1" style="display: none;">
-                            <table class="table_keyboard mb-3" width="80%">
-                                <tr>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="1">1</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="2">2</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="3">3</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="4">4</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="5">5</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="6">6</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="7">7</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="8">8</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="9">9</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-outline keyboard" value="0">0</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" id="hapus_text" class="btn btn-dark" style="padding: 6px 8px 6px 8px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" style="width: 20px;"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M6.707 4.879A3 3 0 018.828 4H15a3 3 0 013 3v6a3 3 0 01-3 3H8.828a3 3 0 01-2.12-.879l-4.415-4.414a1 1 0 010-1.414l4.414-4.414zm4 2.414a1 1 0 00-1.414 1.414L10.586 10l-1.293 1.293a1 1 0 101.414 1.414L12 11.414l1.293 1.293a1 1 0 001.414-1.414L13.414 10l1.293-1.293a1 1 0 00-1.414-1.414L12 8.586l-1.293-1.293z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="form-group">
-                            <select class="select2_poli form-control" name="poli">
-                                <option value=""></option>
-                                @foreach($poli as $key => $value)
+                <div class="row">
+                    <div class="middle-box loginscreen animated fadeInDown col-sm-6">
+                        <!-- <div>
+                            <img src="img/icon1.svg" alt="" width="300px">
+                        </div> -->
+                        <form class="m-t" id="submitData">
+                            {{ csrf_field() }}
+                            {{-- <p>Masukan Nomer BPJS/NIK</p> --}}
+                            <div class="form-group input-group">
+                                <input list="kartu" class="form-control" name="no_kartu" placeholder="NIK/NO KARTU BPJS"
+                                    id="no_kartu" required="" autocomplete="off">
+                                <datalist id="kartu">
+                                </datalist>
+                                <span class="input-group-append">
+                                    <button type="button" class="btn btn-primary" id="key"><i
+                                            class="fa fa-keyboard-o"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <div id="table1" style="display: none;">
+                                <table class="table_keyboard mb-3" width="80%">
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="1">1</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="2">2</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="3">3</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="4">4</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="5">5</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="6">6</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="7">7</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="8">8</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="9">9</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-outline keyboard"
+                                                value="0">0</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" id="hapus_text" class="btn btn-dark"
+                                                style="padding: 6px 8px 6px 8px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                    style="width: 20px;" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd"
+                                                        d="M6.707 4.879A3 3 0 018.828 4H15a3 3 0 013 3v6a3 3 0 01-3 3H8.828a3 3 0 01-2.12-.879l-4.415-4.414a1 1 0 010-1.414l4.414-4.414zm4 2.414a1 1 0 00-1.414 1.414L10.586 10l-1.293 1.293a1 1 0 101.414 1.414L12 11.414l1.293 1.293a1 1 0 001.414-1.414L13.414 10l1.293-1.293a1 1 0 00-1.414-1.414L12 8.586l-1.293-1.293z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                {{-- <p>Pilih Poli</p> --}}
+                                <select class="select2_poli form-control" name="poli">
+                                    <option value=""></option>
+                                    @foreach($poli as $key => $value)
                                     <option value="{{ $value['kdpoli'] }}">{{ $value['nama_poli'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select class="select2_dokter form-control" name="dokter">
-                                <option value=""></option>
-                                @foreach($dokter as $key => $value)
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                {{-- <p>Pilih Dokter</p> --}}
+                                <select class="select2_dokter form-control" name="dokter">
+                                    <option value=""></option>
+                                    @foreach($dokter as $key => $value)
                                     <option value="{{ $value['kdDokter'] }}">{{ $value['nmDokter'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" id="btn_simpan" class="btn btn-primary block full-width m-b">OK</button>
-                        </div>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox checkbox-success">
+                                    <input id="checkbox3" type="checkbox">
+                                    <label for="checkbox3">
+                                        Cek Kesehatan Awal
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="display: block">
+                                <div class="form-group">
+                                    {{-- <p>Keluhan</p> --}}
+                                    <textarea name="" id="" cols="30" rows="5" class="form-control"
+                                        placeholder="Masukan keluhan"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan sistol" required=""
+                                        autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan diastol" required=""
+                                        autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan berat badan"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan tinggi badan"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan resp Rate"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan lingkar perut"
+                                        required="" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" class="form-control" placeholder="Masukan heart Rate"
+                                        required="" autocomplete="off">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <button type="submit" id="btn_simpan" class="btn btn-primary block full-width m-b"><i
+                                        class="fa fa-paper-plane" aria-hidden="true"></i> Kirim</button>
+                            </div>
+                    </div>
 
                     </form>
-
+                    {{--
                     <p class="text-muted text-center"><small>Tidak terdaftar di BPJS ?</small>
                         <a href="{{ route('antrian.ambil_antrian') }}">
                             <small>kembali</small></a>
-                    </p>
+                    </p> --}}
+                </div>
+                <div class="mt-5 loginscreen animated fadeInDown col-sm-6" id="form-bpjs" style="display: none">
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">DATA PASIEN</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Nomor NIK/BPJS :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="no_kartu_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Nama :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="nama_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Kode Provider :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="kode_provider_bpjs" val=""></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Nama Provider :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="nama_provider_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0">Jenis Kelamin :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="jenis_kelamin_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Jenis Peserta :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="jenis_peserta_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> No.HP :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="no_hp_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Status</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="status_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Mainly scripts -->
