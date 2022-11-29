@@ -34,6 +34,8 @@ use App\Http\Controllers\Simpusk\PendaftaranController;
 use App\Http\Controllers\Simpusk\DiagnosaPenyakitController;
 use App\Http\Controllers\Simpusk\DokterController;
 use App\Http\Controllers\Simpusk\IntegrasiBPJSController;
+use App\Http\Controllers\Simpusk\KesadaranController;
+use App\Http\Controllers\Simpusk\KhususController;
 use App\Http\Controllers\Simpusk\KkController;
 use App\Http\Controllers\Simpusk\ObatController;
 use App\Http\Controllers\Simpusk\StokObatController;
@@ -44,7 +46,10 @@ use App\Http\Controllers\Simpusk\LaboratoriumController;
 use App\Http\Controllers\Simpusk\LaporanController;
 use App\Http\Controllers\Simpusk\PcareController;
 use App\Http\Controllers\Simpusk\RujukanController;
+use App\Http\Controllers\Simpusk\SaranaController;
 use App\Http\Controllers\Simpusk\SinkronasiBPJSController;
+use App\Http\Controllers\Simpusk\SpesialisController;
+use App\Http\Controllers\Simpusk\SubSpesialisController;
 use App\Models\Simpusk\AntrianBPJS;
 use App\Models\Simpusk\StokObat;
 
@@ -244,7 +249,46 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('dokter/simpan', [DokterController::class, 'simpan'])->name('dokter.simpan');
         Route::delete('dokter/hapus/{id?}', [DokterController::class, 'hapus'])->name('dokter.hapus');
         Route::get('dokter/search_dokter', [DokterController::class, 'search_dokter'])->name('dokter.search_dokter');
-
+        
+        //SPESIALIS
+        Route::get('spesialis', [SpesialisController::class, 'index'])->name('spesialis.index');
+        Route::get('spesialis/tambah', [SpesialisController::class, 'tambah'])->name('spesialis.tambah');
+        Route::post('spesialis/getdata', [SpesialisController::class, 'getData'])->name('spesialis.getdata');
+        Route::get('spesialis/ubah/{id}', [SpesialisController::class, 'ubah'])->name('spesialis.ubah');
+        Route::post('spesialis/simpan', [SpesialisController::class, 'simpan'])->name('spesialis.simpan');
+        Route::delete('spesialis/hapus/{id?}', [SpesialisController::class, 'hapus'])->name('spesialis.hapus');
+        
+        //SUBSPESIALIS
+        Route::get('subspesialis', [SubSpesialisController::class, 'index'])->name('subspesialis.index');
+        Route::get('subspesialis/tambah', [SubSpesialisController::class, 'tambah'])->name('subspesialis.tambah');
+        Route::post('subspesialis/getdata', [SubSpesialisController::class, 'getData'])->name('subspesialis.getdata');
+        Route::get('subspesialis/ubah/{id}', [SubSpesialisController::class, 'ubah'])->name('subspesialis.ubah');
+        Route::post('subspesialis/simpan', [SubSpesialisController::class, 'simpan'])->name('subspesialis.simpan');
+        Route::delete('subspesialis/hapus/{id?}', [SubSpesialisController::class, 'hapus'])->name('subspesialis.hapus');
+        
+        //SARANA
+        Route::get('sarana', [SaranaController::class, 'index'])->name('sarana.index');
+        Route::get('sarana/tambah', [SaranaController::class, 'tambah'])->name('sarana.tambah');
+        Route::post('sarana/getdata', [SaranaController::class, 'getData'])->name('sarana.getdata');
+        Route::get('sarana/ubah/{id}', [SaranaController::class, 'ubah'])->name('sarana.ubah');
+        Route::post('sarana/simpan', [SaranaController::class, 'simpan'])->name('sarana.simpan');
+        Route::delete('sarana/hapus/{id?}', [SaranaController::class, 'hapus'])->name('sarana.hapus');
+        
+        //KHUSUS
+        Route::get('khusus', [KhususController::class, 'index'])->name('khusus.index');
+        Route::get('khusus/tambah', [KhususController::class, 'tambah'])->name('khusus.tambah');
+        Route::post('khusus/getdata', [KhususController::class, 'getData'])->name('khusus.getdata');
+        Route::get('khusus/ubah/{id}', [KhususController::class, 'ubah'])->name('khusus.ubah');
+        Route::post('khusus/simpan', [KhususController::class, 'simpan'])->name('khusus.simpan');
+        Route::delete('khusus/hapus/{id?}', [KhususController::class, 'hapus'])->name('khusus.hapus');
+        
+        //KESADARAN
+        Route::get('kesadaran', [KesadaranController::class, 'index'])->name('kesadaran.index');
+        Route::get('kesadaran/tambah', [KesadaranController::class, 'tambah'])->name('kesadaran.tambah');
+        Route::post('kesadaran/getdata', [KesadaranController::class, 'getData'])->name('kesadaran.getdata');
+        Route::get('kesadaran/ubah/{id}', [KesadaranController::class, 'ubah'])->name('kesadaran.ubah');
+        Route::post('kesadaran/simpan', [KesadaranController::class, 'simpan'])->name('kesadaran.simpan');
+        Route::delete('kesadaran/hapus/{id?}', [KesadaranController::class, 'hapus'])->name('kesadaran.hapus');
 
         //SUPPLIER
         Route::get('supplier', [SupplierController::class, 'index'])->name('supplier.index');
@@ -256,9 +300,6 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('supplier/autocomplete', [SupplierController::class, 'autocomplete'])->name('supplier.autocomplete');
         Route::get('supplier/cetak', [SupplierController::class, 'cetak'])->name('supplier.cetak');
         Route::get('supplier/excel', [SupplierController::class, 'laporanExcel'])->name('supplier.excel');
-
-
-
 
         //STOK OBAT
         Route::get('stok_obat', [StokObatController::class, 'index'])->name('stok_obat.index');
@@ -470,8 +511,16 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::get('kunjungan/print_rujukanumum/{id?}', [IntegrasiBPJSController::class, 'print_rujukanumum'])->name('report.printRujukanUmum');
         Route::post('kunjungan/edit', [IntegrasiBPJSController::class, 'kunjungan_simpan'])->name('kunjungan.simpan');
 
-        //INTEGRASI
+        //INTEGRASI 
         Route::get('integrasi/bpjs',[SinkronasiBPJSController::class, 'index'])->name('integrasi.bpjs');
+        Route::get('integrasi/master_dokter', [SinkronasiBPJSController::class, 'master_dokter'])->name('integrasi.bpjs.master_dokter');
+        Route::get('integrasi/master_poli', [SinkronasiBPJSController::class, 'master_poli'])->name('integrasi.bpjs.master_poli');
+        Route::get('integrasi/pelayanan_spesialis', [SinkronasiBPJSController::class, 'pelayanan_spesialis'])->name('integrasi.bpjs.pelayanan_spesialis');
+        Route::get('integrasi/pelayanan_subspesialis', [SinkronasiBPJSController::class, 'pelayanan_subspesialis'])->name('integrasi.bpjs.pelayanan_subspesialis');
+        Route::get('integrasi/pelayanan_sarana', [SinkronasiBPJSController::class, 'pelayanan_sarana'])->name('integrasi.bpjs.pelayanan_sarana');
+        Route::get('integrasi/pelayanan_khusus', [SinkronasiBPJSController::class, 'pelayanan_khusus'])->name('integrasi.bpjs.pelayanan_khusus');
+        Route::get('integrasi/pelayanan_status_pulang', [SinkronasiBPJSController::class, 'pelayanan_status_pulang'])->name('integrasi.bpjs.pelayanan_status_pulang');
+        Route::get('integrasi/pelayanan_kesadaran', [SinkronasiBPJSController::class, 'pelayanan_kesadaran'])->name('integrasi.bpjs.pelayanan_kesadaran');
 
         //LABORATORIUM
         Route::get('laboratorium/master', [LaboratoriumController::class, 'master'])->name('laboratorium.master');

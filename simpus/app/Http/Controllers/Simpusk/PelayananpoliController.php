@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Simpusk;
 
 use App\Models\Simpusk\DiagnosaPenyakit;
+use App\Models\Simpusk\Dokter;
 use App\Models\Simpusk\DokterBPJS;
 use App\Models\Simpusk\Kunjungan;
 use Illuminate\Http\Request;
@@ -1435,7 +1436,7 @@ class PelayananpoliController extends Controller
     ]);
   }
   public function getDokterBpjs(){
-    $result = DokterBPJS::all();
+    $result = Dokter::all();
 
     return response()->json([
         'datas' => $result,

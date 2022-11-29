@@ -155,6 +155,30 @@
                         <li class=""><a
                                 href="{{ route('poli.index') }}">Data Poli </a></li>
                         @endcan
+                        @can('spesialis.index')
+                        <li class=""><a
+                                href="{{ route('spesialis.index') }}">Data Spesialis </a></li>
+                        @endcan
+                        @can('subspesialis.index')
+                        <li class=""><a
+                                href="{{ route('subspesialis.index') }}">Data SubSpesialis </a></li>
+                        @endcan
+                        @can('sarana.index')
+                        <li class=""><a
+                                href="{{ route('sarana.index') }}">Data Sarana </a></li>
+                        @endcan
+                        @can('khusus.index')
+                        <li class=""><a
+                                href="{{ route('khusus.index') }}">Data Khusus </a></li>
+                        @endcan
+                        @can('status_pulang.index')
+                        <li class=""><a
+                                href="{{ route('status_pulang.index') }}">Data Status Pulang </a></li>
+                        @endcan
+                        @can('kesadaran.index')
+                        <li class=""><a
+                                href="{{ route('kesadaran.index') }}">Data Kesadaran </a></li>
+                        @endcan
                         @can('jenisoperasi.index')
                         <li class=""><a
                                 href="{{ route('jenisoperasi.index') }}">Data Jenis Operasi</a></li>

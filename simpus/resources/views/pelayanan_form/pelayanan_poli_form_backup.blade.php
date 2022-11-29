@@ -9,6 +9,23 @@
             <div class="ibox ">
                 <div class="ibox-title">
                     <h3>Tambah Pelayanan Poli</h3>
+                    {{-- <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#" class="dropdown-item">Config option 1</a>
+                            </li>
+                            <li><a href="#" class="dropdown-item">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div> --}}
                 </div>
                 <form class="form-horizontal" id="submitData">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -34,9 +51,12 @@
                               <div class="form-row">
                                 <div class="form-group col-md-12">
                                   <label class="form-label">Dokter Penanggung Jawab <span>*</span></label>
+                                  {{-- <input type="hidden" name="kdDokter" id="kdDokter" value="{{ $poli->id_dokter }}"> --}}
                                   <select name="kdDokter" id="kdDokter" style="width:100%">
                                       <option value="{{ isset($poli->id_dokter)? $poli->id_dokter: '' }}" {{ isset($poli->id_dokter)? 'selected': '' }}>{{ isset($poli->id_dokter)? $poli->nama_penanggung_jawab: 'Pilih Tenaga Medis' }}</option>
                                   </select>
+                                  {{-- <input type="text" class="form-control mb-1" name="nama_dokter" id="nama_dokter"
+                                    value="{{$poli->nama_penanggung_jawab}}"> --}}
                                 </div>
                               </div>
                               <div class="form-row">
@@ -541,7 +561,7 @@
 
 @endsection
 @push('scripts')
-{{--  <script type="text/javascript">
+<script type="text/javascript">
     $('#diagnosa1, #diagnosa2, #diagnosa3').select2({
         placeholder: 'Pilih Diagnosa',
         ajax: {
@@ -1873,7 +1893,7 @@ function searchRujuk(){
     }
 }
 @endif
-</script>  --}}
+</script>
 @endpush
 
 

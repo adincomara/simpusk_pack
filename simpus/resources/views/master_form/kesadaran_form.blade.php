@@ -1,14 +1,14 @@
 @extends('layouts.table')
-@section('title', 'Form Dokter')
+@section('title', 'Form Kesadaran')
 @section('menu1', 'Master')
-@section('menu2', 'Data Dokter')
+@section('menu2', 'Data Kesadaran')
 @section('table')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h3>Tambah Dokter</h3>
+                    <h3>Tambah Kesadaran</h3>
                     {{-- <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -30,28 +30,20 @@
                 <div class="ibox-content">
                     <form id="submitData">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="enc_id" id="enc_id" value="{{isset($dokter)? $enc_id : ''}}">
+                        <input type="hidden" name="enc_id" id="enc_id" value="{{isset($kesadaran)? $enc_id : ''}}">
                         <div class="form-row">
                           <div class="form-group col-md-12">
-                            <label class="form-label">Kode Dokter <span>*</span></label>
-                            <input type="text" class="form-control mb-1" name="kdDokter" id="kdDokter" value="{{isset($dokter)? $dokter->kdDokter : ''}}">
+                            <label class="form-label">Kode Kesadaran <span>*</span></label>
+                            <input type="text" class="form-control mb-1" name="kdSadar" id="kdSadar" value="{{isset($kesadaran)? $kesadaran->kdSadar : ''}}">
                           </div>
                         </div>
                         <div class="form-row">
                           <div class="form-group col-md-12">
-                            <label class="form-label">Nama Dokter <span>*</span></label>
-                            <input type="text" class="form-control mb-1" name="nmDokter" id="nmDokter" value="{{isset($dokter)? $dokter->nmDokter : ''}}">
+                            <label class="form-label">Nama Kesadaran <span>*</span></label>
+                            <input type="text" class="form-control mb-1" name="nmSadar" id="nmSadar" value="{{isset($kesadaran)? $kesadaran->nmSadar : ''}}">
                           </div>
                         </div>
-                        <div class="form-row">
-                          <div class="form-group col-md-12">
-                            <label class="form-label">Status Dokter <span>*</span></label>
-                            <select name="status" class="form-control" id="status">
-                              <option value="1" {{ ($selectedstatus != '' && $selectedstatus == 1)? 'selected' : '' }}>Aktif</option>
-                              <option value="0" {{ ($selectedstatus != '' && $selectedstatus == 0)? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
-                          </div>
-                        </div>
+                        
 
 
 
@@ -59,7 +51,7 @@
                             <div class="form-group col-md-12">
                               <div class="text-right mt-3">
                                 <button type="submit" class="btn btn-primary" id="simpan">Simpan</button>&nbsp;
-                                <a href="{{route('dokter.index')}}"  class="btn btn-default">Kembali</a>
+                                <a href="{{route('kesadaran.index')}}"  class="btn btn-default">Kembali</a>
                               </div>
                             </div>
                           </div>
@@ -76,19 +68,19 @@
     $('#submitData').validate({
       ignore: ":hidden:not(.editor)",
       rules: {
-        nmDokter:{
+        nmSadar:{
           required: true
         },
-        kdDokter:{
+        kdSadar:{
           required: true
         }
       },
       messages: {
-        nmDokter: {
-          required: "Nama Dokter tidak boleh kosong"
+        nmSadar: {
+          required: "Nama Kesadaran tidak boleh kosong"
         },
-         kdDokter: {
-          required: "Ruang Dokter tidak boleh kosong"
+         kdSadar: {
+          required: "Kode Kesadaran tidak boleh kosong"
         }
       },
       errorElement: 'span',
@@ -112,7 +104,7 @@
 
           $.ajax({
             type: 'POST',
-            url : "{{route('dokter.simpan')}}",
+            url : "{{route('kesadaran.simpan')}}",
             headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
             data:$('#submitData').serialize(),
             dataType: "json",
@@ -121,8 +113,8 @@
             },
             success: function(data){
               if (data.success) {
-                  Swal.fire('Yes',data.message,'info');
-                  window.location.href="{{ route('dokter.index') }}";
+                  Swal.fire('Yes',data.message,'success');
+                  window.location.href="{{ route('kesadaran.index') }}";
               } else {
                  Swal.fire('Ups',data.message,'info');
               }

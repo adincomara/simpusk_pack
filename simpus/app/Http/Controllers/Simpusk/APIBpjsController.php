@@ -85,7 +85,6 @@ class APIBpjsController extends Controller
 
             // header("Content-Type: application/json");
             $data = json_decode($data, true);
-            // return $data;
             if(isset($data['metaData'])){
                 $api = $data;
                 $metadata = $data['metaData'];

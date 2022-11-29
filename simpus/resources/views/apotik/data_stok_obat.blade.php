@@ -373,6 +373,7 @@ function text(){
           "serverSide": true,
           "stateSave"  : true,
           "deferRender": true,
+          "pagingType": "full_numbers",
           "pageLength": 10,
           "select" : true,
           "ajax":{

@@ -74,7 +74,9 @@ class PoliController extends Controller
         $list_dokter                 = '';
         foreach(json_decode($record->dokter) as $dokter){
           $cari_dokter = Dokter::where('kdDokter', $dokter)->first();
-          $list_dokter .= '<p>'.$cari_dokter['nmDokter'].'</p><br>';
+          if(isset($cari_dokter)){
+            $list_dokter .= '<p>'.$cari_dokter['nmDokter'].'</p><br>';
+          }
         }
         $record->dokter = $list_dokter;         
         $record->action         = $action;
@@ -207,12 +209,13 @@ class PoliController extends Controller
         if(count(json_decode($poli->dokter)) > 0){
           foreach(json_decode($poli->dokter) as $key => $dkr){
             $cek_dokter = Dokter::where('kdDokter', $dkr)->first();
-            $tamp['kdDokter'] = $cek_dokter->kdDokter;
-            $tamp['nmDokter'] = $cek_dokter->nmDokter;
-            $dokter->push($tamp);
+            if(isset($cek_dokter)){
+              $tamp['kdDokter'] = $cek_dokter->kdDokter;
+              $tamp['nmDokter'] = $cek_dokter->nmDokter;
+              $dokter->push($tamp);
+            }
           }
         }
-
         return view('master_form/poli_form',compact('enc_id','poli','induk','selectedinduk', 'selectedkunjungan', 'selectedstatus', 'dokter'));
       } else {
         return view('errors/noaccess');
