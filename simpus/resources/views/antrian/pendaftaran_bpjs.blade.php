@@ -47,7 +47,7 @@
 
     <link href="{{ asset('/kiosk/css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('/kiosk/css/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/sweetalert.css')}}">
 
 
     <style>
@@ -70,7 +70,7 @@
                         <h1 class="text-bold" style="font-size: 50px; font-weight: 600">SELAMAT DATANG
                         </h1>
                         <h4 class="text-navy text-uppercase">Sistem Pendaftaran BPJS UPTD
-                            Puskesmas Kudus</h4>
+                            Puskesmas Jepang</h4>
                     </div>
                     <img src="{{ asset('/kiosk/img/logo-kudus') }}.png" class="my-auto" alt="" width="75px"
                         height="100px">
@@ -86,7 +86,7 @@
                             <div class="form-group input-group">
                                 <input list="kartu" class="form-control" name="no_kartu" placeholder="NIK/NO KARTU BPJS"
                                     id="no_kartu" required="" autocomplete="off">
-                                <datalist id="kartu">
+                                <datalist id="kartu" onChange="data()">
                                 </datalist>
                                 <span class="input-group-append">
                                     <button type="button" class="btn btn-primary" id="key"><i
@@ -161,6 +161,15 @@
                             </div>
                             <div class="form-group">
                                 {{-- <p>Pilih Poli</p> --}}
+                                <select class="form-control" name="status_pasien" id="status_pasien">
+                                    <option value="">Pilih Status Pasien</option>
+                                    <option value="1">BPJS</option>
+                                    <option value="0">UMUM</option>
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                {{-- <p>Pilih Poli</p> --}}
                                 <select class="select2_poli form-control" name="poli">
                                     <option value=""></option>
                                     @foreach($poli as $key => $value)
@@ -179,13 +188,13 @@
                             </div>
                             <div class="form-group">
                                 <div class="checkbox checkbox-success">
-                                    <input id="checkbox3" type="checkbox">
-                                    <label for="checkbox3">
+                                    <input id="cek_kesehatan_awal" type="checkbox">
+                                    <label for="cek_kesehatan_awal">
                                         Cek Kesehatan Awal
                                     </label>
                                 </div>
                             </div>
-                            <div style="display: block">
+                            <div style="display: none" id="cek_kesehatan">
                                 <div class="form-group">
                                     {{-- <p>Keluhan</p> --}}
                                     <textarea name="" id="" cols="30" rows="5" class="form-control"
@@ -235,7 +244,7 @@
                             <small>kembali</small></a>
                     </p> --}}
                 </div>
-                <div class="mt-5 loginscreen animated fadeInDown col-sm-6" id="form-bpjs" style="display: none">
+                <div class="mt-5 loginscreen animated fadeInDown col-sm-6" style="display: none" id="kartu_peserta">
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="card">
@@ -255,6 +264,14 @@
                                         </div>
                                         <div class="col-sm-7 text-secondary">
                                             <h4 id="nama_bpjs"></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <h4 class="mb-0"> Status Pasien :</h4>
+                                        </div>
+                                        <div class="col-sm-7 text-secondary">
+                                            <h4 id="sts_pasien"></h4>
                                         </div>
                                     </div>
                                     <hr>
@@ -301,7 +318,7 @@
                                     <hr>
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <h4 class="mb-0"> Status</h4>
+                                            <h4 class="mb-0"> Status BPJS</h4>
                                         </div>
                                         <div class="col-sm-7 text-secondary">
                                             <h4 id="status_bpjs"></h4>
@@ -322,7 +339,7 @@
     <script src="{{ asset('/kiosk/js/popper.min.js') }}"></script>
     <script src="{{ asset('/kiosk/js/bootstrap.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.validate.js')}}"></script>
-    <script type="text/javascript" src="{{ asset('assets/js/sweetalert2.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/sweetalert.js')}}"></script>
 
 
     <!-- Custom and plugin javascript -->
@@ -366,7 +383,8 @@
     <!-- Image cropper -->
     <script src="{{ asset('/kiosk/js/plugins/cropper/cropper.min.js') }}"></script>
 
-    <!-- Date range use moment.js same as full calendar plugin -->
+    <!-- Date range  moment js same as full calendar plugin -->
+
     <script src="{{ asset('/kiosk/js/plugins/fullcalendar/moment.min.js') }}"></script>
 
     <!-- Date range picker -->
@@ -384,6 +402,7 @@
     <!-- Dual Listbox -->
     <script src="{{ asset('/kiosk/js/plugins/dualListbox/jquery.bootstrap-duallistbox.js') }}"></script>
 
+    {{--  MAIN SCRIPT  --}}
     <script>
         $(document).ready(function () {
 
@@ -414,6 +433,8 @@
             }
         });
     </script>
+    {{--  END MAIN SCRIPT  --}}
+    {{--  SCRIPT CLICK KEYBOARD DAN HAPUS   --}}
     <script>
         $('.keyboard').on('click', function(){
             let value = $('#no_kartu').val();
@@ -425,6 +446,7 @@
             $('#no_kartu').val(value.slice(0,-1));
         })
     </script>
+    {{--  SUBMIT FORM  --}}
     <script>
         $('#submitData').validate({
             ignore: ":hidden:not(.editor)",
@@ -481,7 +503,17 @@
                 headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
                 data:$('#submitData').serialize(),
                 dataType: "json",
-
+                beforeSend: function () {
+                    Swal.fire({
+                        title: 'Mohon Tunggu !',
+                        html: 'Loading',// add html attribute if you want or remove
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+                },
                 success: function(data){
                     if(data.success == true){
                         console.log(data.antrian);
@@ -493,6 +525,7 @@
                     }
                 },
                 complete: function () {
+                    Swal.hideLoading();
                     $('#btn_simpan').removeClass("disabled");
                 },
                 error: function(data){
@@ -501,6 +534,7 @@
             });
         }
     </script>
+    {{--  SCRIPT NO KARTU  --}}
     <script>
         $(document).ready(function(){
             $.ajax({
@@ -527,7 +561,6 @@
                 type: "GET",
                 data:{
                     search: this.value,
-                    status: 'BPJS'
                 },
                 dataType: "json",
                 success:function(data) {
@@ -540,8 +573,85 @@
                 }
             });
         })
-    </script>
+        $('#no_kartu').on('change',function(){
+            let no_kartu = this.value;
+            console.log(no_kartu);
+            $.ajax({
+                url: '{{route("antrian.data_pasien")}}',
+                type: "GET",
+                data:{
+                    no_kartu: no_kartu,
+                },
+                dataType: "json",
+                beforeSend: function(){
+                    Swal.fire({
+                        title: 'Mohon Tunggu !',
+                        html: 'Loading',// add html attribute if you want or remove
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        },
+                    });
+                },
+                success:function(data) {
+                    Swal.hideLoading();
+                    if(data.success == true){
+                        Swal.close();
+                        $("#status_pasien").val(data.status_pasien).change();
+                        $("#kartu_peserta").css('display', 'block');
+                        let nikbpjs = ''+data.pasien.no_ktp;
+                        let nama = data.pasien.nama_pasien;
+                        let status_p = data.pasien.status_pasien;
+                        let kode_provider, nama_provider, jenis_kelamin, jenis_peserta, no_hp;
+                        jenis_kelamin = data.pasien.jenis_kelamin, status_bpjs;
+                        if(data.status_pasien == 1){
+                            nikbpjs += ' / '+data.data_pasien.noKartu;
+                            kode_provider = data.data_pasien.kdProviderPst.kdProvider;
+                            nama_provider = data.data_pasien.kdProviderPst.nmProvider;
+                            jenis_peserta = data.data_pasien.jnsPeserta.nama;
+                            no_hp = data.data_pasien.noHP;
+                            status_bpjs = data.data_pasien.ketAktif;
+                        }else{
+                            nikbpjs += ' / -';
+                            kode_provider = '-';
+                            nama_provider = '-';
+                            jenis_peserta = '-';
+                            no_hp = data.pasien.telp;
+                            status_bpjs = '-';
+                        }
 
+                        $('#no_kartu_bpjs').text(nikbpjs);
+                        $('#nama_bpjs').text(nama);
+                        $('#sts_pasien').text(status_p);
+                        $('#kode_provider_bpjs').text(kode_provider);
+                        $('#nama_provider_bpjs').text(nama_provider);
+                        $('#jenis_kelamin_bpjs').text(jenis_kelamin);
+                        $('#jenis_peserta_bpjs').text(jenis_peserta);
+                        $('#no_hp_bpjs').text(no_hp);
+                        $('#status_bpjs').text(status_bpjs);
+
+
+                    }else{
+                        Swal.fire('Ups', data.message, 'info');
+                    }
+                },
+                complete: function(){
+                   Swal.hideLoading();
+                }
+            });
+        })
+    </script>
+    {{--  SCRIPT CEK KESEHATAN AWAL  --}}
+    <script>
+        $('#cek_kesehatan_awal').on('click', function(){
+            if($('#cek_kesehatan_awal').is(':checked')) {
+                $("#cek_kesehatan").css('display', 'block');
+            }else{
+                $("#cek_kesehatan").css('display', 'none');
+            }
+        })
+    </script>
 </body>
 
 </html>

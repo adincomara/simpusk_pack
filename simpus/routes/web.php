@@ -89,6 +89,7 @@ Route::get('/antrian/panggil/{id?}', [AntrianController::class, 'panggil'])->nam
 //     return view('antrian/pendaftaran_bpjs');
 // })->name('antrian.pendaftaran_bpjs');
 Route::get('/antrian/pendaftaran_bpjs', [AntrianController::class, 'pendaftaran_bpjs'])->name('antrian.pendaftaran_bpjs');
+Route::get('/antrian/data_pasien', [AntrianController::class, 'data_pasien'])->name('antrian.data_pasien');
 Route::get('/antrian/search_no_kartu', [AntrianController::class, 'search_no_kartu'])->name('antrian.search_no_kartu');
 Route::post('/antrian/pendaftaran_bpjs/simpan', [AntrianController::class, 'simpan_pendaftaran_bpjs'])->name('antrian.pendaftaran_bpjs_simpan');
 Route::post('/antrian/pendaftaran_umum/simpan', [AntrianController::class, 'simpan_pendaftaran_umum'])->name('antrian.pendaftaran_umum_simpan');

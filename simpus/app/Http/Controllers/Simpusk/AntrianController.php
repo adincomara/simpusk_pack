@@ -211,8 +211,8 @@ class AntrianController extends Controller
     }
     public function search_no_kartu(Request $request){
         $search = $request->search;
-        $status = $request->status;
-        $pasien = Pasien::where('status_pasien', $status);
+        // $status = $request->status;
+        $pasien = Pasien::select('*');
         if($search != ''){
             $pasien->where(function($query) use ($search){
                 $query->orwhere('nama_pasien', 'LIKE', $search.'%');
@@ -575,6 +575,42 @@ class AntrianController extends Controller
         $url = '/pendaftaran/peserta/'.$antrian->no_kartu.'/tglDaftar/'.date('d-m-Y',strtotime($antrian->tgl_daftar)).'/noUrut/'.$antrian->no_antrian_bpjs.'/kdPoli/'.$antrian->code_poli;
         // $url = '/pendaftaran/peserta/0002046121615/tglDaftar/'.date('d-m-Y').'/noUrut/A1/kdPoli/001';
         $result = APIBpjsController::delete($url);
+        return $result;
+    }
+    public function data_pasien(Request $req){
+        $pasien = Pasien::where(function($q) use ($req){
+            $q->orwhere('no_rekamedis', $req->no_kartu);
+            $q->orwhere('no_ktp', $req->no_kartu);
+            $q->orwhere('no_bpjs', $req->no_kartu);
+        })->first();
+        if(!isset($pasien)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Pasien tidak ditemukan',
+            ]);
+        }
+        $url = '';
+        $nik = $req->no_kartu;
+        if($pasien->status_pasien == 'BPJS'){
+            $url = '/peserta/'.$nik;
+            $status_pasien = 1;
+        }else{
+            $url = '/peserta/nik/'.$nik;
+            $status_pasien = 0;
+        }
+        $result = APIBpjsController::get($url);
+        if($result['metaData']['code'] != 200){
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data dari server BPJS',
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'status_pasien' => $status_pasien,
+            'data_pasien' => $result['response'],
+            'pasien' => $pasien,
+        ]);
         return $result;
     }
 }
