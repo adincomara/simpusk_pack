@@ -188,7 +188,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="checkbox checkbox-success">
-                                    <input id="cek_kesehatan_awal" type="checkbox">
+                                    <input id="cek_kesehatan_awal" type="checkbox" name="cek_kesehatan">
                                     <label for="cek_kesehatan_awal">
                                         Cek Kesehatan Awal
                                     </label>
@@ -197,11 +197,11 @@
                             <div style="display: none" id="cek_kesehatan">
                                 <div class="form-group">
                                     {{-- <p>Keluhan</p> --}}
-                                    <textarea name="" id="" cols="30" rows="5" class="form-control"
+                                    <textarea name="keluhan" id="" cols="30" rows="5" class="form-control"
                                         placeholder="Masukan keluhan"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan sistol" required=""
+                                    <input type="number" class="form-control" name="sistole" placeholder="Masukan sistol" required=""
                                         autocomplete="off">
                                 </div>
                                 <div class="form-group">

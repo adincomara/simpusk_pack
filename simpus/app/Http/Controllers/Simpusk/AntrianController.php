@@ -230,6 +230,8 @@ class AntrianController extends Controller
         return view('antrian/pendaftaran_umum', ['poli' => $poli, 'dokter' => $dokter]);
     }
     public function simpan_pendaftaran_bpjs(Request $req){
+        // return $req->all();
+        return isset($req->cek_kesehatan);
         $no_kartu = $req->no_kartu;
         $poli = Poli::where('kdpoli', $req->poli)->first();
         $dokter = Dokter::where('kdDokter', $req->dokter)->first();
@@ -594,23 +596,21 @@ class AntrianController extends Controller
         if($pasien->status_pasien == 'BPJS'){
             $url = '/peserta/'.$nik;
             $status_pasien = 1;
+            $result = APIBpjsController::get($url);
+            if($result['metaData']['code'] != 200){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengambil data dari server BPJS',
+                ]);
+            }
         }else{
-            $url = '/peserta/nik/'.$nik;
-            $status_pasien = 0;
-        }
-        $result = APIBpjsController::get($url);
-        if($result['metaData']['code'] != 200){
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengambil data dari server BPJS',
-            ]);
-        }
+            $result['response'] = [];
+        }        
         return response()->json([
             'success' => true,
             'status_pasien' => $status_pasien,
             'data_pasien' => $result['response'],
             'pasien' => $pasien,
         ]);
-        return $result;
     }
 }
