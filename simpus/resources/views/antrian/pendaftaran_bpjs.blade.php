@@ -75,8 +75,89 @@
                     <img src="{{ asset('/kiosk/img/logo-kudus') }}.png" class="my-auto" alt="" width="75px"
                         height="100px">
                 </div>
-                <div class="row">
-                    <div class="middle-box loginscreen animated fadeInDown col-sm-6">
+                <div class="d-flex justify-content-center mt-5">
+                    <div class="col-6">
+                        <div class="card" style="display: block" id="kartu_peserta">
+                            <div class="card-header bg-primary text-white">DATA PASIEN</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0">Nomor NIK/BPJS :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="no_kartu_bpjs"></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0"> Nama :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="nama_bpjs"></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0"> Status Pasien :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="sts_pasien"></h4>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0">Kode Provider :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="kode_provider_bpjs" val=""></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0">Nama Provider :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="nama_provider_bpjs"></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0">Jenis Kelamin :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="jenis_kelamin_bpjs"></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0"> Jenis Peserta :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="jenis_peserta_bpjs"></h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0"> No.HP :</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="no_hp_bpjs"></h4>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4 class="mb-0"> Status BPJS</h4>
+                                    </div>
+                                    <div class="col-sm-7 text-secondary">
+                                        <h4 id="status_bpjs"></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="middle-box loginscreen animated fadeInDown col-6 pt-0">
                         <!-- <div>
                             <img src="img/icon1.svg" alt="" width="300px">
                         </div> -->
@@ -165,7 +246,7 @@
                                     <option value="">Pilih Status Pasien</option>
                                     <option value="1">BPJS</option>
                                     <option value="0">UMUM</option>
-                                    
+
                                 </select>
                             </div>
                             <div class="form-group">
@@ -244,91 +325,11 @@
                             <small>kembali</small></a>
                     </p> --}}
                 </div>
-                <div class="mt-5 loginscreen animated fadeInDown col-sm-6" style="display: none" id="kartu_peserta">
+                {{-- <div class="mt-5 loginscreen animated fadeInDown col-sm-6" style="display: none"
+                    id="kartu_peserta">
                     <div class="form-row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header bg-primary text-white">DATA PASIEN</div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0">Nomor NIK/BPJS :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="no_kartu_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0"> Nama :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="nama_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0"> Status Pasien :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="sts_pasien"></h4>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0">Kode Provider :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="kode_provider_bpjs" val=""></h4>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0">Nama Provider :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="nama_provider_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0">Jenis Kelamin :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="jenis_kelamin_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0"> Jenis Peserta :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="jenis_peserta_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0"> No.HP :</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="no_hp_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <h4 class="mb-0"> Status BPJS</h4>
-                                        </div>
-                                        <div class="col-sm-7 text-secondary">
-                                            <h4 id="status_bpjs"></h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -402,7 +403,7 @@
     <!-- Dual Listbox -->
     <script src="{{ asset('/kiosk/js/plugins/dualListbox/jquery.bootstrap-duallistbox.js') }}"></script>
 
-    {{--  MAIN SCRIPT  --}}
+    {{-- MAIN SCRIPT --}}
     <script>
         $(document).ready(function () {
 
@@ -433,8 +434,8 @@
             }
         });
     </script>
-    {{--  END MAIN SCRIPT  --}}
-    {{--  SCRIPT CLICK KEYBOARD DAN HAPUS   --}}
+    {{-- END MAIN SCRIPT --}}
+    {{-- SCRIPT CLICK KEYBOARD DAN HAPUS --}}
     <script>
         $('.keyboard').on('click', function(){
             let value = $('#no_kartu').val();
@@ -446,7 +447,7 @@
             $('#no_kartu').val(value.slice(0,-1));
         })
     </script>
-    {{--  SUBMIT FORM  --}}
+    {{-- SUBMIT FORM --}}
     <script>
         $('#submitData').validate({
             ignore: ":hidden:not(.editor)",
@@ -534,7 +535,7 @@
             });
         }
     </script>
-    {{--  SCRIPT NO KARTU  --}}
+    {{-- SCRIPT NO KARTU --}}
     <script>
         $(document).ready(function(){
             $.ajax({
@@ -642,7 +643,7 @@
             });
         })
     </script>
-    {{--  SCRIPT CEK KESEHATAN AWAL  --}}
+    {{-- SCRIPT CEK KESEHATAN AWAL --}}
     <script>
         $('#cek_kesehatan_awal').on('click', function(){
             if($('#cek_kesehatan_awal').is(':checked')) {
