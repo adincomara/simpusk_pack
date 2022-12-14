@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Simpusk;
 use App\Models\Simpusk\DiagnosaPenyakit;
 use App\Models\Simpusk\Dokter;
 use App\Models\Simpusk\DokterBPJS;
+use App\Models\Simpusk\FaskesRujuk;
+use App\Models\Simpusk\Kesadaran;
+use App\Models\Simpusk\KhususBPJS;
 use App\Models\Simpusk\Kunjungan;
 use Illuminate\Http\Request;
 use App\Models\Simpusk\Pendaftaran;
@@ -21,7 +24,11 @@ use App\Models\Simpusk\Obat;
 use App\Models\Simpusk\LaporanBPJS;
 use App\Models\Simpusk\Pcare;
 use App\Models\Simpusk\RujukLanjut;
+use App\Models\Simpusk\SaranaBPJS;
+use App\Models\Simpusk\SpesialisBPJS;
+use App\Models\Simpusk\StatusPulang;
 use App\Models\Simpusk\StokObat;
+use App\Models\Simpusk\SubSpesialisBPJS;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use DB;
@@ -236,45 +243,28 @@ class PelayananpoliController extends Controller
   public function tindakan_dokter($enc_id)
   {
     $Tindakans = Tindakan::all();
-    // return $Tindakans;
     $Obats = Obat::all();
     $Lab = Pelayananlaboratorium::where('status',1)->get();
     $dec_id = $this->safe_decode(Crypt::decryptString($enc_id));
-    // return $dec_id;
+
+    $kesadaran = Kesadaran::all();
+    $status_pulang = StatusPulang::where('rawat_inap', 0)->get();
+    // return $status_pulang;
 
       if ($dec_id) {
-        //$poli= Pelayananpoli::find($dec_id);
         $poli = Pendaftaran::select('tbl_pendaftaran.id','tbl_pendaftaran.no_rawat','tbl_pendaftaran.no_rekamedis','tbl_pendaftaran.id_dokter','tbl_pendaftaran.nama_penanggung_jawab', 'tbl_pendaftaran.flag_periksa', 'tbl_pasien.nama_pasien','tbl_pasien.tanggal_lahir','tbl_pendaftaran.status_pasien','tbl_poli.nama_poli','tbl_poli.kdpoli as poliid','tbl_pendaftaran.no_bpjs')->join('tbl_pasien','tbl_pasien.no_rekamedis','tbl_pendaftaran.no_rekamedis')->join('tbl_poli','tbl_poli.kdpoli','tbl_pendaftaran.id_poli')->where('tbl_pendaftaran.id',$dec_id)->first();
-        // return $poli;
         if($poli->flag_periksa == 0){
-            return view('pelayanan_form/pelayanan_poli_form',compact('enc_id','poli','Tindakans','Obats','Lab'));
+            return view('pelayanan_form/pelayanan_poli_form',compact('enc_id','poli','Tindakans','Obats','Lab', 'kesadaran', 'status_pulang'));
         }else if($poli->flag_periksa == 3 || $poli->flag_periksa == 1){
             $kunjungan = Kunjungan::where('id_pendaftaran', $poli->id)->with('rujuk_lanjut', 'faskes_rujuk')->first();
-            // return $kunjungan;
             $pelayananpoli = Pelayananpoli::where('pendaftaran_id', $kunjungan->pendaftaran->id)->with('poli_laboratorium','poli_laboratorium.pelayananlaboratorium')->first();
             $PelayananLab = $pelayananpoli->poli_laboratorium;
-            // return $PelayananLab;
-            // $diagnosa1 = $kunjungan->diagnosa1;
-            // $diagnosa2 = $kunjungan->diagnosa2;
-            // $diagnosa3 = $kunjungan->diagnosa3;
-            // $pendaftaran = $pelayananpoli->pendaftaran;
-            // $pasien = $pelayananpoli->pendaftaran->pasien;
             return view('pelayanan_form/pelayanan_poli_form',compact('enc_id','poli','Tindakans','Obats','Lab', 'kunjungan', 'PelayananLab'));
-
-            // return $diagnosa1;
         }
-
-        //dd($poli);
-        // return response()->json([
-        //   'datas' => $poli
-        // ]);
-         //return $poli;
-        //  return $dec_id;
-        //   return $poli;
       } else {
         return view('errors/noaccess');
       }
-    }
+  }
 
    public function cetak($enc_id)
    {
@@ -1410,6 +1400,12 @@ class PelayananpoliController extends Controller
     $keywoard = $request->keywoard;
     $url = '/diagnosa/'.$keywoard.'/0/15';
     $result = APIBpjsController::get($url);
+    if($result['metaData']['code'] != 200){
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengambil data dari BPJS',
+        ]);
+    }
     $tamp = $result;
     foreach($tamp['response']['list'] as $diag){
         $cek = DiagnosaPenyakit::where('kode_diagnosa', $diag['kdDiag'])->first();
@@ -1452,47 +1448,197 @@ class PelayananpoliController extends Controller
     ]);
   }
 
-  public function getSpesialis(){
-    $url = '/spesialis';
-    $result = APIBpjsController::get($url);
-
-    return response()->json([
-        'datas' => $result
-    ]);
+  public function getSpesialis(Request $req){
+    $spesialis = SpesialisBPJS::select('*');
+    if($req->search != '' || $req->search != null){
+        $spesialis->where('nmSpesialis', 'LIKE', $req->search.'%');
+    }
+    $spesialis = $spesialis->limit(10)->get();
+    return $spesialis;
+    
   }
 
   public function getSubSpesialis(Request $request){
-    $kdspesialis = $request->spesialis;
-    $url = '/spesialis/'.$kdspesialis.'/subspesialis';
-    $result = APIBpjsController::get($url);
-
-
-    return response()->json([
-        'datas' => $result
-    ]);
+    $subspesialis = SubSpesialisBPJS::select('*');
+    if($request->kdSpesialis == '' || $request->kdSpesialis == null){
+        return [];
+    }
+    $subspesialis->where('kdSpesialis', $request->kdSpesialis);
+    if($request->search != '' || $request->search != null){
+        $subspesialis->where('nmSubSpesialis', 'LIKE', '%'.$request->search.'%');
+    }
+    $subspesialis = $subspesialis->limit(10)->get();
+    return $subspesialis;
   }
 
-  public function getKhusus(){
-    $url = '/spesialis/khusus';
-    $result = APIBpjsController::get($url);
-
-    return response()->json([
-        'datas' => $result
-    ]);
+  public function getKhusus(Request $req){
+    $khusus = KhususBPJS::select('*');
+    if($req->search != '' || $req->search != null){
+        $khusus->where('nmKhusus', 'LIKE', '%'.$req->search.'%');
+    }
+    $khusus = $khusus->limit(10)->get();
+    return $khusus;
+  }
+  public function getSubKhusus(Request $req){
+    $subkhusus = SubSpesialisBPJS::where('kdKhusus', 'KHU');
+    if($req->KdKhusus == 'THA' || $req->KdKhusus == 'HEM'){
+        if($req->search != '' || $req->search != null){
+            $subkhusus->where('nmSubSpesialis', 'LIKE', '%'.$req->search.'%');
+        }
+    }else{
+        return [];
+    }
+    $subkhusus = $subkhusus->limit(10)->get();
+    return $subkhusus;
   }
 
-  public function getSarana(){
-    $url = '/spesialis/sarana';
-    $result = APIBpjsController::get($url);
+  public function getSarana(Request $req){
+    $sarana = SaranaBPJS::select('*');
+    if($req->search != '' || $req->search != null){
+        $sarana->where('nmSarana', 'LIKE', '%'.$req->search.'%');
+    }
+    $sarana = $sarana->limit(10)->get();
+    return $sarana;
+  }
+  public function getFaskesRujukFasyankes(Request $req){
+    $subspesialis = $req->subspesialis;
+    $subkhusus = $req->subkhusus;
+    $sarana = $req->sarana;
+    $tgl_est_rujuk = $req->tgl_est_rujuk;
+    $kdKhusus = $req->kdKhusus;
+    $no_bpjs = $req->no_bpjs;
+    //VALIDASI
+    if($tgl_est_rujuk == null || $tgl_est_rujuk == ''){
+        return response()->json([
+            'success' => false,
+            'message' => 'Tanggal Rujukan tidak boleh kosong'
+        ]);
+    }
+    $tgl_est_rujuk = date('d-m-Y', strtotime($tgl_est_rujuk));
+    if($kdKhusus != null || $kdKhusus != ''){
+        if($no_bpjs == null || $no_bpjs == '' || $no_bpjs == '-'){
+            return response()->json([
+                'success' => false,
+                'message' => 'Peserta Rujukan Khusus harus mempunyai BPJS'
+            ]);
+        }
+        if($kdKhusus == 'THA' || $kdKhusus == 'HEM'){
+            if($subkhusus == null || $subkhusus == ''){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'SubKhusus tidak boleh kosong'
+                ]);
+            }
+        }
+        return $this->faskesKhusus($no_bpjs, $kdKhusus, $subkhusus, $tgl_est_rujuk);
+    }else{
+        if($subspesialis == null || $subspesialis == ''){
+            return response()->json([
+                'success' => false,
+                'message' => 'SubSpesialis tidak boleh kosong'
+            ]);
+        }
+        if($sarana == null || $sarana == ''){
+            return response()->json([
+                'success' => false,
+                'message' => 'Sarana tidak boleh kosong'
+            ]);
+        }
+        return $this->faskesSpesialis($subspesialis, $sarana, $tgl_est_rujuk);
+    }
+    //END VALIDASI
 
+
+    return $req->all();
+  }
+  private function faskesKhusus($no_bpjs, $kdKhusus, $subkhusus, $tgl_est_rujuk){
+    if($kdKhusus == 'THA' || $kdKhusus == 'HEM'){
+        $url = '/spesialis/rujuk/khusus/'.$kdKhusus.'/subspesialis/'.$subkhusus.'/noKartu/'.$no_bpjs.'/tglEstRujuk/'.$tgl_est_rujuk;
+        $result = APIBpjsController::get($url);
+    }else{
+        $url = '/spesialis/rujuk/khusus/'.$kdKhusus.'/noKartu/'.$no_bpjs.'/tglEstRujuk/'.$tgl_est_rujuk;
+        $result = APIBpjsController::get($url);
+    }
+    // return $result;
+    if($result['metaData']['code'] != 200){
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mencari Fasyankes, '.$result['metaData']['message']
+        ]);
+    } 
+    try{
+        DB::beginTransaction();
+        foreach($result['response']['list'] as $faskes){
+            $faskes_rujuk = FaskesRujuk::updateOrCreate([
+                'kode_faskes' => $faskes['kdppk'],
+            ],[
+                'nama_faskes' => $faskes['nmppk'],
+                'alamat_faskes' => $faskes['alamatPpk'],
+                'telp_faskes' => $faskes['telpPpk'],
+                'kelas' => $faskes['kelas'],
+                'distance' => $faskes['distance'],
+                'nama_kc' => $faskes['nmkc'],
+                'jadwal' => $faskes['jadwal'],
+                'jml_rujuk' => $faskes['jmlRujuk'],
+                'presentase' => $faskes['persentase'],
+            ]);
+        }
+        DB::commit();
+    }catch(\Throwable $th){
+        DB::rollback();
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mencari Fasyankse, '.$th->getMessage(),
+        ]);
+    }
     return response()->json([
-        'datas' => $result
-    ]);
+        'success' => true,
+        'data' => $result['response']['list']
+    ]);    
+  }
+  private function faskesSpesialis($subspesialis, $sarana, $tgl_est_rujuk){
+    $url = '/spesialis/rujuk/subspesialis/'.$subspesialis.'/sarana/'.$sarana.'/tglEstRujuk/'.$tgl_est_rujuk;
+    $result = APIBpjsController::get($url);
+    if($result['metaData']['code'] != 200){
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mencari Fasyankes, '.$result['metaData']['message']
+        ]);
+    } 
+    try{
+        DB::beginTransaction();
+        foreach($result['response']['list'] as $faskes){
+            $faskes_rujuk = FaskesRujuk::updateOrCreate([
+                'kode_faskes' => $faskes['kdppk'],
+            ],[
+                'nama_faskes' => $faskes['nmppk'],
+                'alamat_faskes' => $faskes['alamatPpk'],
+                'telp_faskes' => $faskes['telpPpk'],
+                'kelas' => $faskes['kelas'],
+                'distance' => $faskes['distance'],
+                'nama_kc' => $faskes['nmkc'],
+                'jadwal' => $faskes['jadwal'],
+                'jml_rujuk' => $faskes['jmlRujuk'],
+                'presentase' => $faskes['persentase'],
+            ]);
+        }
+        DB::commit();
+    }catch(\Throwable $th){
+        DB::rollback();
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mencari Fasyankse, '.$th->getMessage(),
+        ]);
+    }
+    return response()->json([
+        'success' => true,
+        'data' => $result['response']['list']
+    ]);    
   }
 
   public function getFaskesRujukSpesialis(Request $request){
     //   return $request->all();
-    // return 'tes';
+    return 'tes';
     $kdsubspesialis = $request->kdsubspesialis;
     $kdsarana = $request->kdsarana;
     $tglrujuk = $request->tglrujuk;

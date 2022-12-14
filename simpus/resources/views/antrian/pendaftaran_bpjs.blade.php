@@ -286,27 +286,27 @@
                                         autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan diastol" required=""
+                                    <input type="number" class="form-control" name="diastole" placeholder="Masukan diastol" required=""
                                         autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan berat badan"
+                                    <input type="number" class="form-control" name="beratBadan" placeholder="Masukan berat badan"
                                         required="" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan tinggi badan"
+                                    <input type="number" class="form-control" name="tinggiBadan" placeholder="Masukan tinggi badan"
                                         required="" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan resp Rate"
+                                    <input type="number" class="form-control" name="respRate" placeholder="Masukan resp Rate"
                                         required="" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan lingkar perut"
+                                    <input type="number" class="form-control" name="lingkarPerut" placeholder="Masukan lingkar perut"
                                         required="" autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" placeholder="Masukan heart Rate"
+                                    <input type="number" class="form-control" name="heartRate" placeholder="Masukan heart Rate"
                                         required="" autocomplete="off">
                                 </div>
                             </div>
@@ -567,7 +567,7 @@
                 success:function(data) {
                     let html = '';
                     for(let i = 0; i<data.length; i++){
-                        html +='<option value="'+data[i].no_bpjs+'">Nama = '+data[i].nama_pasien+' | No KTP = '+data[i].no_ktp+'</option>';
+                        html +='<option value="'+data[i].no_ktp+'">Nama = '+data[i].nama_pasien+' | No KTP = '+data[i].no_ktp+'</option>';
                     }
                     $('#kartu').html(html);
 

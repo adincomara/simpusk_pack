@@ -8,6 +8,7 @@ use App\Models\Simpusk\Dokter;
 use App\Models\Simpusk\Pasien;
 use App\Models\Simpusk\PasienBPJS;
 use App\Models\Simpusk\Pendaftaran;
+use App\Models\Simpusk\PendaftaranDetail;
 use App\Models\Simpusk\Poli;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -231,11 +232,14 @@ class AntrianController extends Controller
     }
     public function simpan_pendaftaran_bpjs(Request $req){
         // return $req->all();
-        return isset($req->cek_kesehatan);
         $no_kartu = $req->no_kartu;
         $poli = Poli::where('kdpoli', $req->poli)->first();
         $dokter = Dokter::where('kdDokter', $req->dokter)->first();
-        $pasien = Pasien::orwhere('no_ktp', $no_kartu)->orwhere('no_bpjs',$no_kartu)->orwhere('no_rekamedis', $no_kartu)->first();
+        $pasien = Pasien::where(function($q) use ($no_kartu){
+            $q->orwhere('no_ktp', $no_kartu);
+            $q->orwhere('no_bpjs',$no_kartu);
+            $q->orwhere('no_rekamedis', $no_kartu);
+        })->first();
         if(!isset($pasien)){
             return response()->json([
                 'success' => false,
@@ -243,13 +247,22 @@ class AntrianController extends Controller
                 'message' => 'Pasien belum terdaftar pada sistem Puskesmas'
             ]);
         }
-        $getbpjs = $this->getBPJS($no_kartu);
-        if($getbpjs['response']['ketAktif'] != 'AKTIF'){
-            return response()->json([
-                'success' => false,
-                'code' => 401,
-                'message' => 'Status BPJS Pasien tidak aktif'
-            ]);
+        if($req->status_pasien == '1'){
+            $getbpjs = $this->getBPJS($pasien->no_bpjs);
+            if($getbpjs['metaData']['code'] != 200){
+                return response()->json([
+                    'success' => false,
+                    'code' => 401,
+                    'message' => 'Gagal mengambil data dari server BPJS'
+                ]);
+            }
+            if($getbpjs['response']['ketAktif'] != 'AKTIF'){
+                return response()->json([
+                    'success' => false,
+                    'code' => 401,
+                    'message' => 'Status BPJS Pasien tidak aktif'
+                ]);
+            }
         }
         $cekpendaftaranpasien = Pendaftaran::whereDate('tanggal_daftar', Carbon::today())->where(function($q) use ($pasien){
             $q->orwhere('no_rekamedis', $pasien->no_rekamedis);
@@ -264,66 +277,59 @@ class AntrianController extends Controller
         }
         try{
             DB::beginTransaction();
-            $kdProviderPeserta = $getbpjs["response"]["kdProviderPst"]["kdProvider"];
-            $noKartu = $getbpjs['response']['noKartu'];
-            $pasien_bpjs = PasienBPJS::where('noKartu', $noKartu)
-            ->where('kdProviderPeserta', $kdProviderPeserta)
-            ->where(function($q){
-                $q->whereNotNull('sistole');
-                $q->whereNotNull('diastole');
-                $q->whereNotNull('beratBadan');
-                $q->whereNotNull('tinggiBadan');
-                $q->whereNotNull('respRate');
-                $q->whereNotNull('lingkarPerut');
-                $q->whereNotNull('heartRate');
-                $q->whereNotNull('rujukBalik');
-            })->first();
-            if($poli->kunjungan_sakit == 0){
-                $kjsakit = false;
-            }else{
-                $kjsakit = true;
+            $no_antrian_bpjs = null;
+            if($req->status_pasien == '1'){
+                $kdProviderPeserta = $getbpjs["response"]["kdProviderPst"]["kdProvider"];
+                $noKartu = $getbpjs['response']['noKartu'];
+                if($poli->kunjungan_sakit == 0){
+                    $kjsakit = false;
+                }else{
+                    $kjsakit = true;
+                }
+                $url = '/pendaftaran';
+                if($req->cek_kesehatan == 'on'){
+                    $post = [
+                        "kdProviderPeserta"=> $kdProviderPeserta,
+                        "tglDaftar"=> date('d-m-Y'),
+                        "noKartu"=> $noKartu,
+                        "kdPoli"=> $poli->kdpoli,
+                        "keluhan"=> $req->keluhan,
+                        "kunjSakit"=> $kjsakit,
+                        "sistole"=> (int)$req->sistole,
+                        "diastole"=> (int)$req->diastole,
+                        "beratBadan"=> (int)$req->beratBadan,
+                        "tinggiBadan"=> (int)$req->tinggiBadan,
+                        "respRate"=> (int)$req->respRate,
+                        "lingkarPerut" => (int)$req->lingkarPerut,
+                        "heartRate"=> (int)$req->heartRate,
+                        "rujukBalik"=> 0,
+                        "kdTkp"=> "10"
+                    ];
+                }else{
+                    $post = [
+                        "kdProviderPeserta"=> $kdProviderPeserta,
+                        "tglDaftar"=> date('d-m-Y'),
+                        "noKartu"=> $noKartu,
+                        "kdPoli"=> $poli->kdpoli,
+                        "keluhan"=> null,
+                        "kunjSakit"=> $kjsakit,
+                        "sistole"=> 120,
+                        "diastole"=> 80,
+                        "beratBadan"=> 70,
+                        "tinggiBadan"=> 150,
+                        "respRate"=> 24,
+                        "lingkarPerut" => 56,
+                        "heartRate"=> 60,
+                        "rujukBalik"=> 0,
+                        "kdTkp"=> "10"
+                    ];
+                }
+                $post = json_encode($post);
+                $result = APIBpjsController::post($url, $post);
+                $no_antrian_bpjs = $result['response']['message'];
             }
-            $url = '/pendaftaran';
-            $post = [
-                "kdProviderPeserta"=> $kdProviderPeserta,
-                "tglDaftar"=> date('d-m-Y'),
-                "noKartu"=> $noKartu,
-                "kdPoli"=> $poli->kdpoli,
-                "keluhan"=> null,
-                "kunjSakit"=> $kjsakit,
-                "sistole"=> 120,
-                "diastole"=> 80,
-                "beratBadan"=> 70,
-                "tinggiBadan"=> 150,
-                "respRate"=> 24,
-                "lingkarPerut" => 56,
-                "heartRate"=> 60,
-                "rujukBalik"=> 0,
-                "kdTkp"=> "10"
-            ];
-            if(isset($pasien_bpjs)){
-                $post = [
-                    "kdProviderPeserta"=> $kdProviderPeserta,
-                    "tglDaftar"=> date('d-m-Y'),
-                    "noKartu"=> $noKartu,
-                    "kdPoli"=> $poli->kdpoli,
-                    "keluhan"=> null,
-                    "kunjSakit"=> $kjsakit,
-                    "sistole"=> (int)$pasien_bpjs['sistole'],
-                    "diastole"=> (int)$pasien_bpjs['diastole'],
-                    "beratBadan"=> (int)$pasien_bpjs['beratBadan'],
-                    "tinggiBadan"=> (int)$pasien_bpjs['tinggiBadan'],
-                    "respRate"=> (int)$pasien_bpjs['respRate'],
-                    "lingkarPerut" => (int)$pasien_bpjs['lingkarPerut'],
-                    "heartRate"=> (int)$pasien_bpjs['heartRate'],
-                    "rujukBalik"=> (int)$pasien_bpjs['rujukBalik'],
-                    "kdTkp"=> "10"
-                ];
-            }
-            $post = json_encode($post);
-            $result = APIBpjsController::post($url, $post);
+           
             // return $result;
-            $no_antrian_bpjs = $result['response']['message'];
             $pendaftaran = new Pendaftaran;
             $pendaftaran->no_rawat                          = $this->generateNoRawat();
             $pendaftaran->no_rekamedis                      = $pasien->no_rekamedis;
@@ -334,10 +340,30 @@ class AntrianController extends Controller
             $pendaftaran->id_poli_sub                       = null;
             $pendaftaran->hubungan_dengan_penanggung_jawab  = '-';
             $pendaftaran->alamat_penanggung_jawab           = '-';
-            $pendaftaran->status_pasien                     = 'BPJS';
-            $pendaftaran->no_bpjs                           = $noKartu;
+            $pendaftaran->status_pasien                     = ($req->status_pasien == '1')? 'BPJS' : 'Umum';
+            if($req->status_pasien == '1'){
+                $pendaftaran->no_bpjs                           = $noKartu;
+            }else{
+                $pendaftaran->no_bpjs                           = '-';
+            }
             $pendaftaran->sumber_pendaftaran                = 0;
             $pendaftaran->save();
+            $pendaftaran_detail = PendaftaranDetail::updateOrCreate(
+                ['id_pendaftaran' => $pendaftaran->id],
+                [
+                    'no_rekamedis' => $pendaftaran->no_rekamedis,
+                    'keluhan' => ($req->cek_kesehatan == 'on')? $req->keluhan : null,
+                    'sistole' => ($req->cek_kesehatan == 'on')? $req->sistole : 120,
+                    'diastole' => ($req->cek_kesehatan == 'on')? $req->diastole : 80,
+                    'beratBadan' => ($req->cek_kesehatan == 'on')? $req->beratBadan : 70,
+                    'tinggiBadan' => ($req->cek_kesehatan == 'on')? $req->tinggiBadan : 150,
+                    'respRate' => ($req->cek_kesehatan == 'on')? $req->respRate : 24,
+                    'lingkarPerut' => ($req->cek_kesehatan == 'on')? $req->lingkarPerut : 56,
+                    'heartRate' => ($req->cek_kesehatan == 'on')? $req->heartRate : 60,
+                    'cek_kesehatan' => ($req->cek_kesehatan == 'on')? 1 : 0,
+                ] 
+            );
+            // return $pendaftaran_detail;
             $antrian = $this->updateantrian($poli, $pendaftaran, $no_antrian_bpjs);
             $array = array(
                 'poli' => $poli->nama_poli,
@@ -453,8 +479,6 @@ class AntrianController extends Controller
         $cek = substr($no_bpjs,0,1);
         if($cek == '0'){
             $url = '/peserta/'.$no_bpjs;
-        }else{
-            $url = '/peserta/nik/'.$no_bpjs;
         }
         $result = APIBpjsController::get($url);
         return $result;
@@ -527,6 +551,7 @@ class AntrianController extends Controller
         // return $antrian;
         $antrian = AntrianBPJS::where('id',$antrian)->first();
         $pendaftaran = Pendaftaran::where('id',$antrian->id_pendaftaran)->first();
+        // return $pendaftaran;
         if($pendaftaran->flag_periksa != 0){
             return response()->json([
                 'success' => false,
@@ -585,18 +610,23 @@ class AntrianController extends Controller
             $q->orwhere('no_ktp', $req->no_kartu);
             $q->orwhere('no_bpjs', $req->no_kartu);
         })->first();
+        // return $pasien;
         if(!isset($pasien)){
             return response()->json([
                 'success' => false,
                 'message' => 'Pasien tidak ditemukan',
             ]);
         }
+        $status_pasien = 0;
         $url = '';
-        $nik = $req->no_kartu;
+        $nik = $pasien->no_kartu;
+        $noka = $pasien->no_bpjs;
         if($pasien->status_pasien == 'BPJS'){
-            $url = '/peserta/'.$nik;
+            $url = '/peserta/noka/'.$noka;
+            // return $url;
             $status_pasien = 1;
             $result = APIBpjsController::get($url);
+            // return $result;
             if($result['metaData']['code'] != 200){
                 return response()->json([
                     'success' => false,

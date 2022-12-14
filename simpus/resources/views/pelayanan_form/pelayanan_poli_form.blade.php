@@ -83,7 +83,7 @@
                                   </div>
                                 </div>
 
-                            <div class="bpjs_form" id="bpjs_form" style="display: none">
+                            <div class="bpjs_form" id="bpjs_form" style="display: block">
                                   <div class="form-row">
                                     <div class="form-group col-md-4">
                                       <label class="form-label">Diagnosa 1 <span>*</span></label>
@@ -155,10 +155,9 @@
                                       <label class="form-label">Kesadaran <span>*</span></label>
                                       <select name="kesadaran" class="custom-select" id="kesadaran">
                                         <option value="">Pilih Kesadaran</option>
-                                        <option value="01" {{ (isset($kunjungan) && $kunjungan->code_sadar == '01')? 'selected' : '' }}>Compos Mentis</option>
-                                        <option value="02" {{ (isset($kunjungan) && $kunjungan->code_sadar == '02')? 'selected' : '' }}>Somolence</option>
-                                        <option value="03" {{ (isset($kunjungan) && $kunjungan->code_sadar == '03')? 'selected' : '' }}>Sopor</option>
-                                        <option value="04" {{ (isset($kunjungan) && $kunjungan->code_sadar == '04')? 'selected' : '' }}>Coma</option>
+                                        @foreach ($kesadaran as $sadar)
+                                        <option value="{{ $sadar->kdSadar }}" {{ (isset($kunjungan) && $kunjungan->code_sadar == $sadar->kdSadar)? 'selected' : '' }}>{{ $sadar->nmSadar }}</option>
+                                        @endforeach
                                       </select>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -195,25 +194,34 @@
                                       <label class="form-label">Tinggi Badan <span>*</span></label>
                                       <input type="text" class="form-control mb-1" name="tinggi" id="tinggi" value="{{ isset($kunjungan->tinggi_badan)? $kunjungan->tinggi_badan : '' }}">
                                     </div>
+                                    
+                                  </div>
+                                  <div class="form-row" id="keluhanshow">
+                                    <div class="form-group col-md-12">
+                                      <label class="form-label">Keluhan <span></span></label>
+                                      <textarea class="form-control mb-1" rows="5" name="keluhan" id="keluhan">{{ (isset($kunjungan->rujuk_lanjut) && $kunjungan->rujuk_lanjut->catatan != null)? $kunjungan->rujuk_lanjut->catatan : '-' }}</textarea>
+                                    </div>
                                   </div>
                                 <div class="form-row">
                                   <div class="form-group col-md-6">
                                     <label class="form-label">Status Pulang <span>*</span></label>
-                                    <select name="status_pulang" class="custom-select" id="status_pulang" onchange="rujukform()">
+                                    <select name="status_pulang" class="custom-select" id="status_pulang">
                                       <option value="">Pilih</option>
                                       {{-- <option value="0">Sembuh</option> --}}
-                                      <option value="1" {{ (isset($kunjungan) && $kunjungan->status_pulang == '1')? 'selected' : '' }}>Meninggal</option>
-                                      <option value="3" {{ (isset($kunjungan) && $kunjungan->status_pulang == '3')? 'selected' : '' }}>Rawat Jalan</option>
-                                      <option value="4" {{ (isset($kunjungan) && $kunjungan->status_pulang == '4')? 'selected' : '' }}>Rujuk</option>
+                                      @foreach ($status_pulang as $pulang)
+                                        <option value="{{ $pulang->kdStatusPulang }}" {{ (isset($kunjungan) && $kunjungan->status_pulang == $pulang->kdStatusPulang)? 'selected' : '' }}>{{ $pulang->nmStatusPulang }}</option>
+                                          
+                                      @endforeach
+                                      
                                     </select>
                                   </div>
                                   <div class="form-group col-md-6">
                                     <label class="form-label">Tanggal Pulang <span>*</span></label>
-                                    <input type="date" class="form-control mb-1" name="tglpulang" id="tglpulang" value="{{ (isset($kunjungan))? date('Y-m-d', strtotime($kunjungan->tgl_pulang)) : '' }}">
+                                    <input type="date" class="form-control mb-1" name="tglpulang" id="tglpulang" value="{{ (isset($kunjungan))? date('Y-m-d', strtotime($kunjungan->tgl_pulang)) : date('Y-m-d') }}">
                                   </div>
                                 </div>
 
-                                <div id="form_rujukan">
+                                <div id="form_rujukan" style="display: none">
                                   <div class="form-row">
                                     <div class="form-group col-md-6" id="spesialisshowselect">
                                       <input type="radio" name="kasus" id="spesialis_select" {{ (isset($kunjungan->rujuk_lanjut->spesialis))? 'checked' : '' }}>
@@ -224,8 +232,7 @@
                                       <label for="khusus">Khusus <span>*</span></label>
                                     </div>
                                   </div>
-                                  <div id="formrujukjenis">
-                                    <div class="form-row" id="spesialisshow">
+                                    <div class="form-row" id="spesialisshow" style="display: none">
                                       <div class="form-group col-md-6">
                                         <label class="form-label">Spesialis <span>*</span></label>
                                         <select name="spesialis" class="custom-select" id="spesialis">
@@ -245,8 +252,8 @@
                                         </select>
                                       </div>
                                     </div>
-
-                                    <div class="form-row" id="khususshow">
+                                  
+                                    <div class="form-row" id="khususshow" style="display: none">
                                       <div class="form-group col-md-6">
                                         <label class="form-label">Khusus <span>*</span></label>
                                         <select name="khusus" class="custom-select" id="khusus">
@@ -257,35 +264,13 @@
                                           <label class="form-label">Sub Khusus <span>*</span></label>
                                           <select name="subkhusus" class="custom-select" id="subkhusus">
                                             <option value="">Pilih Sub Khusus</option>
-                                            <option value="3">PENYAKIT DALAM</option>
-                                            <option value="8">HEMATOLOGI - ONKOLOGI MEDIK</option>
-                                            <option value="26">ANAK</option>
-                                            <option value="30">ANAK HEMATOLOGI ONKOLOGI</option>
                                           </select>
                                         </div>
                                     </div>
-                                  </div>
-                                  <div class="form-row" id="terapishow">
+                                  <div class="form-row" id="catatanshow">
                                     <div class="form-group col-md-12">
-                                      <label class="form-label">Terapi <span>*</span></label>
-                                      <input type="text" class="form-control mb-1" name="terapi" id="terapi" value="{{ (isset($kunjungan) && $kunjungan->terapi != null)? $kunjungan->terapi : '' }}">
-                                    </div>
-                                  </div>
-                                </div>
-                                {{-- <div class="form-row">
-                                  <div class="form-group col-md-12">
-                                    <label class="form-label">Tenaga Medis <span>*</span></label>
-                                    <select name="kdDokter" class="custom-select" id="kdDokter">
-                                      <option value="">Pilih Tenaga medis</option>
-                                    </select>
-                                  </div>
-                                </div> --}}
-
-                                <div id="form_rujukan_detail">
-                                  <div class="form-row" id="keluhanshow">
-                                    <div class="form-group col-md-12">
-                                      <label class="form-label">Keluhan <span></span></label>
-                                      <textarea class="form-control mb-1" rows="5" name="keluhan" id="keluhan">{{ (isset($kunjungan->rujuk_lanjut) && $kunjungan->rujuk_lanjut->catatan != null)? $kunjungan->rujuk_lanjut->catatan : '-' }}</textarea>
+                                      <label class="form-label">Catatan Rujukan <span>*</span></label>
+                                      <input type="text" class="form-control mb-1" name="catatan" id="catatan" value="{{ (isset($kunjungan) && $kunjungan->catatan != null)? $kunjungan->catatan : '-' }}">
                                     </div>
                                   </div>
                                   <div class="form-row" id="tglrujukshow">
@@ -316,21 +301,24 @@
                                               <th>Pilih</th>
                                             </tr>
                                           </thead>
+                                          <tbody id="daftar_faskes">
+
+                                          </tbody>
                                         </table>
                                       </div>
                                     </div>
                                   </div>
+                                </div>
                                   <div class="form-row">
                                     <div class="form-group col-md-6">
-                                      <select name="tacc" class="custom-select" id="taccselect" onchange="taccform()" required>
-                                        <option value="">Pilih TACC</option>
+                                      <select name="kdTacc" class="custom-select" id="taccselect" required>
                                         <option value="-1">Tanpa TACC</option>
                                         <option value="0">Dengan TACC</option>
                                       </select>
                                     </div>
                                   {{-- </div> --}}
                                     <div class="form-group col-md-6" id="kondisishow">
-                                      <select name="taccselected" class="custom-select" id="taccselected" onchange="taccalasan()">
+                                      <select name="nmTacc" class="custom-select" id="taccselected" style="display: none">
                                         <option value="">Pilih Kondisi</option>
                                         <option value="1">Time</option>
                                         <option value="2">Age</option>
@@ -343,11 +331,10 @@
                                     <div class="form-group col-md-6">
                                     </div>
                                     <div class="form-group col-md-6">
-                                      <select name="tacc_time" class="custom-select" id="tacc_time">
+                                      <select name="tacc_time" class="custom-select" id="tacc_time" style="display: none">
                                         <option value="">Pilih Waktu</option>
-                                        <option value="< 3 Hari">
-                                          < 3 Hari</option> <option value=">= 3 - 7 Hari">>= 3 - 7 Hari
-                                        </option>
+                                        <option value="< 3 Hari">< 3 Hari</option>
+                                        <option value=">= 3 - 7 Hari">>= 3 - 7 Hari</option>
                                         <option value=">= 7 Hari">>= 7 Hari</option>
                                       </select>
                                     </div>
@@ -356,7 +343,7 @@
                                     <div class="form-group col-md-6">
                                     </div>
                                     <div class="form-group col-md-6">
-                                      <select name="tacc_age" class="custom-select" id="tacc_age">
+                                      <select name="tacc_age" class="custom-select" id="tacc_age" style="display: none">
                                         <option value="">Pilih Umur</option>
                                         <option value="< 1 Bulan">
                                           < 1 Bulan</option> <option value=">= 1 Bulan s/d 12 Bulan">>= 1 Bulan s/d 12 Bulan
@@ -372,21 +359,20 @@
                                     <div class="form-group col-md-6">
                                     </div>
                                     <div class="form-group col-md-6">
-                                      <select name="tacc_comorbidity" class="custom-select" id="tacc_comorbidity">
+                                      <select name="tacc_comorbidity" class="custom-select" id="tacc_comorbidity" style="display: none">
                                         <option value="">Pilih Comorbidity</option>
-                                        <option value="< 3 Hari">
-                                          < 3 Hari</option> <option value=">= 3 - 7 Hari">>= 3 - 7 Hari
-                                        </option>
+                                        <option value="< 3 Hari"> < 3 Hari</option> 
+                                        <option value=">= 3 - 7 Hari">>= 3 - 7 Hari </option>
                                         <option value=">= 7 Hari">>= 7 Hari</option>
                                       </select>
                                     </div>
                                   </div>
-                                </div>
+                               
                             </div>
-                            <div class="form-row" id="catatanshow">
+                            <div class="form-row" id="terapishow">
                                 <div class="form-group col-md-12">
-                                  <label class="form-label">Catatan <span></span></label>
-                                  <textarea class="form-control mb-1" rows="5" name="catatan" id="catatan">{{ (isset($kunjungan)? $kunjungan->catatan : '') }}</textarea>
+                                  <label class="form-label">Terapi / Catatan <span></span></label>
+                                  <textarea class="form-control mb-1" rows="5" name="terapi" id="terapi">{{ (isset($kunjungan)? $kunjungan->terapi : '-') }}</textarea>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -417,7 +403,7 @@
                               </div>
                           </div>
                         </div>
-                        {{-- <div class="col-md-12" id="tmpDiagnosis" style="display:none">
+                        <div class="col-md-12" id="tmpDiagnosis" style="display:block">
                           <div class="card-header">
                             <center>
                               <h3>DIAGNOSIS & TINDAKAN</h3>
@@ -448,7 +434,7 @@
                             </div>
                           </div>
 
-                        </div> --}}
+                        </div>
                         @if(isset($PelayananLab))
                         <div class="col-md-12">
                             <div class="card-header"><center><h3>PEMERIKSAAN LABORATORIUM</h3></center></div>
@@ -479,7 +465,7 @@
                              @endforeach
                         </div>
                         @endif
-                        <div class="col-md-12" id="tmpResep" style="display:none">
+                        <div class="col-md-12" id="tmpResep" style="display:block">
                           <div class="card-header">
                             <center>
                               <h3>RESEP / OBAT</h3>
@@ -541,6 +527,374 @@
 
 @endsection
 @push('scripts')
+//DOCUMENT READY FUNCTION DOKTER BPJS
+<script>
+  $(document).ready(function(){
+    var id_dokter = $('#kdDokter').val();
+    $.ajax({
+      type: 'POST',
+      url: '{{route("pelayanan_poli.dokterbpjs")}}',
+      headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+      beforeSend: function(){
+        Swal.fire({
+            title: 'Mohon Tunggu !',
+            html: 'Loading',// add html attribute if you want or remove
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        });
+      },
+      success: function(response) {
+        Swal.hideLoading();
+        if(response.success == true){
+            Swal.close();
+
+            var dokter = response.datas
+            $('#kdDokter').find('option').remove().end();
+            $('#kdDokter').append('<option value="">Pilih Tenaga medis</option>');
+                Swal.close();
+                for(var i = 0 ; i < dokter.length ; i++){
+                    if(id_dokter == dokter[i].kdDokter){
+                        $('#kdDokter').append('<option value="'+dokter[i].kdDokter+'" selected>' + dokter[i].nmDokter + '</option>');
+                    }else{
+                        $('#kdDokter').append('<option value="'+dokter[i].kdDokter+'">' + dokter[i].nmDokter + '</option>');
+                    }
+
+                }
+                $('#kdDokter').select2()
+
+
+        }else{
+            Swal.fire('UPS','Data Tenaga Medis Tidak Ditemukan','info');
+        }
+
+      },
+      complete: function(){
+          Swal.hideLoading();
+      },
+    });
+  });
+</script>
+//SELECT 2 DIAGNOSA 1 - 3
+<script>
+  $('#diagnosa1, #diagnosa2, #diagnosa3').select2({
+    placeholder: 'Pilih Diagnosa',
+    ajax: {
+        url: "{{ route('pelayanan_poli.searchDiagnosa') }}",
+        dataType: 'JSON',
+        data: function(params) {
+        return {
+            search: params.term
+        }
+        },
+        processResults: function (data) {
+            var results = [];
+            $.each(data, function(index, item){
+                results.push({
+                    id: item.kode_diagnosa,
+                    text : item.kode_diagnosa+' | '+item.nama_penyakit,
+                });
+            });
+            return{
+                results: results
+            };
+        }
+    }
+  });
+</script>
+//SEARCH DIAGNOSA
+<script>
+  function searchdiagnosa(index){
+    var keywoard = $('#keywoard'+index).val();
+    $.ajax({
+        type: 'POST',
+        data: {
+        'keywoard': keywoard
+        },
+        url: '{{ route("pelayanan_poli.diagnosabpjs") }}',
+        headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+        beforeSend: function(){
+          Swal.fire({
+              title: 'Mohon Tunggu !',
+              html: 'Loading',// add html attribute if you want or remove
+              allowOutsideClick: false,
+              showConfirmButton: false,
+              onBeforeOpen: () => {
+                  Swal.showLoading()
+              },
+          });
+        },
+        success: function(response){
+          Swal.hideLoading();
+            if(response.success == true){
+              Swal.close()
+                $('#diagnosa'+index).find('option').remove().end();
+                var diagnosa = response.datas.response.list
+                var error = response.datas.response
+                if(diagnosa != null){
+                    for(var i = 0 ; i < diagnosa.length ; i++){
+                    if(diagnosa[i].nonSpesialis != true){
+                        var spesialisDiagnosa = 'UMUM'
+                    }else{
+                        var spesialisDiagnosa = 'SPESIALIS'
+                    }
+                    $('#diagnosa'+index).append('<option value="'+diagnosa[i].kdDiag+'">' + '<p>'+diagnosa[i].kdDiag+' | '+diagnosa[i].nmDiag+'</p></option>');
+                    }
+                    Swal.close();
+                }else{
+                    Swal.fire('UPS', response.message,'info');
+                }
+            }else{
+                Swal.fire('UPS',response.message,'info');
+            }
+
+        },
+        complete: function(){
+            Swal.hideLoading();
+
+        },
+    })
+  }
+</script>
+//ONCHANGE STATUS PULANG
+<script>
+  $('#status_pulang').on('change', function(){
+    if(this.value == '4'){
+      $('#form_rujukan').show();
+    }else{
+      $('#form_rujukan').hide();
+    }
+  });
+ //ON CHANGE RUJUK TIPE SPESIALIS / KHUSUS
+  $('#spesialis_select').on('click', function(){
+    $('#spesialisshow').show();
+    $('#khususshow').hide();
+  //SELECT 2 SPESIALIS
+    $('#spesialis').select2({
+      placeholder: 'Pilih Spesialis',
+      ajax: {
+          url: "{{ route('pelayanan_poli.spesialisbpjs') }}",
+          dataType: 'JSON',
+          data: function(params) {
+          return {
+              search: params.term
+          }
+          },
+          processResults: function (data) {
+              var results = [];
+              $.each(data, function(index, item){
+                  results.push({
+                      id: item.kdSpesialis,
+                      text : item.nmSpesialis,
+                  });
+              });
+              return{
+                  results: results
+              };
+          }
+      }
+    });
+    $('#sarana').select2({
+      placeholder: 'Pilih Sarana',
+      ajax: {
+          url: "{{ route('pelayanan_poli.saranabpjs') }}",
+          dataType: 'JSON',
+          data: function(params) {
+          return {
+              search: params.term
+          }
+          },
+          processResults: function (data) {
+              var results = [];
+              $.each(data, function(index, item){
+                  results.push({
+                      id: item.kdSarana,
+                      text : item.nmSarana,
+                  });
+              });
+              return{
+                  results: results
+              };
+          }
+      }
+    });
+  });
+  $('#spesialis').on('change', function(){
+    $('#subspesialis').val('').change()
+    $('#subspesialis').select2({
+      placeholder: 'Pilih Sub Spesialis',
+      ajax: {
+          url: "{{ route('pelayanan_poli.subspesialisbpjs') }}",
+          dataType: 'JSON',
+          data: function(params) {
+          return {
+              search: params.term,
+              kdSpesialis:  $('#spesialis').val()
+          }
+          },
+          processResults: function (data) {
+              var results = [];
+              $.each(data, function(index, item){
+                  results.push({
+                      id: item.kdSubSpesialis,
+                      text : item.nmSubSpesialis,
+                  });
+              });
+              return{
+                  results: results
+              };
+          }
+      }
+    });
+  });
+  $('#khusus_select').on('click', function(){
+    $('#spesialisshow').css('display', 'none');
+    $('#khususshow').css('display', 'block');
+    $('#khusus').select2({
+      placeholder: 'Pilih Khusus',
+      ajax: {
+          url: "{{ route('pelayanan_poli.khususbpjs') }}",
+          dataType: 'JSON',
+          data: function(params) {
+          return {
+              search: params.term
+          }
+          },
+          processResults: function (data) {
+              var results = [];
+              $.each(data, function(index, item){
+                  results.push({
+                      id: item.kdKhusus,
+                      text : item.nmKhusus,
+                  });
+              });
+              return{
+                  results: results
+              };
+          }
+      }
+    });
+    $('#khusus').on('change', function(){
+      $('#subkhusus').val('').change();
+      $('#subkhusus').select2({
+        placeholder: 'Pilih Sub Khusus',
+        ajax: {
+            url: "{{ route('pelayanan_poli.subkhususbpjs') }}",
+            dataType: 'JSON',
+            data: function(params) {
+            return {
+                search: params.term,
+                KdKhusus: $('#khusus').val(),
+            }
+            },
+            processResults: function (data) {
+                var results = [];
+                $.each(data, function(index, item){
+                    results.push({
+                        id: item.kdSubSpesialis,
+                        text : item.nmSubSpesialis,
+                    });
+                });
+                return{
+                    results: results
+                };
+            }
+        }
+      });
+    });
+  });
+</script>
+//CARI FASYANKES RUJUKAN
+<script>
+  $('#searchRujuk').on('click', function(){
+    $('#daftar_faskes').html('');
+    $.ajax({
+      type: 'GET',
+      data: {
+        subspesialis : $('#subspesialis').val(),
+        sarana : $('#sarana').val(),
+        tgl_est_rujuk : $('#tglrujuk').val(),
+        kdKhusus : $('#khusus').val(),
+        subkhusus : $('#subkhusus').val(),
+        no_bpjs : $('#no_bpjs').val(),
+      },
+      url: '{{route("pelayanan_poli.rujukfasyankes")}}',
+      headers: {'X-CSRF-TOKEN': $('[name="_token"]').val()},
+      beforeSend: function(){
+        Swal.fire({
+            title: 'Mohon Tunggu !',
+            html: 'Loading',// add html attribute if you want or remove
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        });
+      },
+      success: function(data) {
+        Swal.hideLoading();
+        if(data.success == true){
+          Swal.close();
+          let datatable = '';
+          for(var i=0;i<data.data.length;i++){
+             datatable += '<tr>' +
+                                // '<td>'++'</td>' +
+                                '<td>'+data.data[i].nmppk +'('+data.data[i].kdppk+')'+'</td>' +
+                                '<td>'+data.data[i].kelas+'</td>'+
+                                '<td>'+data.data[i].nmkc+'</td>'+
+                                '<td>'+data.data[i].alamatPpk+'</td>'+
+                                '<td>'+data.data[i].telpPpk+'</td>'+
+                                '<td>'+data.data[i].distance+'</td>'+
+                                '<td>'+data.data[i].jmlRujuk+'</td>'+
+                                '<td><input type="radio" name="provider" value="'+data.data[i].kdppk+'" id="'+data.data[i].kdppk+'"></td>'+
+                                '</tr>';
+                            
+                          }
+                          console.log(datatable);
+              $('#daftar_faskes').append(datatable);
+        }else{
+          Swal.fire('Ups', data.message, 'info');
+        }
+      },
+      complete: function(){
+          Swal.hideLoading();
+      },
+    });
+  });
+</script>
+//ONCHANGE TACC
+<script>
+$('#taccselect').on('change', function(){
+  $('#taccselected').val('').change();
+  if(this.value == 0){
+    $('#taccselected').css('display', 'block');
+  }else{
+    $('#taccselected').css('display', 'none');
+    $('#tacc_time').css('display', 'none');
+    $('#tacc_age').css('display', 'none');
+    $('#tacc_comorbidity').css('display', 'none');
+  }
+})
+$('#taccselected').on('change', function(){
+  let tacc = [];
+  tacc[1] = 'time';
+  tacc[2] = 'age';
+  tacc[4] = 'comorbidity';
+  for(let i = 1 ; i < 5; i++){
+    if(i == 3){
+      continue;
+    }else{
+      if(this.value == i){
+        $('#tacc_'+tacc[i]).css('display', 'block');
+      }else{
+        $('#tacc_'+tacc[i]).css('display', 'none');
+      }
+    }
+  }
+});
+</script>
 {{--  <script type="text/javascript">
     $('#diagnosa1, #diagnosa2, #diagnosa3').select2({
         placeholder: 'Pilih Diagnosa',

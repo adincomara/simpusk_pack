@@ -480,11 +480,13 @@ Route::group(['middleware' => ['auth', 'acl:web']], function () {
         Route::post('pelayanan_poli/getkesadaranbpjs', [PelayananpoliController::class, 'getKesadaran'])->name('pelayanan_poli.kesadaranbpjs');
         Route::post('pelayanan_poli/getdiagnosabpjs', [PelayananpoliController::class, 'getDiagnosa'])->name('pelayanan_poli.diagnosabpjs');
         Route::post('pelayanan_poli/getdokterbpjs', [PelayananpoliController::class, 'getDokterBpjs'])->name('pelayanan_poli.dokterbpjs');
-        Route::post('pelayanan_poli/getspesialisbpjs', [PelayananpoliController::class, 'getSpesialis'])->name('pelayanan_poli.spesialisbpjs');
-        Route::post('pelayanan_poli/getsubspesialisbpjs/', [PelayananpoliController::class, 'getSubSpesialis'])->name('pelayanan_poli.subspesialisbpjs');
-        Route::post('pelayanan_poli/getkhususbpjs', [PelayananpoliController::class, 'getKhusus'])->name('pelayanan_poli.khususbpjs');
-        Route::post('pelayanan_poli/getsaranabpjs', [PelayananpoliController::class, 'getSarana'])->name('pelayanan_poli.saranabpjs');
+        Route::get('pelayanan_poli/getspesialisbpjs', [PelayananpoliController::class, 'getSpesialis'])->name('pelayanan_poli.spesialisbpjs');
+        Route::get('pelayanan_poli/getsubspesialisbpjs/', [PelayananpoliController::class, 'getSubSpesialis'])->name('pelayanan_poli.subspesialisbpjs');
+        Route::get('pelayanan_poli/getkhususbpjs', [PelayananpoliController::class, 'getKhusus'])->name('pelayanan_poli.khususbpjs');
+        Route::get('pelayanan_poli/getsubkhususbpjs', [PelayananpoliController::class, 'getSubKhusus'])->name('pelayanan_poli.subkhususbpjs');
+        Route::get('pelayanan_poli/getsaranabpjs', [PelayananpoliController::class, 'getSarana'])->name('pelayanan_poli.saranabpjs');
         Route::post('pelayanan_poli/getfaskesrujukspesialis/', [PelayananpoliController::class, 'getFaskesRujukSpesialis'])->name('pelayanan_poli.rujukspesialisbpjs');
+        Route::get('pelayanan_poli/getfaskesrujukfasyankes/', [PelayananpoliController::class, 'getFaskesRujukFasyankes'])->name('pelayanan_poli.rujukfasyankes');
         Route::post('pelayanan_poli/getfaskesrujukkhusus/', [PelayananpoliController::class, 'getFaskesRujukKhusus'])->name('pelayanan_poli.rujukkhususbpjs');
         Route::post('pelayanan_poli/getfaskesrujuksubkhusus/', [PelayananpoliController::class, 'getFaskesRujukSubKhusus'])->name('pelayanan_poli.rujuksubkhususbpjs');
         Route::post('pelayanan_poli/daftarkunjungan', [PelayananpoliController::class, 'daftarKunjungan'])->name('pelayanan_poli.daftarkunjungan');
