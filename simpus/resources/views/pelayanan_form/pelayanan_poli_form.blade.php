@@ -377,16 +377,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                  <label class="form-label">Penunjang <span>*</span></label>
-                                  <select id="penunjang" name="penunjang" class="select2 form-control mb-1"
-                                    onchange="pilihPenunjang()" {{ (isset($PelayananLab))? 'readonly' : '' }}>
+                                  <label class="form-label">Penunjang (Pemeriksaan Laboratorium) <span>*</span></label>
+                                  <select id="penunjang" name="penunjang" class="select2 form-control mb-1">
+                                    <option value="T">Tidak</option>
                                     <option value="Y">Ya</option>
-                                    <option value="T" {{ (isset($PelayananLab))? 'selected' : '' }}>Tidak</option>
-
                                   </select>
                                 </div>
                               </div>
-                              <div class="form-row" id="tmpPemeriksaanLab">
+                              <div class="form-row" id="tmpPemeriksaanLab" style="display: none">
                                 <div class="form-group col-md-12">
                                   <label class="form-label">Pemeriksaan Laboratorium</label>
                                   @foreach($Lab as $lab)
@@ -406,28 +404,37 @@
                         <div class="col-md-12" id="tmpDiagnosis" style="display:block">
                           <div class="card-header">
                             <center>
-                              <h3>DIAGNOSIS & TINDAKAN</h3>
+                              <h3>TINDAKAN</h3>
                             </center>
                           </div>
                           <div class="card-body">
                             <div class="form-row">
                               <div class="form-group col-md-12">
-                                <input type="hidden" class="form-control mb-1" name="total_diagnosa" id="total_diagnosa" value="0">
+                                <input type="hidden" class="form-control mb-1" name="total_tindakan" id="total_tindakan" value="1">
                                   <div class="row">
                                       <div class="col-md-6">
                                           <label class="form-label">Resep</label>
                                       </div>
                                       <div class="col-md-6 mb-2">
-                                          <a href="#!" style="float: right" id="tambah_diagnosis" onclick="tambahDiagnosis()" class="btn btn-success lg-btn-flat product-tooltip" title="Tambah Obat"><i class="ion ion-md-add"></i> &nbsp; Tambah Diagnosa</a>
+                                          <a href="#!" style="float: right" id="tambah_tindakan" class="btn btn-success lg-btn-flat product-tooltip" title="Tambah Obat"><i class="ion ion-md-add"></i> &nbsp; Tambah Tindakan</a>
                                       </div>
                                   </div>
                                   <table class="table table-bordered">
                                       <tr>
-                                          <th>Diagnosa</th>
                                           <th>Tindakan</th>
                                           <th>Action</th>
                                       </tr>
-                                      <tbody id="ajax_tambahan">
+                                      <tbody id="ajax_tambah_tindakan">
+                                        <tr id="data_tambah_tindakan_1">
+                                          <td width=50%>
+                                            <select name="tindakan[]" id="tindakan_1" style="width: 100%">
+                                            
+                                            </select>
+                                          </td>
+                                          <td>
+                                            {{--  <a href='#!' onclick='deleteTindakan(1)' class='btn btn-danger btn-lg icon-btn lg-btn-flat product-tooltip' title='Hapus'><i class='fa fa-close'></i></a>  --}}
+                                          </td>
+                                        </tr>
                                       </tbody>
                                   </table>
                                 </div>
@@ -527,6 +534,86 @@
 
 @endsection
 @push('scripts')
+//DOCUMENT READY FUNCTION (TINDAKAN)
+<script>
+  $(document).ready(function(){
+    let idx = $('#total_tindakan').val();
+    for(let i = 1; i<= idx; i++){
+      tindakan_select2(i);
+    }
+  });
+  function tindakan_select2(idx){
+    $('#tindakan_'+idx).select2({
+      placeholder: 'Pilih Tindakan',
+      ajax: {
+          url: "{{ route('pelayanan_poli.searchTindakan') }}",
+          dataType: 'JSON',
+          data: function(params) {
+          return {
+              search: params.term
+          }
+          },
+          processResults: function (data) {
+              var results = [];
+              $.each(data, function(index, item){
+                  results.push({
+                      id: item.kode_tindakan,
+                      text : item.nama_tindakan,
+                  });
+              });
+              return{
+                  results: results
+              };
+          }
+      }
+    });
+  }
+</script>
+//ONCLICK TAMBAH TINDAKAN
+<script>
+  $('#tambah_tindakan').on('click', function(){
+    let idx = $('#total_tindakan').val();
+    idx++;
+    $('#total_tindakan').val(idx);
+    let html = '<tr id="data_tambah_tindakan_'+idx+'">'
+      +'<td width=50%>'
+        +'<select name="tindakan[]" id="tindakan_'+idx+'" style="width: 100%">'
+        
+        +'</select>'
+      +'</td>'
+      +'<td>'
+        +'<a href="#!" onclick="deleteTindakan('+idx+')" class="btn btn-danger btn-lg icon-btn lg-btn-flat product-tooltip" title="Hapus"><i class="fa fa-close"></i></a>'
+      +'</td>'
+    +'</tr>';
+    $('#ajax_tambah_tindakan').append(html);
+    tindakan_select2(idx);
+  })
+</script>
+//ONCLICK DELETE TINDAKAN
+<script>
+  function deleteTindakan(id){
+
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: 'Data akan terhapus!',
+
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Ya',
+        cancelButtonText:'Batal',
+        confirmButtonColor: '#ec6c62',
+        closeOnConfirm: false
+      }).then(function(result){
+        if(result.value){
+            $('#data_tambah_tindakan_'+id).remove();
+        }
+
+
+    });
+
+  }
+</script>
 //DOCUMENT READY FUNCTION DOKTER BPJS
 <script>
   $(document).ready(function(){
@@ -864,9 +951,19 @@
     });
   });
 </script>
+//ONCHANGE PENUNJANG
+<script>
+  $('#penunjang').on('change', function(){
+    if(this.value == 'Y'){
+      $('#tmpPemeriksaanLab').css('display', 'block');
+    }else{
+      $('#tmpPemeriksaanLab').css('display', 'none');
+    }
+  })
+</script>
 //ONCHANGE TACC
 <script>
-$('#taccselect').on('change', function(){
+  $('#taccselect').on('change', function(){
   $('#taccselected').val('').change();
   if(this.value == 0){
     $('#taccselected').css('display', 'block');
@@ -876,8 +973,8 @@ $('#taccselect').on('change', function(){
     $('#tacc_age').css('display', 'none');
     $('#tacc_comorbidity').css('display', 'none');
   }
-})
-$('#taccselected').on('change', function(){
+  })
+  $('#taccselected').on('change', function(){
   let tacc = [];
   tacc[1] = 'time';
   tacc[2] = 'age';
@@ -893,8 +990,9 @@ $('#taccselected').on('change', function(){
       }
     }
   }
-});
+  });
 </script>
+
 {{--  <script type="text/javascript">
     $('#diagnosa1, #diagnosa2, #diagnosa3').select2({
         placeholder: 'Pilih Diagnosa',

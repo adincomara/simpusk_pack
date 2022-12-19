@@ -1072,10 +1072,14 @@ class PelayananpoliController extends Controller
     }
 
     public function searchTindakan(Request $request){
-        $query = Tindakan::orWhere('kode_tindakan', 'LIKE', "%{$request->search}%");
-        $query->orWhere('nama_tindakan', 'LIKE', "%{$request->search}%")
-                ->limit(15);
-        $diagnosa = $query->get();
+        $query = Tindakan::select('*');
+        if($request->search != '' || $request->search != null){
+            $query->where(function($q) use ($request){
+                $q->orWhere('kode_tindakan', 'LIKE', "%{$request->search}%");
+                $q->orWhere('nama_tindakan', 'LIKE', "%{$request->search}%");
+            });
+        }
+        $diagnosa = $query->limit(15)->get();
 
         return json_encode($diagnosa);
         // return response()->json(['data' => $obat]);
